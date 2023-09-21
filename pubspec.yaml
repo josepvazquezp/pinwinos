@@ -64,7 +64,38 @@ flutter:
     - assets/images/friends.png
     - assets/images/profile.png
     - assets/images/info.png
-    - assets/images/parchment.png
+    - assets/images/deck.png
+    - assets/images/deck_back.png
+    - assets/images/cards/c1.png
+    - assets/images/cards/c2.png
+    - assets/images/cards/c3.png
+    - assets/images/cards/c4.png
+    - assets/images/cards/c5.png
+    - assets/images/cards/c6.png
+    - assets/images/cards/c7.png
+    - assets/images/cards/c8.png
+    - assets/images/cards/c9.png
+    - assets/images/cards/c10.png
+    - assets/images/cards/c11.png
+    - assets/images/cards/c12.png
+    - assets/images/cards/c13.png
+    - assets/images/cards/c14.png
+    - assets/images/cards/c15.png
+    - assets/images/cards/c16.png
+    - assets/images/cards/c17.png
+    - assets/images/cards/c18.png
+    - assets/images/cards/c19.png
+    - assets/images/cards/c20.png
+    - assets/images/cards/c21.png
+    - assets/images/cards/c22.png
+    - assets/images/cards/c23.png
+    - assets/images/cards/c24.png
+    - assets/images/cards/c25.png
+    - assets/images/cards/c26.png
+    - assets/images/cards/c27.png
+    - assets/images/cards/c28.png
+    - assets/images/cards/c29.png
+    - assets/images/cards/c30.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
@@ -77,10 +108,10 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
+  fonts:
+    - family: BUMBASTIKA
+      fonts:
+        - asset: assets/fonts/BUMBASTIKA.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pinwinos/deck_edition_page.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
@@ -28,11 +29,35 @@ class HomePage extends StatelessWidget {
                         height: 50,
                       ),
                     ),
-                    Text("Amiwinos",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        )),
+                    Text(
+                      "Amiwinos",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    MaterialButton(
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => DeckEditionPage(),
+                        ));
+                      },
+                      child: Image.asset(
+                        "assets/images/deck.png",
+                        height: 50,
+                      ),
+                    ),
+                    Text(
+                      "Deck",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ],
                 ),
                 Column(
@@ -44,67 +69,87 @@ class HomePage extends StatelessWidget {
                         height: 50,
                       ),
                     ),
-                    Text("Login",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        )),
+                    Text(
+                      "Login",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ],
                 ),
               ],
             ),
+            SizedBox(
+              height: 15,
+            ),
             Center(
-              child: Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage("assets/images/parchment.png"),
+              child: Column(
+                children: [
+                  Container(
+                    color: Color.fromARGB(98, 96, 125, 139),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Pinwinos en',
+                          style: TextStyle(
+                            fontSize: 38,
+                            color: Colors.white,
+                            fontFamily: "BUMBASTIKA",
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          'Tamaulipas',
+                          style: TextStyle(
+                            fontSize: 38,
+                            color: Color.fromARGB(255, 255, 225, 35),
+                            fontFamily: "BUMBASTIKA",
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                child: Column(
-                  children: [
-                    Text(
-                      'Pinwinos en \nTamaulipas',
-                      style: TextStyle(
-                        fontSize: 50,
-                        color: Colors.white,
-                      ),
-                    ),
-                    Container(
-                      height: MediaQuery.of(context).size.height * 0.345,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Material(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(22)),
-                            color: Color.fromARGB(255, 165, 156, 139),
-                            child: MaterialButton(
-                              onPressed: () {},
-                              child: Text(
-                                "Pinwino VS CPU",
-                                style: TextStyle(
-                                    fontSize: 20, color: Colors.white),
-                              ),
+                  SizedBox(height: 20),
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.345,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Material(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(22)),
+                          color: Color.fromARGB(255, 36, 53, 70),
+                          child: MaterialButton(
+                            onPressed: () {},
+                            child: Text(
+                              "Pinwino VS CPU",
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.white),
                             ),
                           ),
-                          Material(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(22)),
-                            color: Color.fromARGB(255, 165, 156, 139),
-                            child: MaterialButton(
-                              onPressed: () {},
-                              child: Text(
-                                "Pinwino VS Pinwino",
-                                style: TextStyle(
-                                    fontSize: 20, color: Colors.white),
-                              ),
+                        ),
+                        Material(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(22)),
+                          color: Color.fromARGB(255, 36, 53, 70),
+                          child: MaterialButton(
+                            onPressed: () {},
+                            child: Text(
+                              "Pinwino VS Pinwino",
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.white),
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
             Row(
