@@ -96,6 +96,17 @@ flutter:
     - assets/images/cards/c28.png
     - assets/images/cards/c29.png
     - assets/images/cards/c30.png
+    - assets/images/elements/fire_icon.webp
+    - assets/images/elements/snow_icon.webp
+    - assets/images/elements/water_icon.webp
+    - assets/images/elements/Snowball.webp
+    - assets/images/Profile.webp
+    - assets/images/FightRoom.webp
+    - assets/images/FriendList.webp
+    - assets/images/Camera.webp
+    - assets/images/hats/cowboy-hat-png.webp
+    - assets/images/FightStage.jpg
+    - assets/images/StageFloor.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
