@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pinwinos/register_page.dart';
 
-class LoginPage extends StatelessWidget {
-  LoginPage({super.key});
+class RegisterPage extends StatelessWidget {
+  RegisterPage({super.key});
 
   var mailController = TextEditingController();
   var passController = TextEditingController();
@@ -14,23 +13,29 @@ class LoginPage extends StatelessWidget {
         constraints: BoxConstraints.expand(),
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("assets/images/login_register_back.png"),
+            image: AssetImage("assets/images/register_back.png"),
             fit: BoxFit.cover,
           ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
+            SizedBox(
+              width: 380,
+            ),
             Column(
               children: [
                 SizedBox(
-                  height: 70,
+                  height: 50,
                 ),
-                Text(
-                  "Login",
-                  style: TextStyle(
-                    fontSize: 40,
-                    color: Colors.blueGrey[800],
+                Container(
+                  color: Color.fromARGB(150, 47, 51, 61),
+                  child: Text(
+                    "Registrar",
+                    style: TextStyle(
+                      fontSize: 40,
+                      color: Color.fromARGB(255, 219, 193, 96),
+                    ),
                   ),
                 ),
                 SizedBox(
@@ -41,23 +46,25 @@ class LoginPage extends StatelessWidget {
                         height: 20,
                       ),
                       Container(
-                        color: Color.fromARGB(178, 201, 196, 172),
+                        color: Color.fromARGB(178, 47, 51, 61),
                         child: TextField(
                           controller: mailController,
                           decoration: InputDecoration(
                             enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(
-                                color: Colors.blueGrey[700]!,
+                                color: Color.fromARGB(255, 219, 193, 96),
                                 width: 2,
                               ),
                             ),
                             label: Text(
-                              "Ingresa el correo",
-                              style: TextStyle(color: Colors.blueGrey[700]),
+                              "Ingresa piwinombre",
+                              style: TextStyle(
+                                color: Color.fromARGB(255, 219, 193, 96),
+                              ),
                             ),
                             prefixIcon: Icon(
-                              Icons.mail_outlined,
-                              color: Colors.blueGrey[700],
+                              Icons.person_2_outlined,
+                              color: Color.fromARGB(255, 219, 193, 96),
                             ),
                           ),
                           style: TextStyle(color: Colors.brown[800]),
@@ -67,47 +74,60 @@ class LoginPage extends StatelessWidget {
                         height: 10,
                       ),
                       Container(
-                        color: Color.fromARGB(178, 201, 196, 172),
+                        color: Color.fromARGB(178, 47, 51, 61),
+                        child: TextField(
+                          controller: mailController,
+                          decoration: InputDecoration(
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color.fromARGB(255, 219, 193, 96),
+                                width: 2,
+                              ),
+                            ),
+                            label: Text(
+                              "Ingresa el correo",
+                              style: TextStyle(
+                                color: Color.fromARGB(255, 219, 193, 96),
+                              ),
+                            ),
+                            prefixIcon: Icon(
+                              Icons.mail_outlined,
+                              color: Color.fromARGB(255, 219, 193, 96),
+                            ),
+                          ),
+                          style: TextStyle(color: Colors.brown[800]),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        color: Color.fromARGB(178, 47, 51, 61),
                         child: TextField(
                           controller: passController,
                           obscureText: true,
                           decoration: InputDecoration(
                             enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(
-                                color: Colors.blueGrey[700]!,
+                                color: Color.fromARGB(255, 219, 193, 96),
                                 width: 2,
                               ),
                             ),
                             label: Text(
                               "Ingresa tu contraseña",
-                              style: TextStyle(color: Colors.blueGrey[700]),
+                              style: TextStyle(
+                                  color: Color.fromARGB(255, 219, 193, 96)),
                             ),
                             prefixIcon: Icon(
                               Icons.password,
-                              color: Colors.blueGrey[700],
+                              color: Color.fromARGB(255, 219, 193, 96),
                             ),
                           ),
                           style: TextStyle(color: Colors.brown[800]),
                         ),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          MaterialButton(
-                            onPressed: () {},
-                            child: Text(
-                              "Entrar",
-                              style: TextStyle(
-                                color: Color.fromARGB(255, 201, 196, 172),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            color: Colors.blueGrey[800],
-                          ),
-                        ],
-                      ),
                       SizedBox(
-                        height: 15,
+                        height: 20,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -121,21 +141,15 @@ class LoginPage extends StatelessWidget {
                               icon: Icon(
                                 Icons.arrow_back_ios_sharp,
                               ),
-                              color: Color.fromARGB(255, 186, 191, 179),
+                              color: Color.fromARGB(255, 229, 231, 246),
                             ),
                           ),
                           MaterialButton(
-                            onPressed: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => RegisterPage(),
-                                ),
-                              );
-                            },
+                            onPressed: () {},
                             child: Text(
                               "Registrar",
                               style: TextStyle(
-                                color: Color.fromARGB(255, 201, 196, 172),
+                                color: Color.fromARGB(255, 229, 231, 246),
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -148,9 +162,6 @@ class LoginPage extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(
-              width: 50,
-            )
           ],
         ),
       ),

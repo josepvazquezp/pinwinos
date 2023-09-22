@@ -97,6 +97,7 @@ flutter:
     - assets/images/cards/c29.png
     - assets/images/cards/c30.png
     - assets/images/login_register_back.png
+    - assets/images/register_back.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

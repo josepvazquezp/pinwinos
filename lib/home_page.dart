@@ -65,9 +65,11 @@ class HomePage extends StatelessWidget {
                   children: [
                     MaterialButton(
                       onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => LoginPage(),
-                        ));
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => LoginPage(),
+                          ),
+                        );
                       },
                       child: Image.asset(
                         "assets/images/profile.png",
