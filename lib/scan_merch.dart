@@ -18,12 +18,16 @@ class ScanMerch extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Text('Escanea un Codigo',
-                  style: TextStyle(
-                    fontSize: 40,
-                    fontWeight: FontWeight.w900,
-                    color: textColor,
-                  )),
+              Container(
+                decoration:
+                    BoxDecoration(color: Color.fromARGB(207, 0, 187, 212)),
+                child: Text('Escanea un Codigo',
+                    style: TextStyle(
+                      fontSize: 40,
+                      fontWeight: FontWeight.w900,
+                      color: textColor,
+                    )),
+              ),
               Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
@@ -47,7 +51,9 @@ class ScanMerch extends StatelessWidget {
                     borderRadius: BorderRadius.circular(22)),
                 color: Colors.cyan,
                 child: MaterialButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
                   child: Text(
                     'Volver',
                     style: TextStyle(color: Colors.white, fontSize: 32),

@@ -42,18 +42,23 @@ class RoomMenu extends StatelessWidget {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.only(top: 20),
-                child: Text(
-                  'Elige un Oponente',
-                  style: TextStyle(
-                      fontSize: 48,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.white),
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(198, 33, 149, 243),
+                  ),
+                  child: Text(
+                    'Elige un Oponente',
+                    style: TextStyle(
+                        fontSize: 48,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.white),
+                  ),
                 ),
               ),
               Container(
                 height: MediaQuery.of(context).size.height * 0.6,
-                width: MediaQuery.of(context).size.width * 0.9,
+                width: MediaQuery.of(context).size.width * 0.5,
                 child: ListView.builder(
                   scrollDirection: Axis.vertical,
                   itemCount: PenwinQuantity,
@@ -69,7 +74,9 @@ class RoomMenu extends StatelessWidget {
                       borderRadius: BorderRadius.circular(22)),
                   color: Colors.cyan,
                   child: MaterialButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
                     child: Text(
                       'Cancelar',
                       style: TextStyle(color: Colors.white, fontSize: 32),
