@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pinwinos/deck_edition_page.dart';
+import 'package:pinwinos/friend_list.dart';
 import 'package:pinwinos/login_page.dart';
 import 'package:pinwinos/rules_page.dart';
 
@@ -25,7 +26,11 @@ class HomePage extends StatelessWidget {
                 Column(
                   children: [
                     MaterialButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => FriendList(),
+                        ));
+                      },
                       child: Image.asset(
                         "assets/images/friends.png",
                         height: 50,
