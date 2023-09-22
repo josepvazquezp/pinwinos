@@ -98,6 +98,7 @@ flutter:
     - assets/images/cards/c30.png
     - assets/images/login_register_back.png
     - assets/images/register_back.png
+    - assets/images/rules_back.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
@@ -114,6 +115,9 @@ flutter:
     - family: BUMBASTIKA
       fonts:
         - asset: assets/fonts/BUMBASTIKA.ttf
+    - family: Handmade
+      fonts:
+        - asset: assets/fonts/Handmade.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro
