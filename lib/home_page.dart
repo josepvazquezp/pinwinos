@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pinwinos/deck_edition_page.dart';
+import 'package:pinwinos/login_page.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
@@ -63,7 +64,11 @@ class HomePage extends StatelessWidget {
                 Column(
                   children: [
                     MaterialButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => LoginPage(),
+                        ));
+                      },
                       child: Image.asset(
                         "assets/images/profile.png",
                         height: 50,

@@ -4,6 +4,8 @@ import 'package:pinwinos/item_card.dart';
 class DeckEditionPage extends StatelessWidget {
   DeckEditionPage({super.key});
 
+  var findController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,6 +31,32 @@ class DeckEditionPage extends StatelessWidget {
                     icon: Icon(Icons.arrow_back_ios_rounded),
                     color: Colors.white,
                     iconSize: 48,
+                  ),
+                  SizedBox(
+                    width: 250,
+                    child: TextField(
+                      controller: findController,
+                      decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.white,
+                            width: 2,
+                          ),
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        label: Text(
+                          "Buscador",
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                        prefixIcon: Icon(
+                          Icons.search_sharp,
+                          color: Colors.white,
+                        ),
+                      ),
+                      style: TextStyle(color: Colors.brown[800]),
+                    ),
                   ),
                   Text(
                     "Editar Deck",
