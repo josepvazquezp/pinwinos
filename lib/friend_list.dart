@@ -54,7 +54,7 @@ class _FriendListState extends State<FriendList> {
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    padding: EdgeInsets.symmetric(vertical: 5),
                     child: Container(
                       decoration: BoxDecoration(
                         color: Color.fromARGB(198, 33, 149, 243),
@@ -62,7 +62,7 @@ class _FriendListState extends State<FriendList> {
                       child: Text(
                         ' Amiwos ',
                         style: TextStyle(
-                            fontSize: 48,
+                            fontSize: 46,
                             fontWeight: FontWeight.w900,
                             color: Colors.white),
                       ),
