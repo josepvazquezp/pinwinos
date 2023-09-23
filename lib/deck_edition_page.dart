@@ -17,7 +17,7 @@ class DeckEditionPage extends StatelessWidget {
             fit: BoxFit.cover,
           ),
         ),
-        child: Column(
+        child: ListView(
           children: [
             Container(
               color: Color.fromARGB(203, 92, 65, 55),
@@ -78,7 +78,7 @@ class DeckEditionPage extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: 20,
+              height: 5,
             ),
             Container(
               color: Color.fromARGB(142, 255, 255, 255),
