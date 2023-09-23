@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:pinwinos/battle_scenario.dart';
 import 'package:pinwinos/deck_edition_page.dart';
+import 'package:pinwinos/friend_list.dart';
 import 'package:pinwinos/login_page.dart';
+import 'package:pinwinos/room_menu.dart';
 import 'package:pinwinos/rules_page.dart';
+import 'package:pinwinos/scan_merch.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
@@ -27,7 +31,13 @@ class HomePage extends StatelessWidget {
                     Column(
                       children: [
                         MaterialButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => FriendList(),
+                              ),
+                            );
+                          },
                           child: Image.asset(
                             "assets/images/friends.png",
                             height: 50,
@@ -135,7 +145,13 @@ class HomePage extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(22)),
                               color: Color.fromARGB(255, 36, 53, 70),
                               child: MaterialButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => BattleScenario(),
+                                    ),
+                                  );
+                                },
                                 child: Text(
                                   "Pinwino VS CPU",
                                   style: TextStyle(
@@ -148,7 +164,13 @@ class HomePage extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(22)),
                               color: Color.fromARGB(255, 36, 53, 70),
                               child: MaterialButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => RoomMenu(),
+                                    ),
+                                  );
+                                },
                                 child: Text(
                                   "Pinwino VS Pinwino",
                                   style: TextStyle(
@@ -168,7 +190,13 @@ class HomePage extends StatelessWidget {
                     Column(
                       children: [
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => ScanMerch(),
+                              ),
+                            );
+                          },
                           icon: Icon(Icons.qr_code_scanner),
                           color: Colors.white,
                           iconSize: 35,
