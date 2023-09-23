@@ -33,6 +33,7 @@ class DeckEditionPage extends StatelessWidget {
                     iconSize: 48,
                   ),
                   SizedBox(
+                    height: 50,
                     width: 250,
                     child: TextField(
                       controller: findController,
@@ -55,7 +56,9 @@ class DeckEditionPage extends StatelessWidget {
                           color: Colors.white,
                         ),
                       ),
-                      style: TextStyle(color: Colors.brown[800]),
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                   Text(
