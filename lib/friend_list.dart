@@ -104,8 +104,7 @@ class _FriendListState extends State<FriendList> {
                               context: context,
                               builder: (context) {
                                 return AlertDialog(
-                                  title:
-                                      Text("Se ha esta enviando tu solicitud"),
+                                  title: Text("Se esta enviando tu solicitud"),
                                   content: Image.asset(
                                       "assets/images/friend_request_animation.webp"),
                                 );

@@ -62,7 +62,9 @@ class LoginPage extends StatelessWidget {
                                   color: Colors.blueGrey[700],
                                 ),
                               ),
-                              style: TextStyle(color: Colors.brown[800]),
+                              style: TextStyle(
+                                color: Colors.blueGrey[700],
+                              ),
                             ),
                           ),
                           SizedBox(
@@ -89,7 +91,9 @@ class LoginPage extends StatelessWidget {
                                   color: Colors.blueGrey[700],
                                 ),
                               ),
-                              style: TextStyle(color: Colors.brown[800]),
+                              style: TextStyle(
+                                color: Colors.blueGrey[700],
+                              ),
                             ),
                           ),
                           Row(

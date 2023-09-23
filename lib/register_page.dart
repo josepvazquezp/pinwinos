@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class RegisterPage extends StatelessWidget {
   RegisterPage({super.key});
 
+  var nameController = TextEditingController();
   var mailController = TextEditingController();
   var passController = TextEditingController();
 
@@ -50,7 +51,7 @@ class RegisterPage extends StatelessWidget {
                           Container(
                             color: Color.fromARGB(178, 47, 51, 61),
                             child: TextField(
-                              controller: mailController,
+                              controller: nameController,
                               decoration: InputDecoration(
                                 enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
@@ -69,7 +70,9 @@ class RegisterPage extends StatelessWidget {
                                   color: Color.fromARGB(255, 219, 193, 96),
                                 ),
                               ),
-                              style: TextStyle(color: Colors.brown[800]),
+                              style: TextStyle(
+                                color: Color.fromARGB(255, 219, 193, 96),
+                              ),
                             ),
                           ),
                           SizedBox(
@@ -97,7 +100,9 @@ class RegisterPage extends StatelessWidget {
                                   color: Color.fromARGB(255, 219, 193, 96),
                                 ),
                               ),
-                              style: TextStyle(color: Colors.brown[800]),
+                              style: TextStyle(
+                                color: Color.fromARGB(255, 219, 193, 96),
+                              ),
                             ),
                           ),
                           SizedBox(
@@ -125,7 +130,9 @@ class RegisterPage extends StatelessWidget {
                                   color: Color.fromARGB(255, 219, 193, 96),
                                 ),
                               ),
-                              style: TextStyle(color: Colors.brown[800]),
+                              style: TextStyle(
+                                color: Color.fromARGB(255, 219, 193, 96),
+                              ),
                             ),
                           ),
                           SizedBox(
