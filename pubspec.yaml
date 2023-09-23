@@ -133,7 +133,8 @@ flutter:
     - assets/images/elements/change_water_fire.png
     - assets/images/elements/block_fire.png
     - assets/images/elements/block_water.png
-    - assets/images/elements/block_snow.png
+    - assets/images/elements/block_snow.png 
+    - assets/images/friend_request_animation.webp
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
