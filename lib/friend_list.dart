@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:pinwinos/penwin_view.dart';
 
-class FriendList extends StatelessWidget {
+class FriendList extends StatefulWidget {
   FriendList({super.key});
 
+  @override
+  State<FriendList> createState() => _FriendListState();
+}
+
+class _FriendListState extends State<FriendList> {
   @override
   final List<Map<String, String>> Pinwins = [
     {
@@ -47,18 +52,23 @@ class FriendList extends StatelessWidget {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.only(top: 20),
-                child: Text(
-                  'Amiwos',
-                  style: TextStyle(
-                      fontSize: 48,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.white),
+                padding: const EdgeInsets.symmetric(vertical: 15),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(198, 33, 149, 243),
+                  ),
+                  child: Text(
+                    ' Amiwos ',
+                    style: TextStyle(
+                        fontSize: 48,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.white),
+                  ),
                 ),
               ),
               Container(
                 height: MediaQuery.of(context).size.height * 0.6,
-                width: MediaQuery.of(context).size.width * 0.9,
+                width: MediaQuery.of(context).size.width * 0.5,
                 child: ListView.builder(
                   scrollDirection: Axis.vertical,
                   itemCount: PenwinQuantity,
@@ -74,7 +84,9 @@ class FriendList extends StatelessWidget {
                       borderRadius: BorderRadius.circular(22)),
                   color: Colors.cyan,
                   child: MaterialButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
                     child: Text(
                       'Volver',
                       style: TextStyle(color: Colors.white, fontSize: 32),
