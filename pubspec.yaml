@@ -110,6 +110,30 @@ flutter:
     - assets/images/hats/cowboy-hat-png.webp
     - assets/images/FightStage.jpg
     - assets/images/StageFloor.jpg
+    - assets/images/elements/1_9_effect.png
+    - assets/images/elements/plus_2.png
+    - assets/images/elements/remove_2.png
+    - assets/images/elements/bye_red_random.png
+    - assets/images/elements/bye_blue_random.png
+    - assets/images/elements/bye_yellow_random.png
+    - assets/images/elements/bye_green_random.png
+    - assets/images/elements/bye_orange_random.png
+    - assets/images/elements/bye_purple_random.png
+    - assets/images/elements/bye_all_red.png
+    - assets/images/elements/bye_all_blue.png
+    - assets/images/elements/bye_all_yellow.png
+    - assets/images/elements/bye_all_green.png
+    - assets/images/elements/bye_all_orange.png
+    - assets/images/elements/bye_all_purple.png
+    - assets/images/elements/bye_fire_random.png
+    - assets/images/elements/bye_water_random.png
+    - assets/images/elements/bye_snow_random.png
+    - assets/images/elements/change_fire_snow.png
+    - assets/images/elements/change_snow_water.png
+    - assets/images/elements/change_water_fire.png
+    - assets/images/elements/block_fire.png
+    - assets/images/elements/block_water.png
+    - assets/images/elements/block_snow.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
