@@ -78,20 +78,58 @@ class _FriendListState extends State<FriendList> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: Material(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(22)),
-                  color: Colors.cyan,
-                  child: MaterialButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text(
-                      'Volver',
-                      style: TextStyle(color: Colors.white, fontSize: 32),
+                padding: EdgeInsets.only(right: 4, left: 4),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Material(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(22)),
+                      color: Colors.cyan,
+                      child: MaterialButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text(
+                          'Volver',
+                          style: TextStyle(color: Colors.white, fontSize: 32),
+                        ),
+                      ),
                     ),
-                  ),
+                    Column(
+                      children: [
+                        MaterialButton(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title:
+                                      Text("Se ha esta enviando tu solicitud"),
+                                  content: Image.asset(
+                                      "assets/images/friend_request_animation.webp"),
+                                );
+                              },
+                            );
+                          },
+                          child: Image.asset(
+                            "assets/images/friends.png",
+                            height: 50,
+                          ),
+                        ),
+                        Container(
+                          color: Color.fromARGB(230, 144, 160, 175),
+                          child: Text(
+                            "Agregar Amiwino",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               )
             ],
