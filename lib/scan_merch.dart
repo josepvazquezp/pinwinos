@@ -31,6 +31,8 @@ class ScanMerch extends StatelessWidget {
                     )),
               ),
               Container(
+                height: 120,
+                width: 120,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.cyan,
