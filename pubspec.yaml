@@ -59,9 +59,82 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  assets:
+    - assets/images/dojo.png
+    - assets/images/friends.png
+    - assets/images/profile.png
+    - assets/images/info.png
+    - assets/images/deck.png
+    - assets/images/deck_back.png
+    - assets/images/cards/c1.png
+    - assets/images/cards/c2.png
+    - assets/images/cards/c3.png
+    - assets/images/cards/c4.png
+    - assets/images/cards/c5.png
+    - assets/images/cards/c6.png
+    - assets/images/cards/c7.png
+    - assets/images/cards/c8.png
+    - assets/images/cards/c9.png
+    - assets/images/cards/c10.png
+    - assets/images/cards/c11.png
+    - assets/images/cards/c12.png
+    - assets/images/cards/c13.png
+    - assets/images/cards/c14.png
+    - assets/images/cards/c15.png
+    - assets/images/cards/c16.png
+    - assets/images/cards/c17.png
+    - assets/images/cards/c18.png
+    - assets/images/cards/c19.png
+    - assets/images/cards/c20.png
+    - assets/images/cards/c21.png
+    - assets/images/cards/c22.png
+    - assets/images/cards/c23.png
+    - assets/images/cards/c24.png
+    - assets/images/cards/c25.png
+    - assets/images/cards/c26.png
+    - assets/images/cards/c27.png
+    - assets/images/cards/c28.png
+    - assets/images/cards/c29.png
+    - assets/images/cards/c30.png
+    - assets/images/login_register_back.png
+    - assets/images/register_back.png
+    - assets/images/rules_back.png
+    - assets/images/elements/fire_icon.webp
+    - assets/images/elements/snow_icon.webp
+    - assets/images/elements/water_icon.webp
+    - assets/images/elements/Snowball.webp
+    - assets/images/Profile.webp
+    - assets/images/FightRoom.webp
+    - assets/images/FriendList.webp
+    - assets/images/Camera.webp
+    - assets/images/hats/cowboy-hat-png.webp
+    - assets/images/FightStage.jpg
+    - assets/images/StageFloor.jpg
+    - assets/images/elements/1_9_effect.png
+    - assets/images/elements/plus_2.png
+    - assets/images/elements/remove_2.png
+    - assets/images/elements/bye_red_random.png
+    - assets/images/elements/bye_blue_random.png
+    - assets/images/elements/bye_yellow_random.png
+    - assets/images/elements/bye_green_random.png
+    - assets/images/elements/bye_orange_random.png
+    - assets/images/elements/bye_purple_random.png
+    - assets/images/elements/bye_all_red.png
+    - assets/images/elements/bye_all_blue.png
+    - assets/images/elements/bye_all_yellow.png
+    - assets/images/elements/bye_all_green.png
+    - assets/images/elements/bye_all_orange.png
+    - assets/images/elements/bye_all_purple.png
+    - assets/images/elements/bye_fire_random.png
+    - assets/images/elements/bye_water_random.png
+    - assets/images/elements/bye_snow_random.png
+    - assets/images/elements/change_fire_snow.png
+    - assets/images/elements/change_snow_water.png
+    - assets/images/elements/change_water_fire.png
+    - assets/images/elements/block_fire.png
+    - assets/images/elements/block_water.png
+    - assets/images/elements/block_snow.png 
+    - assets/images/friend_request_animation.webp
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
@@ -74,10 +147,13 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
+  fonts:
+    - family: BUMBASTIKA
+      fonts:
+        - asset: assets/fonts/BUMBASTIKA.ttf
+    - family: Handmade
+      fonts:
+        - asset: assets/fonts/Handmade.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro
