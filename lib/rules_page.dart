@@ -477,6 +477,561 @@ class RulesPage extends StatelessWidget {
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
+                                Divider(
+                                  thickness: 2,
+                                ),
+                                Text(
+                                  "Formas de ganar",
+                                  style: TextStyle(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          width: 2,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.all(4),
+                                            child: Container(
+                                              width: 30,
+                                              height: 30,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Color.fromARGB(
+                                                    255, 227, 60, 37),
+                                              ),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                    width: 20,
+                                                    height: 20,
+                                                    child: Image.asset(
+                                                        "assets/images/elements/fire_icon.webp"),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(4),
+                                            child: Container(
+                                              width: 30,
+                                              height: 30,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Color.fromARGB(
+                                                    255, 251, 234, 44),
+                                              ),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                    width: 20,
+                                                    height: 20,
+                                                    child: Image.asset(
+                                                        "assets/images/elements/fire_icon.webp"),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.all(4),
+                                            child: Container(
+                                              width: 30,
+                                              height: 30,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Color.fromARGB(
+                                                    255, 163, 153, 202),
+                                              ),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                    width: 20,
+                                                    height: 20,
+                                                    child: Image.asset(
+                                                        "assets/images/elements/fire_icon.webp"),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    VerticalDivider(
+                                      width: 50,
+                                      thickness: 2,
+                                    ),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          width: 2,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.all(4),
+                                            child: Container(
+                                              width: 30,
+                                              height: 30,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Color.fromARGB(
+                                                    255, 98, 184, 71),
+                                              ),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                    width: 20,
+                                                    height: 20,
+                                                    child: Image.asset(
+                                                        "assets/images/elements/water_icon.webp"),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.all(4),
+                                            child: Container(
+                                              width: 30,
+                                              height: 30,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Color.fromARGB(
+                                                    255, 248, 149, 43),
+                                              ),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                    width: 20,
+                                                    height: 20,
+                                                    child: Image.asset(
+                                                        "assets/images/elements/water_icon.webp"),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(4),
+                                            child: Container(
+                                              width: 30,
+                                              height: 30,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Color.fromARGB(
+                                                    255, 16, 72, 160),
+                                              ),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                    width: 20,
+                                                    height: 20,
+                                                    child: Image.asset(
+                                                        "assets/images/elements/water_icon.webp"),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    VerticalDivider(
+                                      width: 50,
+                                      thickness: 2,
+                                    ),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          width: 2,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.all(4),
+                                            child: Container(
+                                              width: 30,
+                                              height: 30,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Color.fromARGB(
+                                                    255, 16, 72, 160),
+                                              ),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                    width: 20,
+                                                    height: 20,
+                                                    child: Image.asset(
+                                                        "assets/images/elements/snow_icon.webp"),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(4),
+                                            child: Container(
+                                              width: 30,
+                                              height: 30,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Color.fromARGB(
+                                                    255, 163, 153, 202),
+                                              ),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                    width: 20,
+                                                    height: 20,
+                                                    child: Image.asset(
+                                                        "assets/images/elements/snow_icon.webp"),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(4),
+                                            child: Container(
+                                              width: 30,
+                                              height: 30,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Color.fromARGB(
+                                                    255, 251, 234, 44),
+                                              ),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                    width: 20,
+                                                    height: 20,
+                                                    child: Image.asset(
+                                                        "assets/images/elements/snow_icon.webp"),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                  "Obtener 3 slots del mismo elemento diferente color",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          width: 2,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.all(4),
+                                            child: Container(
+                                              width: 30,
+                                              height: 30,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Color.fromARGB(
+                                                    255, 227, 60, 37),
+                                              ),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                    width: 20,
+                                                    height: 20,
+                                                    child: Image.asset(
+                                                        "assets/images/elements/fire_icon.webp"),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(4),
+                                            child: Container(
+                                              width: 30,
+                                              height: 30,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Color.fromARGB(
+                                                    255, 251, 234, 44),
+                                              ),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                    width: 20,
+                                                    height: 20,
+                                                    child: Image.asset(
+                                                        "assets/images/elements/water_icon.webp"),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.all(4),
+                                            child: Container(
+                                              width: 30,
+                                              height: 30,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Color.fromARGB(
+                                                    255, 163, 153, 202),
+                                              ),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                    width: 20,
+                                                    height: 20,
+                                                    child: Image.asset(
+                                                        "assets/images/elements/snow_icon.webp"),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          width: 2,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.all(4),
+                                            child: Container(
+                                              width: 30,
+                                              height: 30,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Color.fromARGB(
+                                                    255, 98, 184, 71),
+                                              ),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                    width: 20,
+                                                    height: 20,
+                                                    child: Image.asset(
+                                                        "assets/images/elements/fire_icon.webp"),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(4),
+                                            child: Container(
+                                              width: 30,
+                                              height: 30,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Color.fromARGB(
+                                                    255, 248, 149, 43),
+                                              ),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                    width: 20,
+                                                    height: 20,
+                                                    child: Image.asset(
+                                                        "assets/images/elements/water_icon.webp"),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.all(4),
+                                            child: Container(
+                                              width: 30,
+                                              height: 30,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Color.fromARGB(
+                                                    255, 16, 72, 160),
+                                              ),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                    width: 20,
+                                                    height: 20,
+                                                    child: Image.asset(
+                                                        "assets/images/elements/snow_icon.webp"),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          width: 2,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.all(4),
+                                            child: Container(
+                                              width: 30,
+                                              height: 30,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Color.fromARGB(
+                                                    255, 16, 72, 160),
+                                              ),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                    width: 20,
+                                                    height: 20,
+                                                    child: Image.asset(
+                                                        "assets/images/elements/fire_icon.webp"),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(4),
+                                            child: Container(
+                                              width: 30,
+                                              height: 30,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Color.fromARGB(
+                                                    255, 163, 153, 202),
+                                              ),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                    width: 20,
+                                                    height: 20,
+                                                    child: Image.asset(
+                                                        "assets/images/elements/water_icon.webp"),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.all(4),
+                                            child: Container(
+                                              width: 30,
+                                              height: 30,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Color.fromARGB(
+                                                    255, 251, 234, 44),
+                                              ),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                    width: 20,
+                                                    height: 20,
+                                                    child: Image.asset(
+                                                        "assets/images/elements/snow_icon.webp"),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                  "Obtener 3 slots de diferente elemento diferente color",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
                               ],
                             ),
                           ),
