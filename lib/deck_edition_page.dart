@@ -127,7 +127,7 @@ class DeckEditionPage extends StatelessWidget {
               height: 120,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: 30,
+                itemCount: 36,
                 itemBuilder: (BuildContext context, int index) {
                   return ItemCard(i: index + 1);
                 },
