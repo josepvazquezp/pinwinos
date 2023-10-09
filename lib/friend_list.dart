@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pinwinos/bloc/friend_list_bloc.dart';
+import 'package:pinwinos/models/pinwino.dart';
 import 'package:pinwinos/penwin_view.dart';
 
 class FriendList extends StatefulWidget {
@@ -9,37 +12,9 @@ class FriendList extends StatefulWidget {
 }
 
 class _FriendListState extends State<FriendList> {
+  int PenwinQuantity = 2;
+
   @override
-  final List<Map<String, String>> Pinwins = [
-    {
-      "Nombre": "Paco",
-      "Conectado": "1",
-      "Amigo": "1",
-    },
-    {
-      "Nombre": "Raul",
-      "Conectado": "1",
-      "Amigo": "1",
-    },
-    {
-      "Nombre": "XxKillerxX",
-      "Conectado": "1",
-      "Amigo": "1",
-    },
-    {
-      "Nombre": "Tacos al Pastor",
-      "Conectado": "0",
-      "Amigo": "1",
-    },
-    {
-      "Nombre": "Churrumais",
-      "Conectado": "0",
-      "Amigo": "1",
-    },
-  ];
-
-  int PenwinQuantity = 5;
-
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
@@ -68,17 +43,14 @@ class _FriendListState extends State<FriendList> {
                       ),
                     ),
                   ),
-                  Container(
-                    height: MediaQuery.of(context).size.height * 0.6,
-                    width: MediaQuery.of(context).size.width * 0.5,
-                    child: ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      itemCount: PenwinQuantity,
-                      itemBuilder: (BuildContext context, int index) {
-                        return PenwinView(Pinwin: Pinwins[index]);
-                      },
-                    ),
-                  ),
+                  BlocBuilder<FriendListBloc, FriendListState>(
+                      builder: (context, state) {
+                    if (state is FriendListDisplayState) {
+                      return _showFriends(state.FriendList);
+                    }
+
+                    return _error();
+                  }),
                   Padding(
                     padding: EdgeInsets.only(right: 4, left: 4),
                     child: Row(
@@ -142,5 +114,26 @@ class _FriendListState extends State<FriendList> {
         ),
       ),
     );
+  }
+
+  Widget _showFriends(List<Pinwino> PlayerFriendList) {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.6,
+      width: MediaQuery.of(context).size.width * 0.5,
+      child: ListView.builder(
+        scrollDirection: Axis.vertical,
+        itemCount: PlayerFriendList.length,
+        itemBuilder: (BuildContext context, int index) {
+          return PenwinView(
+            Pinwin: PlayerFriendList[index],
+            isFriend: true,
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _error() {
+    return Text('No se pudieron obtener los amigos');
   }
 }

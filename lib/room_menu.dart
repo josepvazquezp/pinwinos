@@ -63,7 +63,7 @@ class RoomMenu extends StatelessWidget {
                   scrollDirection: Axis.vertical,
                   itemCount: PenwinQuantity,
                   itemBuilder: (BuildContext context, int index) {
-                    return PenwinView(Pinwin: Pinwins[index]);
+                    return Column();
                   },
                 ),
               ),

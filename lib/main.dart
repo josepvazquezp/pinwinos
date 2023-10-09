@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pinwinos/bloc/friend_list_bloc.dart';
 import 'package:pinwinos/home_page.dart';
 
 void main() {
@@ -8,7 +10,10 @@ void main() {
     DeviceOrientation.landscapeLeft,
     DeviceOrientation.landscapeRight,
   ]);
-  runApp(MyApp());
+  runApp(BlocProvider(
+    create: (context) => FriendListBloc()..add(GetFriendsEvent()),
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
