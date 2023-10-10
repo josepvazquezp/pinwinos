@@ -7,18 +7,22 @@ class ItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return MaterialButton(
+      onPressed: () {},
       padding: EdgeInsets.all(8),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            height: 100,
-            child: Image.asset(
-              card.imagen!,
+      child: Tooltip(
+        message: card.poder,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              height: 100,
+              child: Image.asset(
+                card.imagen!,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
