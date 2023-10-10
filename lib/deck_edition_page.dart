@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pinwinos/bloc_deck_edition/deck_edition_bloc.dart';
 import 'package:pinwinos/item_card.dart';
+import 'package:pinwinos/models/carta.dart';
 
 class DeckEditionPage extends StatelessWidget {
   DeckEditionPage({super.key});
@@ -110,31 +113,59 @@ class DeckEditionPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Container(
-                    height: 140,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: 5,
-                      itemBuilder: (BuildContext context, int index) {
-                        return ItemCard(i: (index + 1) * 6);
-                      },
-                    ),
+                  BlocBuilder<DeckEditionBloc, DeckEditionState>(
+                    builder: (context, state) {
+                      if (state is DeckLibrayDisplayState) {
+                        return _showDeck(state.deck);
+                      }
+
+                      return Text("No se pudo obtener el deck");
+                    },
                   ),
                 ],
               ),
             ),
-            Container(
-              height: 120,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 36,
-                itemBuilder: (BuildContext context, int index) {
-                  return ItemCard(i: index + 1);
-                },
-              ),
+            BlocBuilder<DeckEditionBloc, DeckEditionState>(
+              builder: (context, state) {
+                if (state is DeckLibrayDisplayState) {
+                  return _showLibrary(state.library);
+                }
+
+                return Text("No se pudo obtener la library");
+              },
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Container _showLibrary(List<Carta> library) {
+    return Container(
+      height: 120,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: library.length,
+        itemBuilder: (BuildContext context, int index) {
+          return ItemCard(
+            card: library[index],
+          );
+        },
+      ),
+    );
+  }
+
+  Container _showDeck(List<Carta> deck) {
+    return Container(
+      height: 140,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: deck.length,
+        itemBuilder: (BuildContext context, int index) {
+          return ItemCard(
+            card: deck[index],
+          );
+        },
       ),
     );
   }

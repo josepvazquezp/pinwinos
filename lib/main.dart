@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pinwinos/bloc/friend_list_bloc.dart';
+import 'package:pinwinos/bloc_deck_edition/deck_edition_bloc.dart';
 import 'package:pinwinos/home_page.dart';
 
 void main() {
@@ -10,8 +11,15 @@ void main() {
     DeviceOrientation.landscapeLeft,
     DeviceOrientation.landscapeRight,
   ]);
-  runApp(BlocProvider(
-    create: (context) => FriendListBloc()..add(GetFriendsEvent()),
+  runApp(MultiBlocProvider(
+    providers: [
+      BlocProvider(
+        create: (context) => FriendListBloc()..add(GetFriendsEvent()),
+      ),
+      BlocProvider(
+        create: (context) => DeckEditionBloc()..add(GetDeckLibraryEvent()),
+      ),
+    ],
     child: MyApp(),
   ));
 }

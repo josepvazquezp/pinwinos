@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:pinwinos/models/carta.dart';
 
 class ItemCard extends StatelessWidget {
-  final int i;
-  ItemCard({super.key, required this.i});
+  final Carta card;
+  ItemCard({super.key, required this.card});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +15,7 @@ class ItemCard extends StatelessWidget {
           Container(
             height: 100,
             child: Image.asset(
-              "assets/images/cards/c$i.png",
+              card.imagen!,
             ),
           ),
         ],
