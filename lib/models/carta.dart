@@ -8,6 +8,7 @@ class Carta extends Equatable {
   final String? color;
   final String? elemento;
   final String? poder;
+  final String? poder_imagen;
 
   const Carta({
     this.imagen,
@@ -15,6 +16,7 @@ class Carta extends Equatable {
     this.color,
     this.elemento,
     this.poder,
+    this.poder_imagen,
   });
 
   factory Carta.fromMap(Map<String, dynamic> data) => Carta(
@@ -23,6 +25,7 @@ class Carta extends Equatable {
         color: data['Color'] as String?,
         elemento: data['Elemento'] as String?,
         poder: data['Poder'] as String?,
+        poder_imagen: data['Poder'] as String?,
       );
 
   Map<String, dynamic> toMap() => {
@@ -31,6 +34,7 @@ class Carta extends Equatable {
         'Color': color,
         'Elemento': elemento,
         'Poder': poder,
+        'Poder_Imagen': poder_imagen,
       };
 
   /// `dart:convert`

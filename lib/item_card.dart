@@ -10,19 +10,26 @@ class ItemCard extends StatelessWidget {
     return MaterialButton(
       onPressed: () {},
       padding: EdgeInsets.all(8),
-      child: Tooltip(
-        message: card.poder,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              height: 100,
-              child: Image.asset(
-                card.imagen!,
+      child: Stack(
+        children: [
+          Container(
+            height: 100,
+            child: Image.asset(
+              card.imagen!,
+            ),
+          ),
+          if (card.poder != "")
+            Positioned(
+              right: 10,
+              child: Container(
+                height: 20,
+                color: Color.fromARGB(48, 66, 66, 66),
+                child: Image.asset(
+                  card.poder_imagen!,
+                ),
               ),
             ),
-          ],
-        ),
+        ],
       ),
     );
   }
