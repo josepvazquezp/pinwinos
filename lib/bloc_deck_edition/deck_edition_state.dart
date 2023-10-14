@@ -18,3 +18,13 @@ final class DeckLibrayDisplayState extends DeckEditionState {
   @override
   List<Object> get props => [deck, library];
 }
+
+final class UpdateDeckLibrayDisplayState extends DeckEditionState {
+  final List<Carta> deck;
+  final List<Carta> library;
+
+  UpdateDeckLibrayDisplayState({required this.deck, required this.library});
+
+  @override
+  List<Object> get props => [deck, library];
+}

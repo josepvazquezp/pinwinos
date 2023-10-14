@@ -323,11 +323,45 @@ class DeckEditionBloc extends Bloc<DeckEditionEvent, DeckEditionState> {
     ),
   ];
 
+  bool _update = false;
+
   DeckEditionBloc() : super(DeckEditionInitial()) {
     on<GetDeckLibraryEvent>(_getDeckLibraryEvent);
+    on<AddCardDeckEvent>(_addCardDeckEvent);
+    on<AddCardLibraryEvent>(_addCardLibraryEvent);
   }
 
   FutureOr<void> _getDeckLibraryEvent(GetDeckLibraryEvent event, Emitter emit) {
     emit(DeckLibrayDisplayState(deck: deck, library: library));
+  }
+
+  FutureOr<void> _addCardDeckEvent(AddCardDeckEvent event, Emitter emit) {
+    Carta temp = library[event.index];
+
+    library.removeAt(event.index);
+    deck.add(temp);
+
+    if (_update) {
+      _update = !_update;
+      emit(DeckLibrayDisplayState(deck: deck, library: library));
+    } else {
+      _update = !_update;
+      emit(UpdateDeckLibrayDisplayState(deck: deck, library: library));
+    }
+  }
+
+  FutureOr<void> _addCardLibraryEvent(AddCardLibraryEvent event, Emitter emit) {
+    Carta temp = deck[event.index];
+
+    deck.removeAt(event.index);
+    library.add(temp);
+
+    if (_update) {
+      _update = !_update;
+      emit(DeckLibrayDisplayState(deck: deck, library: library));
+    } else {
+      _update = !_update;
+      emit(UpdateDeckLibrayDisplayState(deck: deck, library: library));
+    }
   }
 }

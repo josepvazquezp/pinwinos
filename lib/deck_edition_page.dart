@@ -117,6 +117,8 @@ class DeckEditionPage extends StatelessWidget {
                     builder: (context, state) {
                       if (state is DeckLibrayDisplayState) {
                         return _showDeck(state.deck);
+                      } else if (state is UpdateDeckLibrayDisplayState) {
+                        return _showDeck(state.deck);
                       }
 
                       return Text("No se pudo obtener el deck");
@@ -129,6 +131,8 @@ class DeckEditionPage extends StatelessWidget {
               builder: (context, state) {
                 if (state is DeckLibrayDisplayState) {
                   return _showLibrary(state.library);
+                } else if (state is UpdateDeckLibrayDisplayState) {
+                  return _showDeck(state.library);
                 }
 
                 return Text("No se pudo obtener la library");
@@ -149,6 +153,8 @@ class DeckEditionPage extends StatelessWidget {
         itemBuilder: (BuildContext context, int index) {
           return ItemCard(
             card: library[index],
+            deck: false,
+            index: index,
           );
         },
       ),
@@ -164,6 +170,8 @@ class DeckEditionPage extends StatelessWidget {
         itemBuilder: (BuildContext context, int index) {
           return ItemCard(
             card: deck[index],
+            deck: true,
+            index: index,
           );
         },
       ),
