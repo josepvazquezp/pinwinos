@@ -26,3 +26,5 @@ class AddCardLibraryEvent extends DeckEditionEvent {
   @override
   List<Object> get props => [this.index];
 }
+
+class ChangeStateEvent extends DeckEditionEvent {}

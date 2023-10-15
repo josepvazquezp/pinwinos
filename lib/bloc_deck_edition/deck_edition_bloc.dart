@@ -324,11 +324,26 @@ class DeckEditionBloc extends Bloc<DeckEditionEvent, DeckEditionState> {
   ];
 
   bool _update = false;
+  List<List<String>> _powersArray = [
+    ["-fire", "-water", "-snow"],
+    ["-red", "-blue", "-yellow", "-green", "-orange", "-purple"],
+    [
+      "-all_red",
+      "-all_blue",
+      "-all_yellow",
+      "-all_green",
+      "-all_orange",
+      "-all_purple"
+    ],
+    ["block_water", "block_fire", "block_snow"],
+    ["water->fire", "snow->water", "fire->snow"]
+  ];
 
   DeckEditionBloc() : super(DeckEditionInitial()) {
     on<GetDeckLibraryEvent>(_getDeckLibraryEvent);
     on<AddCardDeckEvent>(_addCardDeckEvent);
     on<AddCardLibraryEvent>(_addCardLibraryEvent);
+    on<ChangeStateEvent>(_changeStateEvent);
   }
 
   FutureOr<void> _getDeckLibraryEvent(GetDeckLibraryEvent event, Emitter emit) {
@@ -338,30 +353,60 @@ class DeckEditionBloc extends Bloc<DeckEditionEvent, DeckEditionState> {
   FutureOr<void> _addCardDeckEvent(AddCardDeckEvent event, Emitter emit) {
     Carta temp = library[event.index];
 
-    library.removeAt(event.index);
-    deck.add(temp);
+    bool validate = _checkDeck(temp);
 
-    if (_update) {
-      _update = !_update;
-      emit(DeckLibrayDisplayState(deck: deck, library: library));
-    } else {
-      _update = !_update;
-      emit(UpdateDeckLibrayDisplayState(deck: deck, library: library));
+    if (validate) {
+      library.removeAt(event.index);
+      deck.add(temp);
+
+      if (_update) {
+        _update = !_update;
+        emit(DeckLibrayDisplayState(deck: deck, library: library));
+      } else {
+        _update = !_update;
+        emit(UpdateDeckLibrayDisplayState(deck: deck, library: library));
+      }
+    } else
+      emit(BadCardUpdateState());
+  }
+
+  bool _checkDeck(Carta temp) {
+    int type = 5;
+
+    for (int i = 0; i < _powersArray.length; i++) {
+      if (_powersArray[i].contains(temp.poder)) type = i;
     }
+
+    for (int i = 0; i < deck.length; i++) {
+      if (deck[i].poder != "") {
+        if (type == 5 && deck[i].poder == temp.poder) return false;
+        if (type < 5 && _powersArray[type].contains(deck[i].poder))
+          return false;
+      }
+    }
+
+    return true;
   }
 
   FutureOr<void> _addCardLibraryEvent(AddCardLibraryEvent event, Emitter emit) {
     Carta temp = deck[event.index];
 
-    deck.removeAt(event.index);
-    library.add(temp);
+    if (temp.poder != "") {
+      deck.removeAt(event.index);
+      library.add(temp);
 
-    if (_update) {
-      _update = !_update;
-      emit(DeckLibrayDisplayState(deck: deck, library: library));
-    } else {
-      _update = !_update;
-      emit(UpdateDeckLibrayDisplayState(deck: deck, library: library));
-    }
+      if (_update) {
+        _update = !_update;
+        emit(DeckLibrayDisplayState(deck: deck, library: library));
+      } else {
+        _update = !_update;
+        emit(UpdateDeckLibrayDisplayState(deck: deck, library: library));
+      }
+    } else
+      emit(BadCardUpdateState());
+  }
+
+  FutureOr<void> _changeStateEvent(ChangeStateEvent event, Emitter emit) {
+    emit(DeckEditionInitial());
   }
 }

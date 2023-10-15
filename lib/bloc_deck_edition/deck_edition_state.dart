@@ -28,3 +28,7 @@ final class UpdateDeckLibrayDisplayState extends DeckEditionState {
   @override
   List<Object> get props => [deck, library];
 }
+
+final class BadCardUpdateState extends DeckEditionState {}
+
+final class ErrorDeckLibraryRequestState extends DeckEditionState {}

@@ -119,9 +119,12 @@ class DeckEditionPage extends StatelessWidget {
                         return _showDeck(state.deck);
                       } else if (state is UpdateDeckLibrayDisplayState) {
                         return _showDeck(state.deck);
+                      } else if (state is ErrorDeckLibraryRequestState) {
+                        return Text("No se pudo obtener el deck");
+                      } else {
+                        return _showDeck(
+                            BlocProvider.of<DeckEditionBloc>(context).deck);
                       }
-
-                      return Text("No se pudo obtener el deck");
                     },
                   ),
                 ],
@@ -132,10 +135,22 @@ class DeckEditionPage extends StatelessWidget {
                 if (state is DeckLibrayDisplayState) {
                   return _showLibrary(state.library);
                 } else if (state is UpdateDeckLibrayDisplayState) {
-                  return _showDeck(state.library);
+                  return _showLibrary(state.library);
+                } else if (state is ErrorDeckLibraryRequestState) {
+                  return Text("No se pudo obtener la library");
+                } else {
+                  return _showLibrary(
+                      BlocProvider.of<DeckEditionBloc>(context).library);
+                }
+              },
+            ),
+            BlocBuilder<DeckEditionBloc, DeckEditionState>(
+              builder: (context, state) {
+                if (state is BadCardUpdateState) {
+                  Future.microtask(() => _showDenyCardUpdateDialog(context));
                 }
 
-                return Text("No se pudo obtener la library");
+                return Container();
               },
             ),
           ],
@@ -176,5 +191,25 @@ class DeckEditionPage extends StatelessWidget {
         },
       ),
     );
+  }
+
+  void _showDenyCardUpdateDialog(context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Mensaje"),
+          content: Text(
+            '''No es posible mover la carta por:
+            -> Deck de [9 - 17] cartas.
+            -> Cartas sin poder son obligatorias.
+            -> Ya tienes una carta con ese poder.
+            ''',
+          ),
+        );
+      },
+    );
+
+    BlocProvider.of<DeckEditionBloc>(context).add(ChangeStateEvent());
   }
 }
