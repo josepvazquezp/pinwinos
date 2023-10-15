@@ -123,7 +123,7 @@ class DeckEditionPage extends StatelessWidget {
                         return Text("No se pudo obtener el deck");
                       } else {
                         return _showDeck(
-                            BlocProvider.of<DeckEditionBloc>(context).deck);
+                            BlocProvider.of<DeckEditionBloc>(context).getDeck);
                       }
                     },
                   ),
@@ -140,7 +140,7 @@ class DeckEditionPage extends StatelessWidget {
                   return Text("No se pudo obtener la library");
                 } else {
                   return _showLibrary(
-                      BlocProvider.of<DeckEditionBloc>(context).library);
+                      BlocProvider.of<DeckEditionBloc>(context).getLibrary);
                 }
               },
             ),

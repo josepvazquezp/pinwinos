@@ -28,3 +28,12 @@ class AddCardLibraryEvent extends DeckEditionEvent {
 }
 
 class ChangeStateEvent extends DeckEditionEvent {}
+
+class FilterCardsEvent extends DeckEditionEvent {
+  final String filter;
+
+  FilterCardsEvent({required this.filter});
+
+  @override
+  List<Object> get props => [this.filter];
+}

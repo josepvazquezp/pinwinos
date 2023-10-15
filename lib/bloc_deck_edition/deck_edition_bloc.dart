@@ -7,7 +7,7 @@ part 'deck_edition_event.dart';
 part 'deck_edition_state.dart';
 
 class DeckEditionBloc extends Bloc<DeckEditionEvent, DeckEditionState> {
-  List<Carta> deck = [
+  List<Carta> _deck = [
     new Carta(
       imagen: "assets/images/cards/c1.png",
       numero: 3,
@@ -88,7 +88,7 @@ class DeckEditionBloc extends Bloc<DeckEditionEvent, DeckEditionState> {
     ),
   ];
 
-  List<Carta> library = [
+  List<Carta> _library = [
     new Carta(
       imagen: "assets/images/cards/c11.png",
       numero: 10,
@@ -338,33 +338,40 @@ class DeckEditionBloc extends Bloc<DeckEditionEvent, DeckEditionState> {
     ["block_water", "block_fire", "block_snow"],
     ["water->fire", "snow->water", "fire->snow"]
   ];
+  List<Carta> _filterDeck = [];
+  List<Carta> _filterLibrary = [];
+  List<String> _elements = ["fire", "water", "snow"];
+
+  List<Carta> get getDeck => _deck;
+  List<Carta> get getLibrary => _library;
 
   DeckEditionBloc() : super(DeckEditionInitial()) {
     on<GetDeckLibraryEvent>(_getDeckLibraryEvent);
     on<AddCardDeckEvent>(_addCardDeckEvent);
     on<AddCardLibraryEvent>(_addCardLibraryEvent);
     on<ChangeStateEvent>(_changeStateEvent);
+    on<FilterCardsEvent>(_filterCardsEvent);
   }
 
   FutureOr<void> _getDeckLibraryEvent(GetDeckLibraryEvent event, Emitter emit) {
-    emit(DeckLibrayDisplayState(deck: deck, library: library));
+    emit(DeckLibrayDisplayState(deck: getDeck, library: getLibrary));
   }
 
   FutureOr<void> _addCardDeckEvent(AddCardDeckEvent event, Emitter emit) {
-    Carta temp = library[event.index];
+    Carta temp = _library[event.index];
 
     bool validate = _checkDeck(temp);
 
     if (validate) {
-      library.removeAt(event.index);
-      deck.add(temp);
+      _library.removeAt(event.index);
+      _deck.add(temp);
 
       if (_update) {
         _update = !_update;
-        emit(DeckLibrayDisplayState(deck: deck, library: library));
+        emit(DeckLibrayDisplayState(deck: getDeck, library: getLibrary));
       } else {
         _update = !_update;
-        emit(UpdateDeckLibrayDisplayState(deck: deck, library: library));
+        emit(UpdateDeckLibrayDisplayState(deck: getDeck, library: getLibrary));
       }
     } else
       emit(BadCardUpdateState());
@@ -377,10 +384,10 @@ class DeckEditionBloc extends Bloc<DeckEditionEvent, DeckEditionState> {
       if (_powersArray[i].contains(temp.poder)) type = i;
     }
 
-    for (int i = 0; i < deck.length; i++) {
-      if (deck[i].poder != "") {
-        if (type == 5 && deck[i].poder == temp.poder) return false;
-        if (type < 5 && _powersArray[type].contains(deck[i].poder))
+    for (int i = 0; i < _deck.length; i++) {
+      if (_deck[i].poder != "") {
+        if (type == 5 && _deck[i].poder == temp.poder) return false;
+        if (type < 5 && _powersArray[type].contains(_deck[i].poder))
           return false;
       }
     }
@@ -389,18 +396,18 @@ class DeckEditionBloc extends Bloc<DeckEditionEvent, DeckEditionState> {
   }
 
   FutureOr<void> _addCardLibraryEvent(AddCardLibraryEvent event, Emitter emit) {
-    Carta temp = deck[event.index];
+    Carta temp = _deck[event.index];
 
     if (temp.poder != "") {
-      deck.removeAt(event.index);
-      library.add(temp);
+      _deck.removeAt(event.index);
+      _library.add(temp);
 
       if (_update) {
         _update = !_update;
-        emit(DeckLibrayDisplayState(deck: deck, library: library));
+        emit(DeckLibrayDisplayState(deck: getDeck, library: getLibrary));
       } else {
         _update = !_update;
-        emit(UpdateDeckLibrayDisplayState(deck: deck, library: library));
+        emit(UpdateDeckLibrayDisplayState(deck: getDeck, library: getLibrary));
       }
     } else
       emit(BadCardUpdateState());
@@ -408,5 +415,48 @@ class DeckEditionBloc extends Bloc<DeckEditionEvent, DeckEditionState> {
 
   FutureOr<void> _changeStateEvent(ChangeStateEvent event, Emitter emit) {
     emit(DeckEditionInitial());
+  }
+
+  FutureOr<void> _filterCardsEvent(FilterCardsEvent event, Emitter emit) {
+    int type;
+
+    switch (event.filter) {
+      case "fire":
+        type = 0;
+        break;
+      case "water":
+        type = 1;
+        break;
+      case "snow":
+        type = 2;
+        break;
+      default:
+        type = 3;
+    }
+
+    if (type < 3) {
+      int size =
+          _deck.length >= _library.length ? _deck.length : _library.length;
+
+      for (int i = 0; i < size; i++) {
+        if (i < _deck.length && _deck[i].poder == _elements[type])
+          _filterDeck.add(_deck[i]);
+
+        if (i < _library.length && _library[i].poder == _elements[type])
+          _filterLibrary.add(_library[i]);
+      }
+    }
+
+    if (_update) {
+      _update = !_update;
+      emit(DeckLibrayDisplayState(
+          deck: type < 3 ? _filterDeck : getDeck,
+          library: type < 3 ? _filterLibrary : getLibrary));
+    } else {
+      _update = !_update;
+      emit(UpdateDeckLibrayDisplayState(
+          deck: type < 3 ? _filterDeck : getDeck,
+          library: type < 3 ? _filterLibrary : getLibrary));
+    }
   }
 }
