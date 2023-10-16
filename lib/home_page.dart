@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pinwinos/battle_scenario.dart';
 import 'package:pinwinos/bloc/friend_list_bloc.dart';
+import 'package:pinwinos/bloc/room_list_bloc.dart';
 import 'package:pinwinos/deck_edition_page.dart';
 import 'package:pinwinos/friend_list.dart';
 import 'package:pinwinos/login_page.dart';
@@ -34,7 +35,6 @@ class HomePage extends StatelessWidget {
                       children: [
                         MaterialButton(
                           onPressed: () {
-                            //TODO: Poner aqui el builder de FriendList
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) {

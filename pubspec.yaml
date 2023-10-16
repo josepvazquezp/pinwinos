@@ -33,6 +33,7 @@ dependencies:
   flutter_bloc: ^8.1.3
   equatable: ^2.0.5
   http: ^1.1.0
+  flutter_barcode_scanner: ^2.0.0
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -145,6 +146,11 @@ flutter:
     - assets/images/elements/block_snow.png 
     - assets/images/friend_request_animation.webp
     - assets/images/hats/wizard_hat.webp
+    - assets/images/hats/cap.webp
+    - assets/images/hats/top_hat.png
+    - assets/images/hats/kirby_hat.png
+    - assets/images/hats/sailor_hat.webp
+    - assets/images/hats/mario_hat.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

@@ -14,11 +14,11 @@ class Pinwino extends Equatable {
   final bool? conectado;
   final List<Carta>? deck;
   final List<Carta>? library;
-  final String? gorro;
-  final List<String>? gorros;
+  String? gorro;
+  final List<String> gorros;
   final List<String> friends;
 
-  const Pinwino({
+  Pinwino({
     this.id,
     this.nombre,
     this.correo,
@@ -30,7 +30,7 @@ class Pinwino extends Equatable {
     this.deck,
     this.library,
     this.gorro,
-    this.gorros,
+    required this.gorros,
     required this.friends,
   });
 
@@ -46,7 +46,7 @@ class Pinwino extends Equatable {
       deck: data['Deck'] as List<Carta>?,
       library: data['Library'] as List<Carta>?,
       gorro: data['Gorro'] as String?,
-      gorros: data['Gorros'] as List<String>?,
+      gorros: data['Gorros'] as List<String>,
       friends: data['Friends'] as List<String>);
 
   Map<String, dynamic> toMap() => {
