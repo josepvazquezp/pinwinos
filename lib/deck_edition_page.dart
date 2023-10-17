@@ -49,7 +49,7 @@ class DeckEditionPage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(30),
                         ),
                         label: Text(
-                          "Buscador",
+                          "Filtro de elemento",
                           style: TextStyle(
                             color: Colors.white,
                           ),
@@ -73,7 +73,10 @@ class DeckEditionPage extends StatelessWidget {
                     ),
                   ),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      BlocProvider.of<DeckEditionBloc>(context)
+                          .add(FilterCardsEvent(filter: findController.text));
+                    },
                     icon: Icon(
                       Icons.check_circle_outline_sharp,
                     ),
@@ -159,7 +162,7 @@ class DeckEditionPage extends StatelessWidget {
     );
   }
 
-  Container _showLibrary(List<Carta> library) {
+  Widget _showLibrary(List<Carta> library) {
     return Container(
       height: 120,
       child: ListView.builder(
@@ -176,7 +179,7 @@ class DeckEditionPage extends StatelessWidget {
     );
   }
 
-  Container _showDeck(List<Carta> deck) {
+  Widget _showDeck(List<Carta> deck) {
     return Container(
       height: 140,
       child: ListView.builder(

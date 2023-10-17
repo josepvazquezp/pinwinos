@@ -421,13 +421,13 @@ class DeckEditionBloc extends Bloc<DeckEditionEvent, DeckEditionState> {
     int type;
 
     switch (event.filter) {
-      case "fire":
+      case "fuego":
         type = 0;
         break;
-      case "water":
+      case "agua":
         type = 1;
         break;
-      case "snow":
+      case "nieve":
         type = 2;
         break;
       default:
@@ -435,14 +435,17 @@ class DeckEditionBloc extends Bloc<DeckEditionEvent, DeckEditionState> {
     }
 
     if (type < 3) {
+      _filterDeck = [];
+      _filterLibrary = [];
+
       int size =
           _deck.length >= _library.length ? _deck.length : _library.length;
 
       for (int i = 0; i < size; i++) {
-        if (i < _deck.length && _deck[i].poder == _elements[type])
+        if (i < _deck.length && _deck[i].elemento == _elements[type])
           _filterDeck.add(_deck[i]);
 
-        if (i < _library.length && _library[i].poder == _elements[type])
+        if (i < _library.length && _library[i].elemento == _elements[type])
           _filterLibrary.add(_library[i]);
       }
     }
