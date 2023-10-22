@@ -12,8 +12,6 @@ class FriendList extends StatefulWidget {
 }
 
 class _FriendListState extends State<FriendList> {
-  int PenwinQuantity = 2;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
