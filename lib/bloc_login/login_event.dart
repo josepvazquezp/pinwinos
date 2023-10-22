@@ -16,3 +16,15 @@ class GetUserEvent extends LoginEvent {
   @override
   List<Object> get props => [this.mail, this.password];
 }
+
+class CreateUserEvent extends LoginEvent {
+  final String name;
+  final String mail;
+  final String password;
+
+  CreateUserEvent(
+      {required this.name, required this.mail, required this.password});
+
+  @override
+  List<Object> get props => [this.name, this.mail, this.password];
+}

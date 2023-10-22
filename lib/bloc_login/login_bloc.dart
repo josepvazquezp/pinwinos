@@ -40,12 +40,25 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   LoginBloc() : super(LoginInitial()) {
     on<GetUserEvent>(_getUserLogin);
+    on<CreateUserEvent>(_createUserRegister);
   }
 
   FutureOr<void> _getUserLogin(GetUserEvent event, Emitter emit) {
     emit(LoadLoginState());
 
     if (event.mail != "" && event.password != "") {
+      _login = true;
+      emit(GetUserSuccessState());
+    } else {
+      _login = false;
+      emit(ErrorState());
+    }
+  }
+
+  FutureOr<void> _createUserRegister(CreateUserEvent event, Emitter emit) {
+    emit(LoadLoginState());
+
+    if (event.name != "" && event.mail != "" && event.password != "") {
       _login = true;
       emit(GetUserSuccessState());
     } else {

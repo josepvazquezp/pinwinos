@@ -133,7 +133,12 @@ class DeckEditionPage extends StatelessWidget {
                 ],
               ),
             ),
-            BlocBuilder<DeckEditionBloc, DeckEditionState>(
+            BlocConsumer<DeckEditionBloc, DeckEditionState>(
+              listener: (context, state) {
+                if (state is BadCardUpdateState) {
+                  _showDenyCardUpdateDialog(context);
+                }
+              },
               builder: (context, state) {
                 if (state is DeckLibrayDisplayState) {
                   return _showLibrary(state.library);
@@ -145,15 +150,6 @@ class DeckEditionPage extends StatelessWidget {
                   return _showLibrary(
                       BlocProvider.of<DeckEditionBloc>(context).getLibrary);
                 }
-              },
-            ),
-            BlocBuilder<DeckEditionBloc, DeckEditionState>(
-              builder: (context, state) {
-                if (state is BadCardUpdateState) {
-                  Future.microtask(() => _showDenyCardUpdateDialog(context));
-                }
-
-                return Container();
               },
             ),
           ],

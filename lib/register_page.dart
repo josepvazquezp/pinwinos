@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pinwinos/bloc_login/login_bloc.dart';
 
 class RegisterPage extends StatelessWidget {
   RegisterPage({super.key});
@@ -155,7 +157,13 @@ class RegisterPage extends StatelessWidget {
                                 ),
                               ),
                               MaterialButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  BlocProvider.of<LoginBloc>(context).add(
+                                      CreateUserEvent(
+                                          name: nameController.text,
+                                          mail: mailController.text,
+                                          password: passController.text));
+                                },
                                 child: Text(
                                   "Registrar",
                                   style: TextStyle(
@@ -173,6 +181,14 @@ class RegisterPage extends StatelessWidget {
                   ],
                 ),
               ],
+            ),
+            BlocListener<LoginBloc, LoginState>(
+              listener: (context, state) {
+                if (state is GetUserSuccessState) {
+                  Navigator.of(context).pop();
+                }
+              },
+              child: Container(),
             ),
           ],
         ),
