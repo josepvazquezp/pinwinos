@@ -24,17 +24,9 @@ class LoginPage extends StatelessWidget {
           listener: (context, state) {
             if (state is GetUserSuccessState) {
               Navigator.of(context).pop();
-              ScaffoldMessenger.of(context)
-                ..hideCurrentSnackBar()
-                ..showSnackBar(
-                  SnackBar(
-                    backgroundColor: Colors.green,
-                    content: Text(
-                      "Se ha ingresado corectamente",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                );
+              _scaffoldSuccess(context);
+            } else if (state is ErrorState) {
+              _scaffoldError(context);
             }
           },
           builder: (context, state) {
@@ -47,6 +39,34 @@ class LoginPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _scaffoldSuccess(BuildContext context) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.green,
+          content: Text(
+            "Se ha ingresado corectamente",
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      );
+  }
+
+  void _scaffoldError(BuildContext context) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.red,
+          content: Text(
+            "Error pinwinesco por:\n-> Los datos ingresados son incorrectos\n-> Falta de llenar uno de los campo\n-> No hay conexión de internet",
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      );
   }
 
   Widget _loginBoxes(BuildContext context) {
