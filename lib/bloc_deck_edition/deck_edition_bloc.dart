@@ -437,7 +437,17 @@ class DeckEditionBloc extends Bloc<DeckEditionEvent, DeckEditionState> {
   }
 
   FutureOr<void> _changeStateEvent(ChangeStateEvent event, Emitter emit) {
-    emit(DeckEditionInitial());
+    if (_update) {
+      _update = !_update;
+      emit(DeckLibrayDisplayState(
+          deck: _filter ? _filterDeck : getDeck,
+          library: _filter ? _filterLibrary : getLibrary));
+    } else {
+      _update = !_update;
+      emit(UpdateDeckLibrayDisplayState(
+          deck: _filter ? _filterDeck : getDeck,
+          library: _filter ? _filterLibrary : getLibrary));
+    }
   }
 
   FutureOr<void> _filterCardsEvent(FilterCardsEvent event, Emitter emit) {

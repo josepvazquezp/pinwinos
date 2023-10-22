@@ -35,6 +35,14 @@ class DeckEditionPage extends StatelessWidget {
                     color: Colors.white,
                     iconSize: 48,
                   ),
+                  Text(
+                    "Editar Deck",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   SizedBox(
                     height: 50,
                     width: 250,
@@ -62,14 +70,6 @@ class DeckEditionPage extends StatelessWidget {
                       style: TextStyle(
                         color: Colors.white,
                       ),
-                    ),
-                  ),
-                  Text(
-                    "Editar Deck",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   IconButton(
