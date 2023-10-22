@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pinwinos/battle_scenario.dart';
+import 'package:pinwinos/bloc/friend_list_bloc.dart';
+import 'package:pinwinos/bloc/room_list_bloc.dart';
 import 'package:pinwinos/deck_edition_page.dart';
 import 'package:pinwinos/friend_list.dart';
 import 'package:pinwinos/login_page.dart';
@@ -34,7 +37,13 @@ class HomePage extends StatelessWidget {
                           onPressed: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (context) => FriendList(),
+                                builder: (context) {
+                                  return BlocProvider.value(
+                                    value: BlocProvider.of<FriendListBloc>(
+                                        context),
+                                    child: FriendList(),
+                                  );
+                                },
                               ),
                             );
                           },
@@ -56,9 +65,11 @@ class HomePage extends StatelessWidget {
                       children: [
                         MaterialButton(
                           onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => DeckEditionPage(),
-                            ));
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => DeckEditionPage(),
+                              ),
+                            );
                           },
                           child: Image.asset(
                             "assets/images/deck.png",

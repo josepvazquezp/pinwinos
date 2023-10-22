@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pinwinos/bloc_deck_edition/deck_edition_bloc.dart';
 import 'package:pinwinos/item_card.dart';
+import 'package:pinwinos/models/carta.dart';
 
 class DeckEditionPage extends StatelessWidget {
   DeckEditionPage({super.key});
@@ -32,6 +35,14 @@ class DeckEditionPage extends StatelessWidget {
                     color: Colors.white,
                     iconSize: 48,
                   ),
+                  Text(
+                    "Editar Deck",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   SizedBox(
                     height: 50,
                     width: 250,
@@ -46,7 +57,7 @@ class DeckEditionPage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(30),
                         ),
                         label: Text(
-                          "Buscador",
+                          "Filtro de elemento",
                           style: TextStyle(
                             color: Colors.white,
                           ),
@@ -61,16 +72,11 @@ class DeckEditionPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Text(
-                    "Editar Deck",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      BlocProvider.of<DeckEditionBloc>(context)
+                          .add(FilterCardsEvent(filter: findController.text));
+                    },
                     icon: Icon(
                       Icons.check_circle_outline_sharp,
                     ),
@@ -110,32 +116,103 @@ class DeckEditionPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Container(
-                    height: 140,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: 5,
-                      itemBuilder: (BuildContext context, int index) {
-                        return ItemCard(i: (index + 1) * 6);
-                      },
-                    ),
+                  BlocBuilder<DeckEditionBloc, DeckEditionState>(
+                    builder: (context, state) {
+                      if (state is DeckLibrayDisplayState) {
+                        return _showDeck(state.deck);
+                      } else if (state is UpdateDeckLibrayDisplayState) {
+                        return _showDeck(state.deck);
+                      } else if (state is ErrorDeckLibraryRequestState) {
+                        return Text("No se pudo obtener el deck");
+                      } else {
+                        return _showDeck(
+                            BlocProvider.of<DeckEditionBloc>(context).getDeck);
+                      }
+                    },
                   ),
                 ],
               ),
             ),
-            Container(
-              height: 120,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 36,
-                itemBuilder: (BuildContext context, int index) {
-                  return ItemCard(i: index + 1);
-                },
-              ),
+            BlocBuilder<DeckEditionBloc, DeckEditionState>(
+              builder: (context, state) {
+                if (state is DeckLibrayDisplayState) {
+                  return _showLibrary(state.library);
+                } else if (state is UpdateDeckLibrayDisplayState) {
+                  return _showLibrary(state.library);
+                } else if (state is ErrorDeckLibraryRequestState) {
+                  return Text("No se pudo obtener la library");
+                } else {
+                  return _showLibrary(
+                      BlocProvider.of<DeckEditionBloc>(context).getLibrary);
+                }
+              },
+            ),
+            BlocBuilder<DeckEditionBloc, DeckEditionState>(
+              builder: (context, state) {
+                if (state is BadCardUpdateState) {
+                  Future.microtask(() => _showDenyCardUpdateDialog(context));
+                }
+
+                return Container();
+              },
             ),
           ],
         ),
       ),
     );
+  }
+
+  Widget _showLibrary(List<Carta> library) {
+    return Container(
+      height: 120,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: library.length,
+        itemBuilder: (BuildContext context, int index) {
+          return ItemCard(
+            card: library[index],
+            deck: false,
+            index: index,
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _showDeck(List<Carta> deck) {
+    return Container(
+      height: 140,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: deck.length,
+        itemBuilder: (BuildContext context, int index) {
+          return ItemCard(
+            card: deck[index],
+            deck: true,
+            index: index,
+          );
+        },
+      ),
+    );
+  }
+
+  void _showDenyCardUpdateDialog(context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Mensaje"),
+          content: Text(
+            '''No es posible mover la carta por:
+            -> Deck de [9 - 17] cartas.
+            -> Cartas sin poder son obligatorias.
+            -> Ya tienes una carta con ese poder.
+            ''',
+          ),
+        );
+      },
+    );
+
+    BlocProvider.of<DeckEditionBloc>(context).add(ChangeStateEvent());
   }
 }

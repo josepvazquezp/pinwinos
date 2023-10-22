@@ -1,33 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pinwinos/bloc/room_list_bloc.dart';
+import 'package:pinwinos/models/pinwino.dart';
 import 'package:pinwinos/penwin_view.dart';
 
-class RoomMenu extends StatelessWidget {
+class RoomMenu extends StatefulWidget {
   RoomMenu({super.key});
 
-  final List<Map<String, String>> Pinwins = [
-    {
-      "Nombre": "Paco",
-      "Conectado": "1",
-      "Amigo": "1",
-    },
-    {
-      "Nombre": "Raul",
-      "Conectado": "1",
-      "Amigo": "1",
-    },
-    {
-      "Nombre": "XxKillerxX",
-      "Conectado": "1",
-      "Amigo": "1",
-    },
-    {
-      "Nombre": "Caguamaster",
-      "Conectado": "1",
-      "Amigo": "0",
-    },
-  ];
+  @override
+  State<RoomMenu> createState() => _RoomMenuState();
+}
 
-  int PenwinQuantity = 4;
+class _RoomMenuState extends State<RoomMenu> {
+  void _showWaitDialog(String? nombre) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+              title: Text('Conectando a la Sala'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Por favor espere a ${nombre}...',
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  CircularProgressIndicator()
+                ],
+              ));
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,17 +60,14 @@ class RoomMenu extends StatelessWidget {
                   ),
                 ),
               ),
-              Container(
-                height: MediaQuery.of(context).size.height * 0.6,
-                width: MediaQuery.of(context).size.width * 0.5,
-                child: ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  itemCount: PenwinQuantity,
-                  itemBuilder: (BuildContext context, int index) {
-                    return PenwinView(Pinwin: Pinwins[index]);
-                  },
-                ),
-              ),
+              BlocBuilder<RoomListBloc, RoomListState>(
+                  builder: (context, state) {
+                if (state is GetRoomListState) {
+                  return _loadPinwins(state.RoomPinwinos, state.RoomFriends);
+                }
+
+                return _error();
+              }),
               Padding(
                 padding: const EdgeInsets.only(top: 10),
                 child: Material(
@@ -89,6 +90,31 @@ class RoomMenu extends StatelessWidget {
         ),
       ),
     );
-    ;
+  }
+
+  Widget _loadPinwins(List<Pinwino> PinwinList, List<bool> IsFriendList) {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.6,
+      width: MediaQuery.of(context).size.width * 0.5,
+      child: ListView.builder(
+        scrollDirection: Axis.vertical,
+        itemCount: PinwinList.length,
+        itemBuilder: (BuildContext context, int index) {
+          return GestureDetector(
+              onTap: () {
+                //TODO: Codigo de despliegue de la sala; de mientras un dialogo
+                _showWaitDialog(PinwinList[index].nombre);
+              },
+              child: PenwinView(
+                Pinwin: PinwinList[index],
+                isFriend: IsFriendList[index],
+              ));
+        },
+      ),
+    );
+  }
+
+  Widget _error() {
+    return Text('No se pudieron obtener combatientes');
   }
 }

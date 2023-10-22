@@ -1,7 +1,59 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pinwinos/bloc/scanner_bloc.dart';
 
-class ScanMerch extends StatelessWidget {
+class ScanMerch extends StatefulWidget {
   const ScanMerch({super.key});
+
+  @override
+  State<ScanMerch> createState() => _ScanMerchState();
+}
+
+class _ScanMerchState extends State<ScanMerch> {
+  void _showUnlockDialog(String titler, String item, String item_image) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Center(
+            child: AlertDialog(
+                title: Text(
+                  '${titler}',
+                ),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      height: 120,
+                      width: 120,
+                      child: Image.asset('${item_image}'),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      '${item}',
+                    ),
+                  ],
+                )),
+          );
+        });
+  }
+
+  void _showCancelErrorDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Center(
+            child: AlertDialog(
+              title: Text(
+                'Alerta',
+              ),
+              content: Text("No se pudo completar el escaneo"),
+            ),
+          );
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +93,9 @@ class ScanMerch extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: IconButton(
                       color: Colors.white,
-                      onPressed: () {
-                        print('Funcionando');
+                      onPressed: () async {
+                        String res = await scanQR();
+                        BlocProvider.of<ScannerBloc>(context).setCodeData(res);
                       },
                       icon: Icon(
                         Icons.camera_alt,
@@ -50,6 +103,18 @@ class ScanMerch extends StatelessWidget {
                       )),
                 ),
               ),
+              BlocBuilder<ScannerBloc, ScannerState>(builder: (context, state) {
+                if (state is GetCodeDataState) {
+                  Future.microtask(() => _showUnlockDialog(
+                      state.unlocked, state.item, state.item_image));
+                  BlocProvider.of<ScannerBloc>(context).add(UnlockGivenEvent());
+                } else if (state is ErrorDataState) {
+                  Future.microtask(() => _showCancelErrorDialog());
+                  BlocProvider.of<ScannerBloc>(context).add(UnlockGivenEvent());
+                }
+
+                return Text('');
+              }),
               Material(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(22)),
@@ -69,5 +134,18 @@ class ScanMerch extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<String> scanQR() async {
+    String scan_res;
+
+    scan_res = await FlutterBarcodeScanner.scanBarcode(
+      '#ff6666',
+      'Cancel',
+      true,
+      ScanMode.QR,
+    );
+
+    return scan_res;
   }
 }
