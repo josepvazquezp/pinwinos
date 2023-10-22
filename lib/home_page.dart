@@ -3,9 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pinwinos/battle_scenario.dart';
 import 'package:pinwinos/bloc/friend_list_bloc.dart';
 import 'package:pinwinos/bloc/room_list_bloc.dart';
+import 'package:pinwinos/bloc_login/login_bloc.dart';
 import 'package:pinwinos/deck_edition_page.dart';
 import 'package:pinwinos/friend_list.dart';
 import 'package:pinwinos/login_page.dart';
+import 'package:pinwinos/models/pinwino.dart';
+import 'package:pinwinos/profile.dart';
 import 'package:pinwinos/room_menu.dart';
 import 'package:pinwinos/rules_page.dart';
 import 'package:pinwinos/scan_merch.dart';
@@ -85,29 +88,14 @@ class HomePage extends StatelessWidget {
                         ),
                       ],
                     ),
-                    Column(
-                      children: [
-                        MaterialButton(
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => LoginPage(),
-                              ),
-                            );
-                          },
-                          child: Image.asset(
-                            "assets/images/profile.png",
-                            height: 50,
-                          ),
-                        ),
-                        Text(
-                          "Login",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
+                    BlocBuilder<LoginBloc, LoginState>(
+                      builder: (context, state) {
+                        if (state is GetUserSuccessState) {
+                          return _profileButton(context);
+                        }
+
+                        return _loginButton(context);
+                      },
                     ),
                   ],
                 ),
@@ -252,6 +240,60 @@ class HomePage extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _loginButton(BuildContext context) {
+    return Column(
+      children: [
+        MaterialButton(
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => LoginPage(),
+              ),
+            );
+          },
+          child: Image.asset(
+            "assets/images/profile.png",
+            height: 50,
+          ),
+        ),
+        Text(
+          "Login",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _profileButton(BuildContext context) {
+    return Column(
+      children: [
+        MaterialButton(
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => Profile(),
+              ),
+            );
+          },
+          child: Image.asset(
+            "assets/images/profile.png",
+            height: 50,
+          ),
+        ),
+        Text(
+          "${BlocProvider.of<LoginBloc>(context).getPinwino.nombre}",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
     );
   }
 }
