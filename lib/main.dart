@@ -6,6 +6,7 @@ import 'package:pinwinos/bloc_deck_edition/deck_edition_bloc.dart';
 import 'package:pinwinos/bloc/profile_bloc.dart';
 import 'package:pinwinos/bloc/room_list_bloc.dart';
 import 'package:pinwinos/bloc/scanner_bloc.dart';
+import 'package:pinwinos/bloc_login/login_bloc.dart';
 import 'package:pinwinos/home_page.dart';
 
 void main() {
@@ -21,6 +22,9 @@ void main() {
       ),
       BlocProvider(
         create: (context) => DeckEditionBloc()..add(GetDeckLibraryEvent()),
+      ),
+      BlocProvider(
+        create: (context) => LoginBloc(),
       ),
       BlocProvider<RoomListBloc>(
         create: (context) => RoomListBloc()
