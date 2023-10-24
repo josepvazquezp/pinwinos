@@ -49,6 +49,16 @@ final class PowerRoundState extends GameState {
   List<Object> get props => [this.power];
 }
 
+final class GetSlotsState extends GameState {
+  final Map<String, List<String>> userSlots;
+  final Map<String, List<String>> enemySlots;
+
+  GetSlotsState({required this.userSlots, required this.enemySlots});
+
+  @override
+  List<Object> get props => [this.userSlots, this.enemySlots];
+}
+
 final class EndGameState extends GameState {
   final bool victory;
 

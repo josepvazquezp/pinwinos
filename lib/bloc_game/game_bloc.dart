@@ -17,7 +17,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   Pinwino? _p1;
   Pinwino? _p2;
 
-  Map<String, List<String>> _iaSlots = {
+  Map<String, List<String>> _enemySlots = {
     "fire": [],
     "water": [],
     "snow": [],
@@ -133,6 +133,10 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
   bool _ia = true;
 
+  bool _play = true;
+
+  int _winRound = 0;
+
   GameBloc() : super(GameInitial()) {
     on<GetUserEvent>(_getData);
     on<PlayCardEvent>(_battlePhase);
@@ -155,18 +159,123 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   }
 
   FutureOr<void> _battlePhase(PlayCardEvent event, Emitter emit) {
-    emit(SelectedCardState(card: event.card));
-
-    Carta enemyCard = new Carta(); //esto borrar al implementar lo de la ia
-    if (_ia) {
-      //todo el desmadre que voy hacer
+    if (!_play) {
     } else {
-      // hasta http de hosteo la que ponga el otro men
+      emit(SelectedCardState(card: event.card));
+
+      Carta enemyCard = new Carta(); //esto borrar al implementar lo de la ia
+      if (_ia) {
+        //todo el desmadre que voy hacer
+      } else {
+        // hasta http de hosteo la que ponga el otro men
+      }
+
+      emit(BattleCardsState(userCard: event.card, enemyCard: enemyCard));
+
+      _winRound = _checkWinner(event.card, enemyCard);
+
+      if (_winRound == 1) {
+        _roundPower = event.card.poder!;
+
+        _userSlots[event.card.elemento]!.add(event.card.color!);
+      } else if (_winRound == 2) {
+        _roundPower = enemyCard.poder!;
+
+        _enemySlots[enemyCard.elemento]!.add(enemyCard.color!);
+      } else {
+        _roundPower = "";
+      }
+
+      emit(GetSlotsState(userSlots: _userSlots, enemySlots: _enemySlots));
+
+      // TODO: EVALUACIÓN DE SLOTS PARA VER SI YA GANO ALGUIEN
+
+      emit(PowerRoundState(power: _roundPower));
+
+      _play = false;
+    }
+  }
+
+  int _checkWinner(Carta userCard, Carta enemyCard) {
+    String userElement;
+    String enemyElement;
+
+    if (_roundPower == "fire->snow") {
+      if (userCard.elemento == "fire") {
+        userElement = "snow";
+      } else {
+        userElement = userCard.elemento!;
+      }
+
+      if (enemyCard.elemento == "fire") {
+        enemyElement = "snow";
+      } else {
+        enemyElement = enemyCard.elemento!;
+      }
+    } else if (_roundPower == "snow->water") {
+      if (userCard.elemento == "snow") {
+        userElement = "water";
+      } else {
+        userElement = userCard.elemento!;
+      }
+
+      if (enemyCard.elemento == "snow") {
+        enemyElement = "water";
+      } else {
+        enemyElement = enemyCard.elemento!;
+      }
+    } else if (_roundPower == "water->fire") {
+      if (userCard.elemento == "water") {
+        userElement = "fire";
+      } else {
+        userElement = userCard.elemento!;
+      }
+
+      if (enemyCard.elemento == "water") {
+        enemyElement = "fire";
+      } else {
+        enemyElement = enemyCard.elemento!;
+      }
+    } else {
+      userElement = userCard.elemento!;
+      enemyElement = enemyCard.elemento!;
     }
 
-    emit(BattleCardsState(userCard: event.card, enemyCard: enemyCard));
+    if (userElement == enemyElement) {
+      int userNum = _roundPower == "+2" && _winRound == 1
+          ? userCard.numero! + 2
+          : _roundPower == "-2" && _winRound == 2
+              ? userCard.numero! - 2
+              : userCard.numero!;
 
-    //falta un estado y logica
+      int enemyNum = _roundPower == "+2" && _winRound == 2
+          ? enemyCard.numero! + 2
+          : _roundPower == "-2" && _winRound == 1
+              ? enemyCard.numero! - 2
+              : enemyCard.numero!;
+
+      if (userNum > enemyNum) {
+        return _roundPower == "1_9" ? 2 : 1;
+      } else if (userNum == enemyNum) {
+        return 0;
+      }
+
+      return _roundPower == "1_9" ? 1 : 2;
+    } else if (userElement == "fire" && enemyElement == "water") {
+      return 2;
+    } else if (userElement == "water" && enemyElement == "fire") {
+      return 1;
+    } else if (userElement == "fire" && enemyElement == "snow") {
+      return 1;
+    } else if (userElement == "snow" && enemyElement == "fire") {
+      return 2;
+    } else if (userElement == "water" && enemyElement == "snow") {
+      return 2;
+    } else if (userElement == "snow" && enemyElement == "water") {
+      return 1;
+    }
+
+    return 0;
   }
 
   FutureOr<void> _randomSelection(RandomSelectionEvent event, Emitter emit) {}
