@@ -186,6 +186,12 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         _roundPower = "";
       }
 
+      // TODO: eliminación de slots si gano ese poder
+      if (_roundPower[0] == "-" && _roundPower[1] != "2") {
+        removeSlot();
+        _roundPower = "";
+      }
+
       emit(GetSlotsState(userSlots: _userSlots, enemySlots: _enemySlots));
 
       // TODO: EVALUACIÓN DE SLOTS PARA VER SI YA GANO ALGUIEN
@@ -194,6 +200,23 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
       _play = false;
     }
+  }
+
+  void removeSlot() {
+    Map<String, List<String>> slots = _winRound == 1 ? _userSlots : _enemySlots;
+
+    // -element
+    if (_roundPower == "-fire" && slots["fire"]!.length > 0) {
+      slots["fire"]!.removeLast();
+    } else if (_roundPower == "-water" && slots["water"]!.length > 0) {
+      slots["water"]!.removeLast();
+    } else if (_roundPower == "-snow" && slots["snow"]!.length > 0) {
+      slots["snow"]!.removeLast();
+    }
+
+    // -color
+
+    // -all_color
   }
 
   int _checkWinner(Carta userCard, Carta enemyCard) {
@@ -278,5 +301,6 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     return 0;
   }
 
+  // TODO: en el caso de no elegir carta que se seleccione una random
   FutureOr<void> _randomSelection(RandomSelectionEvent event, Emitter emit) {}
 }
