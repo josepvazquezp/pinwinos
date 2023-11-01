@@ -190,11 +190,12 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     } else {
       emit(SelectedCardState(card: event.card));
 
+      //TODO: IA poderosisima
       Carta enemyCard = new Carta(); //esto borrar al implementar lo de la ia
       if (_ia) {
         //todo el desmadre que voy hacer
       } else {
-        // hasta http de hosteo la que ponga el otro men
+        // TODO: hasta http de hosteo la que ponga el otro men
       }
 
       emit(BattleCardsState(userCard: event.card, enemyCard: enemyCard));
@@ -215,6 +216,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
       // eliminación de slots si gano ese poder
       if (_roundPower[0] == "-" && _roundPower[1] != "2") {
+        emit(PowerRoundState(power: _roundPower));
         removeSlot();
         _roundPower = "";
       }
@@ -224,9 +226,15 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       // TODO: EVALUACIÓN DE SLOTS PARA VER SI YA GANO ALGUIEN
       if (_winRound != 0) {
         _gameWinner = _checkGameWinner();
+
+        if (_gameWinner != 0) {
+          emit(EndGameState(victory: _gameWinner == 1 ? true : false));
+        }
       }
 
-      emit(PowerRoundState(power: _roundPower));
+      if (_roundPower != "") {
+        emit(PowerRoundState(power: _roundPower));
+      }
 
       _play = false;
     }
