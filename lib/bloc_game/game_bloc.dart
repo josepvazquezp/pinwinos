@@ -137,6 +137,33 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
   int _winRound = 0;
 
+  int _gameWinner = 0;
+
+  List<String> _elements = ["fire", "water", "snow"];
+
+  List<String> _slotsPowers = [
+    // -element
+    "-fire",
+    "-water",
+    "-snow",
+
+    // -color
+    "-red",
+    "-blue",
+    "-yellow",
+    "-green",
+    "-orange",
+    "-purple",
+
+    // -all_color
+    "-all_red",
+    "-all_blue",
+    "-all_yellow",
+    "-all_green",
+    "-all_orange",
+    "-all_purple"
+  ];
+
   GameBloc() : super(GameInitial()) {
     on<GetUserEvent>(_getData);
     on<PlayCardEvent>(_battlePhase);
@@ -172,7 +199,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
       emit(BattleCardsState(userCard: event.card, enemyCard: enemyCard));
 
-      _winRound = _checkWinner(event.card, enemyCard);
+      _winRound = _checkRoundWinner(event.card, enemyCard);
 
       if (_winRound == 1) {
         _roundPower = event.card.poder!;
@@ -186,7 +213,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         _roundPower = "";
       }
 
-      // TODO: eliminación de slots si gano ese poder
+      // eliminación de slots si gano ese poder
       if (_roundPower[0] == "-" && _roundPower[1] != "2") {
         removeSlot();
         _roundPower = "";
@@ -195,6 +222,9 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       emit(GetSlotsState(userSlots: _userSlots, enemySlots: _enemySlots));
 
       // TODO: EVALUACIÓN DE SLOTS PARA VER SI YA GANO ALGUIEN
+      if (_winRound != 0) {
+        _gameWinner = _checkGameWinner();
+      }
 
       emit(PowerRoundState(power: _roundPower));
 
@@ -204,22 +234,75 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
   void removeSlot() {
     Map<String, List<String>> slots = _winRound == 1 ? _userSlots : _enemySlots;
+    int indexSlotPower = _slotsPowers.indexOf(_roundPower);
 
     // -element
-    if (_roundPower == "-fire" && slots["fire"]!.length > 0) {
+    if (indexSlotPower == 0 && slots["fire"]!.length > 0) {
       slots["fire"]!.removeLast();
-    } else if (_roundPower == "-water" && slots["water"]!.length > 0) {
+    } else if (indexSlotPower == 1 && slots["water"]!.length > 0) {
       slots["water"]!.removeLast();
-    } else if (_roundPower == "-snow" && slots["snow"]!.length > 0) {
+    } else if (indexSlotPower == 2 && slots["snow"]!.length > 0) {
       slots["snow"]!.removeLast();
     }
 
     // -color
+    else if (indexSlotPower == 3) {
+      _byeSlotColor("red");
+    } else if (indexSlotPower == 4) {
+      _byeSlotColor("blue");
+    } else if (indexSlotPower == 5) {
+      _byeSlotColor("yellow");
+    } else if (indexSlotPower == 6) {
+      _byeSlotColor("green");
+    } else if (indexSlotPower == 7) {
+      _byeSlotColor("orange");
+    } else if (indexSlotPower == 8) {
+      _byeSlotColor("purple");
+    }
 
     // -all_color
+    else if (indexSlotPower == 9) {
+      _byeAllSlotColor("red");
+    } else if (indexSlotPower == 10) {
+      _byeAllSlotColor("blue");
+    } else if (indexSlotPower == 11) {
+      _byeAllSlotColor("yellow");
+    } else if (indexSlotPower == 12) {
+      _byeAllSlotColor("green");
+    } else if (indexSlotPower == 13) {
+      _byeAllSlotColor("orange");
+    } else if (indexSlotPower == 14) {
+      _byeAllSlotColor("purple");
+    } else {
+      print("No se encontro ese poder de eliminar slot");
+    }
   }
 
-  int _checkWinner(Carta userCard, Carta enemyCard) {
+  void _byeSlotColor(String color) {
+    Map<String, List<String>> slots = _winRound == 1 ? _userSlots : _enemySlots;
+    _elements.shuffle();
+
+    for (int i = 0; i < _elements.length; i++) {
+      if (slots[_elements[i]]!.length > 0) {
+        if (slots[_elements[i]]!.remove(color)) {
+          break;
+        }
+      }
+    }
+  }
+
+  void _byeAllSlotColor(String color) {
+    Map<String, List<String>> slots = _winRound == 1 ? _userSlots : _enemySlots;
+
+    for (int i = 0; i < _elements.length; i++) {
+      if (slots[_elements[i]]!.length > 0) {
+        slots[_elements[i]]!
+            .removeWhere((String colorSlot) => colorSlot == color);
+      }
+    }
+  }
+
+  int _checkRoundWinner(Carta userCard, Carta enemyCard) {
     String userElement;
     String enemyElement;
 
@@ -296,6 +379,52 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       return 2;
     } else if (userElement == "snow" && enemyElement == "water") {
       return 1;
+    }
+
+    return 0;
+  }
+
+  int _checkGameWinner() {
+    List<String> fire = [];
+    List<String> water = [];
+    List<String> snow = [];
+    Map<String, List<String>> slots = _winRound == 1 ? _userSlots : _enemySlots;
+
+    // colores diferentes por elemento
+    if (slots["fire"]!.length > 0) {
+      fire = slots["fire"]!.toSet().toList();
+    }
+
+    if (slots["water"]!.length > 0) {
+      water = slots["water"]!.toSet().toList();
+    }
+
+    if (slots["snow"]!.length > 0) {
+      snow = slots["snow"]!.toSet().toList();
+    }
+
+    // chequeo de victoria 3 del mismo elemento
+    if (fire.length >= 3) return _winRound == 1 ? 1 : 2;
+
+    if (water.length >= 3) return _winRound == 1 ? 1 : 2;
+
+    if (snow.length >= 3) return _winRound == 1 ? 1 : 2;
+
+    // cheque de victoria 3 de diferente elemento
+    if (fire.length > 0 && water.length > 0 && snow.length > 0) {
+      for (int i = 0; i < fire.length; i++) {
+        for (int j = 0; j < water.length; i++) {
+          for (int k = 0; k < snow.length; i++) {
+            if (fire[i] != water[j] &&
+                fire[i] != snow[k] &&
+                water[j] != snow[k]) {
+              return _winRound == 1 ? 1 : 2;
+            }
+          }
+        }
+      }
+
+      return 0;
     }
 
     return 0;
