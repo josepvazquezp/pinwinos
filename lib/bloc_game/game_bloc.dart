@@ -202,11 +202,9 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
       emit(SelectedCardState(card: event.card));
 
-      //TODO: IA poderosisima
+      //IA poderosisima
       if (_ia) {
-        List<Carta> hand = _iaGameBloc!.getActualHand;
-
-        //todo el desmadre que voy hacer
+        _enemyCard = iaPossibilities(_iaGameBloc!.getActualHand);
       } else {
         // TODO: hasta http de hosteo la que ponga el otro men
       }
@@ -258,6 +256,194 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
       _play = true;
     }
+  }
+
+  Carta iaPossibilities(List<Carta> hand) {
+    Map<String, List<String>> userUniqueSlots = {
+      "fire": [],
+      "water": [],
+      "snow": [],
+    };
+
+    Map<String, List<String>> iaUniqueSlots = {
+      "fire": [],
+      "water": [],
+      "snow": [],
+    };
+
+    Map<int, int> possibilities = {
+      0: 0,
+      1: 0,
+      2: 0,
+      3: 0,
+    };
+
+    // colores diferentes por elemento
+    if (_userSlots["fire"]!.length > 0) {
+      userUniqueSlots["fire"] = _userSlots["fire"]!.toSet().toList();
+    }
+
+    if (_userSlots["water"]!.length > 0) {
+      userUniqueSlots["water"] = _userSlots["water"]!.toSet().toList();
+    }
+
+    if (_userSlots["snow"]!.length > 0) {
+      userUniqueSlots["snow"] = _userSlots["snow"]!.toSet().toList();
+    }
+
+    // chequeo de posible victoria USER por 2 mismo elemento
+    for (int i = 0; i < hand.length; i++) {
+      if (userUniqueSlots["fire"]!.length == 2 && hand[i].elemento == "water") {
+        possibilities[i] = possibilities[i]! + 1;
+      }
+
+      if (userUniqueSlots["water"]!.length == 2 && hand[i].elemento == "snow") {
+        possibilities[i] = possibilities[i]! + 1;
+      }
+
+      if (userUniqueSlots["snow"]!.length == 2 && hand[i].elemento == "fire") {
+        possibilities[i] = possibilities[i]! + 1;
+      }
+    }
+
+    // chequeo de posible victoria de USER por 2 de diferente elemento
+    if (userUniqueSlots["fire"]!.length > 0 &&
+        userUniqueSlots["water"]!.length > 0 &&
+        userUniqueSlots["snow"]!.length > 0) {
+      bool fire = false;
+      bool water = false;
+      bool snow = false;
+
+      for (int i = 0;
+          i < userUniqueSlots["fire"]!.length || (!fire && !water && !snow);
+          i++) {
+        for (int j = 0; j < userUniqueSlots["water"]!.length || !fire; j++) {
+          if (userUniqueSlots["fire"]![i] != userUniqueSlots["water"]![j]) {
+            fire = true;
+          }
+
+          for (int k = 0;
+              k < userUniqueSlots["snow"]!.length || (!water && !snow);
+              k++) {
+            if (userUniqueSlots["fire"]![i] != userUniqueSlots["snow"]![k]) {
+              snow = true;
+            }
+
+            if (userUniqueSlots["water"]![j] != userUniqueSlots["snow"]![k]) {
+              water = true;
+            }
+          }
+        }
+      }
+
+      if (fire || water || snow) {
+        for (int i = 0; i < hand.length; i++) {
+          if (fire && hand[i].elemento == "fire") {
+            possibilities[i] = possibilities[i]! + 1;
+          }
+
+          if (water && hand[i].elemento == "water") {
+            possibilities[i] = possibilities[i]! + 1;
+          }
+
+          if (snow && hand[i].elemento == "snow") {
+            possibilities[i] = possibilities[i]! + 1;
+          }
+        }
+      }
+    }
+
+    if (_enemySlots["fire"]!.length > 0) {
+      iaUniqueSlots["fire"] = _enemySlots["fire"]!.toSet().toList();
+    }
+
+    if (_enemySlots["water"]!.length > 0) {
+      iaUniqueSlots["water"] = _enemySlots["fire"]!.toSet().toList();
+    }
+
+    if (_enemySlots["snow"]!.length > 0) {
+      iaUniqueSlots["snow"] = _enemySlots["fire"]!.toSet().toList();
+    }
+
+    // chequeo de posible victoria IA por 2 mismo elemento
+    for (int i = 0; i < hand.length; i++) {
+      if (iaUniqueSlots["fire"]!.length == 2 && hand[i].elemento == "fire") {
+        possibilities[i] = possibilities[i]! + 1;
+      }
+
+      if (iaUniqueSlots["water"]!.length == 2 && hand[i].elemento == "water") {
+        possibilities[i] = possibilities[i]! + 1;
+      }
+
+      if (iaUniqueSlots["snow"]!.length == 2 && hand[i].elemento == "snow") {
+        possibilities[i] = possibilities[i]! + 1;
+      }
+    }
+
+    // chequeo de posible victoria de IA por 2 de diferente elemento
+    if (iaUniqueSlots["fire"]!.length > 0 &&
+        iaUniqueSlots["water"]!.length > 0 &&
+        iaUniqueSlots["snow"]!.length > 0) {
+      bool fire = false;
+      bool water = false;
+      bool snow = false;
+
+      for (int i = 0;
+          i < iaUniqueSlots["fire"]!.length || (!fire && !water && !snow);
+          i++) {
+        for (int j = 0; j < iaUniqueSlots["water"]!.length || !snow; j++) {
+          if (iaUniqueSlots["fire"]![i] != iaUniqueSlots["water"]![j]) {
+            snow = true;
+          }
+
+          for (int k = 0;
+              k < iaUniqueSlots["snow"]!.length || (!fire && !water);
+              k++) {
+            if (iaUniqueSlots["fire"]![i] != iaUniqueSlots["snow"]![k]) {
+              water = true;
+            }
+
+            if (iaUniqueSlots["water"]![j] != iaUniqueSlots["snow"]![k]) {
+              fire = true;
+            }
+          }
+        }
+      }
+
+      if (fire || water || snow) {
+        for (int i = 0; i < hand.length; i++) {
+          if (fire && hand[i].elemento == "fire") {
+            possibilities[i] = possibilities[i]! + 1;
+          }
+
+          if (water && hand[i].elemento == "water") {
+            possibilities[i] = possibilities[i]! + 1;
+          }
+
+          if (snow && hand[i].elemento == "snow") {
+            possibilities[i] = possibilities[i]! + 1;
+          }
+        }
+      }
+    }
+
+    int temp = -1;
+    int index = 0;
+
+    for (int i = 0; i < hand.length; i++) {
+      if (possibilities[i]! > temp) {
+        index = i;
+        temp = possibilities[i]!;
+      }
+    }
+
+    if (temp > 0) {
+      return hand[index];
+    }
+
+    hand.shuffle();
+
+    return hand[0];
   }
 
   void removeSlot() {
@@ -441,8 +627,8 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     // cheque de victoria 3 de diferente elemento
     if (fire.length > 0 && water.length > 0 && snow.length > 0) {
       for (int i = 0; i < fire.length; i++) {
-        for (int j = 0; j < water.length; i++) {
-          for (int k = 0; k < snow.length; i++) {
+        for (int j = 0; j < water.length; j++) {
+          for (int k = 0; k < snow.length; k++) {
             if (fire[i] != water[j] &&
                 fire[i] != snow[k] &&
                 water[j] != snow[k]) {
