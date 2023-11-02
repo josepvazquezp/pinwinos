@@ -14,6 +14,8 @@ class DeckGameBloc extends Bloc<DeckGameEvent, DeckGameState> {
   int _pointer = -1;
   bool _update = false;
 
+  List<Carta> get getActualHand => _actualHand;
+
   DeckGameBloc() : super(DeckGameInitial()) {
     on<GetDeckEvent>(_getDeck);
     on<ShuffleDeckEvent>(_shuffleDeck);

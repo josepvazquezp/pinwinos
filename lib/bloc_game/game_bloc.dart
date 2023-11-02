@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:pinwinos/bloc_deck_game/deck_game_bloc.dart';
 import 'package:pinwinos/models/carta.dart';
 import 'package:pinwinos/models/pinwino.dart';
 
@@ -164,10 +165,15 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     "-all_purple"
   ];
 
+  DeckGameBloc userGameBloc = DeckGameBloc();
+  DeckGameBloc? _iaGameBloc;
+  Carta? _enemyCard;
+
   GameBloc() : super(GameInitial()) {
     on<GetUserEvent>(_getData);
     on<PlayCardEvent>(_battlePhase);
     on<RandomSelectionEvent>(_randomSelection);
+    // TODO: TIMER https://api.flutter.dev/flutter/dart-async/Timer-class.html
   }
 
   FutureOr<void> _getData(GetUserEvent event, Emitter emit) {
@@ -181,35 +187,42 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     }
 
     emit(GetUsersSuccessState(p1Gorro: _p1!.gorro!, p2Gorro: _p2!.gorro!));
-    // TODO: Trigerear del deck_gamebloc para hacer todo chido con el user
-    // add(GetDeckEvent(deck: _p1.deck));
+    // Triggerear del deck_gamebloc para hacer todo chido con el user
+    userGameBloc.add(GetDeckEvent(deck: _p1!.deck!));
+    if (_ia) {
+      _iaGameBloc = DeckGameBloc();
+      _iaGameBloc!.add(GetDeckEvent(deck: _p2!.deck!));
+    }
   }
 
   FutureOr<void> _battlePhase(PlayCardEvent event, Emitter emit) {
     if (!_play) {
     } else {
+      _play = false;
+
       emit(SelectedCardState(card: event.card));
 
       //TODO: IA poderosisima
-      Carta enemyCard = new Carta(); //esto borrar al implementar lo de la ia
       if (_ia) {
+        List<Carta> hand = _iaGameBloc!.getActualHand;
+
         //todo el desmadre que voy hacer
       } else {
         // TODO: hasta http de hosteo la que ponga el otro men
       }
 
-      emit(BattleCardsState(userCard: event.card, enemyCard: enemyCard));
+      emit(BattleCardsState(userCard: event.card, enemyCard: _enemyCard!));
 
-      _winRound = _checkRoundWinner(event.card, enemyCard);
+      _winRound = _checkRoundWinner(event.card, _enemyCard!);
 
       if (_winRound == 1) {
         _roundPower = event.card.poder!;
 
         _userSlots[event.card.elemento]!.add(event.card.color!);
       } else if (_winRound == 2) {
-        _roundPower = enemyCard.poder!;
+        _roundPower = _enemyCard!.poder!;
 
-        _enemySlots[enemyCard.elemento]!.add(enemyCard.color!);
+        _enemySlots[_enemyCard!.elemento]!.add(_enemyCard!.color!);
       } else {
         _roundPower = "";
       }
@@ -223,7 +236,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
       emit(GetSlotsState(userSlots: _userSlots, enemySlots: _enemySlots));
 
-      // TODO: EVALUACIÓN DE SLOTS PARA VER SI YA GANO ALGUIEN
+      // EVALUACIÓN DE SLOTS PARA VER SI YA GANO ALGUIEN
       if (_winRound != 0) {
         _gameWinner = _checkGameWinner();
 
@@ -236,12 +249,19 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         emit(PowerRoundState(power: _roundPower));
       }
 
-      _play = false;
+      // DRAWPHASE
+      userGameBloc.add(GetHandEvent(card: event.card));
+
+      if (_ia) {
+        _iaGameBloc!.add(GetHandEvent(card: _enemyCard!));
+      }
+
+      _play = true;
     }
   }
 
   void removeSlot() {
-    Map<String, List<String>> slots = _winRound == 1 ? _userSlots : _enemySlots;
+    Map<String, List<String>> slots = _winRound == 2 ? _userSlots : _enemySlots;
     int indexSlotPower = _slotsPowers.indexOf(_roundPower);
 
     // -element
@@ -287,7 +307,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   }
 
   void _byeSlotColor(String color) {
-    Map<String, List<String>> slots = _winRound == 1 ? _userSlots : _enemySlots;
+    Map<String, List<String>> slots = _winRound == 2 ? _userSlots : _enemySlots;
     _elements.shuffle();
 
     for (int i = 0; i < _elements.length; i++) {
@@ -300,7 +320,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   }
 
   void _byeAllSlotColor(String color) {
-    Map<String, List<String>> slots = _winRound == 1 ? _userSlots : _enemySlots;
+    Map<String, List<String>> slots = _winRound == 2 ? _userSlots : _enemySlots;
 
     for (int i = 0; i < _elements.length; i++) {
       if (slots[_elements[i]]!.length > 0) {
@@ -438,6 +458,11 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     return 0;
   }
 
-  // TODO: en el caso de no elegir carta que se seleccione una random
-  FutureOr<void> _randomSelection(RandomSelectionEvent event, Emitter emit) {}
+  // en el caso de no elegir carta que se seleccione una random
+  FutureOr<void> _randomSelection(RandomSelectionEvent event, Emitter emit) {
+    List<Carta> hand = userGameBloc.getActualHand;
+    hand.shuffle();
+
+    add(PlayCardEvent(card: hand[0]));
+  }
 }
