@@ -14,14 +14,16 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: BlocBuilder<ProfileBloc, ProfileState>(
-      builder: (context, state) {
-        if (state is ProfileDataGetState) {
-          return _nose(state.pinwin);
-        }
-        return Column();
-      },
-    ));
+    return Scaffold(
+      body: BlocBuilder<ProfileBloc, ProfileState>(
+        builder: (context, state) {
+          if (state is ProfileDataGetState) {
+            return _nose(state.pinwin);
+          }
+          return Column();
+        },
+      ),
+    );
   }
 
   Widget _nose(Pinwino pinwin) {
