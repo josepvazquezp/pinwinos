@@ -7,11 +7,11 @@ sealed class GameEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class GetUserEvent extends GameEvent {
+class GetUserBattleEvent extends GameEvent {
   final Pinwino p1;
   final Pinwino? p2;
 
-  GetUserEvent({required this.p1, this.p2});
+  GetUserBattleEvent({required this.p1, this.p2});
 
   @override
   List<Object> get props => this.p2 == null ? [this.p1] : [this.p1, this.p2!];

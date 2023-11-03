@@ -53,6 +53,8 @@ class DeckGameBloc extends Bloc<DeckGameEvent, DeckGameState> {
       _actualHand.insert(0, _deck[_pointer]);
     }
 
+    print("MANDANDO MANO");
+
     if (_update) {
       _update = !_update;
       emit(GetHandState(hand: _actualHand));

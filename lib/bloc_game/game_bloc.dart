@@ -136,6 +136,8 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
   bool _play = true;
 
+  bool get getPlay => _play;
+
   int _winRound = 0;
 
   int _gameWinner = 0;
@@ -169,14 +171,16 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   DeckGameBloc? _iaGameBloc;
   Carta? _enemyCard;
 
+  DeckGameBloc get get_userGameBloc => userGameBloc;
+
   GameBloc() : super(GameInitial()) {
-    on<GetUserEvent>(_getData);
+    on<GetUserBattleEvent>(_getData);
     on<PlayCardEvent>(_battlePhase);
     on<RandomSelectionEvent>(_randomSelection);
     // TODO: TIMER https://api.flutter.dev/flutter/dart-async/Timer-class.html
   }
 
-  FutureOr<void> _getData(GetUserEvent event, Emitter emit) {
+  FutureOr<void> _getData(GetUserBattleEvent event, Emitter emit) {
     _p1 = event.p1;
 
     if (event.p2 != null) {
@@ -187,12 +191,26 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     }
 
     emit(GetUsersSuccessState(p1Gorro: _p1!.gorro!, p2Gorro: _p2!.gorro!));
-    // Triggerear del deck_gamebloc para hacer todo chido con el user
+
+    print("==================================");
+    print("DECK");
+    print(_p1!.deck);
+    print(_p1!.deck!.length);
+    print("==================================");
+    //Triggerear del deck_gamebloc para hacer todo chido con el user
     userGameBloc.add(GetDeckEvent(deck: _p1!.deck!));
     if (_ia) {
       _iaGameBloc = DeckGameBloc();
       _iaGameBloc!.add(GetDeckEvent(deck: _p2!.deck!));
     }
+
+    print("==================================");
+    print("HAND");
+    for (int i = 0; i < userGameBloc.getActualHand.length; i++) {
+      print(userGameBloc.getActualHand[i]);
+    }
+    print(userGameBloc.getActualHand.length);
+    print("==================================");
   }
 
   FutureOr<void> _battlePhase(PlayCardEvent event, Emitter emit) {
@@ -200,6 +218,10 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     } else {
       _play = false;
 
+      print("==================================");
+      print("SELECTED CARD");
+      print(event.card);
+      print("==================================");
       emit(SelectedCardState(card: event.card));
 
       //IA poderosisima
@@ -209,9 +231,15 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         // TODO: hasta http de hosteo la que ponga el otro men
       }
 
+      print("Paso la IA");
+
       emit(BattleCardsState(userCard: event.card, enemyCard: _enemyCard!));
 
+      print("Paso el Battle Cards");
+
       _winRound = _checkRoundWinner(event.card, _enemyCard!);
+
+      print("Paso el win round");
 
       if (_winRound == 1) {
         _roundPower = event.card.poder!;
@@ -225,14 +253,30 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         _roundPower = "";
       }
 
+      print("Paso el if para los slots");
+
       // eliminación de slots si gano ese poder
-      if (_roundPower[0] == "-" && _roundPower[1] != "2") {
+      if (_roundPower != "" && _roundPower[0] == "-" && _roundPower[1] != "2") {
         emit(PowerRoundState(power: _roundPower));
         removeSlot();
         _roundPower = "";
       }
 
+      print("Paso el poder");
+
+      print("USER SLOTS");
+      print("==================================");
+      print(_userSlots);
+      print("==================================");
+
+      print("ENEMY SLOTS");
+      print("==================================");
+      print(_enemySlots);
+      print("==================================");
+
       emit(GetSlotsState(userSlots: _userSlots, enemySlots: _enemySlots));
+
+      print("Paso el emit");
 
       // EVALUACIÓN DE SLOTS PARA VER SI YA GANO ALGUIEN
       if (_winRound != 0) {
@@ -243,9 +287,13 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         }
       }
 
+      print("Paso el game winner");
+
       if (_roundPower != "") {
         emit(PowerRoundState(power: _roundPower));
       }
+
+      print("Paso el power state");
 
       // DRAWPHASE
       userGameBloc.add(GetHandEvent(card: event.card));
@@ -253,6 +301,8 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       if (_ia) {
         _iaGameBloc!.add(GetHandEvent(card: _enemyCard!));
       }
+
+      print("Paso el draw phase final");
 
       _play = true;
     }
