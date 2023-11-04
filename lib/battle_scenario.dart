@@ -75,7 +75,7 @@ class BattleScenario extends StatelessWidget {
           return MaterialButton(
             onPressed: () {
               print("Index Out ${index}");
-              _tempo(hand[index].numero, hand[index].imagen);
+              // _tempo(hand[index].numero, hand[index].imagen);
               if (use_card) {
                 print("Index In ${index}");
                 BlocProvider.of<GameBloc>(context)
