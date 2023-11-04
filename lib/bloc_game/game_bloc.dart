@@ -213,7 +213,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     print("==================================");
   }
 
-  FutureOr<void> _battlePhase(PlayCardEvent event, Emitter emit) {
+  FutureOr<void> _battlePhase(PlayCardEvent event, Emitter emit) async {
     if (!_play) {
     } else {
       _play = false;
@@ -273,6 +273,8 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       print("==================================");
       print(_enemySlots);
       print("==================================");
+
+      await Future.delayed(Duration(seconds: 2));
 
       emit(GetSlotsState(userSlots: _userSlots, enemySlots: _enemySlots));
 
