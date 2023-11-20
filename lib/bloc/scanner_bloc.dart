@@ -9,6 +9,7 @@ part 'scanner_state.dart';
 
 class ScannerBloc extends Bloc<ScannerEvent, ScannerState> {
   String code_data = '';
+  //TODO: Este ID esta hardcodeado; Cambiarlo cuando Login Funcione
   String user_id = "xbyAPohJyUdK8g6xnGuF";
 
   ScannerBloc() : super(ScannerInitial()) {
