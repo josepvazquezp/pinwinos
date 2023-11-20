@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:ffi';
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
 part 'scanner_event.dart';
@@ -33,7 +35,28 @@ class ScannerBloc extends Bloc<ScannerEvent, ScannerState> {
     emit(ErrorDataState());
   }
 
-  FutureOr<void> _getCodeDataEvent(ScannerEvent event, Emitter emit) {
+  Future<FutureOr<void>> _getCodeDataEvent(
+      ScannerEvent event, Emitter emit) async {
+    try {
+      var query_channel = FirebaseFirestore.instance.collection('cartas');
+
+      var docs_ref = await query_channel.get();
+      List<String> cards_id = [];
+
+      print("QUERY");
+      for (int i = 0; i < docs_ref.size; i++) {
+        //print(docs_ref.docs[i].data());//Esto es para jalarse todos los datos de la query
+        // print("ID");
+        // print(docs_ref.docs[i].id);
+        cards_id.add(docs_ref.docs[i].id);
+      }
+
+      print("Lista de IDs");
+      print(cards_id);
+    } catch (e) {
+      print(e.toString());
+    }
+
     emit(GetCodeDataState(
         item: 'Gorra',
         item_image: 'assets/images/hats/cap.webp',

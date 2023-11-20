@@ -9,15 +9,16 @@ class Carta extends Equatable {
   final String? elemento;
   final String? poder;
   final String? poder_imagen;
+  final String? id;
 
-  const Carta({
-    this.imagen,
-    this.numero,
-    this.color,
-    this.elemento,
-    this.poder,
-    this.poder_imagen,
-  });
+  const Carta(
+      {this.imagen,
+      this.numero,
+      this.color,
+      this.elemento,
+      this.poder,
+      this.poder_imagen,
+      this.id});
 
   factory Carta.fromMap(Map<String, dynamic> data) => Carta(
         imagen: data['Imagen'] as String?,
