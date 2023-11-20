@@ -55,6 +55,21 @@ class _ScanMerchState extends State<ScanMerch> {
         });
   }
 
+  void _showUnexistantDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Center(
+            child: AlertDialog(
+              title: Text(
+                'Alerta',
+              ),
+              content: Text("El ID escaneado no corresponde a ninguna carta"),
+            ),
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     Color textColor = Colors.white;
@@ -110,6 +125,9 @@ class _ScanMerchState extends State<ScanMerch> {
                   BlocProvider.of<ScannerBloc>(context).add(UnlockGivenEvent());
                 } else if (state is ErrorDataState) {
                   Future.microtask(() => _showCancelErrorDialog());
+                  BlocProvider.of<ScannerBloc>(context).add(UnlockGivenEvent());
+                } else if (state is UnexistantDataState) {
+                  Future.microtask(() => _showUnexistantDialog());
                   BlocProvider.of<ScannerBloc>(context).add(UnlockGivenEvent());
                 }
 
