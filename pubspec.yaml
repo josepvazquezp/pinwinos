@@ -34,6 +34,12 @@ dependencies:
   equatable: ^2.0.5
   http: ^1.1.0
   flutter_barcode_scanner: ^2.0.0
+  firebase_core: ^2.21.0
+  google_sign_in: ^6.1.6
+  cloud_firestore: ^4.13.1
+  firebase_ui_firestore: ^1.5.14
+  firebase_auth: ^4.14.0
+  firebase_ui_auth: ^1.9.1
 
 
   # The following adds the Cupertino Icons font to your application.
