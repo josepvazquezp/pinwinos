@@ -368,8 +368,34 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     emit(LoadLoginState());
 
     try {
-      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: event.mail, password: event.password);
+
+      var userInfo = await FirebaseFirestore.instance
+          .collection('pinwinos')
+          .where("email", isEqualTo: "${event.mail}")
+          .get();
+
+      List<Carta> userDeck =
+          userDeck_Library(userInfo.docs.first.data()["deck"]);
+      List<Carta> userLibrary =
+          userDeck_Library(userInfo.docs.first.data()["library"]);
+
+      _user = new Pinwino(
+        id: userInfo.docs.first.id,
+        nombre: userInfo.docs.first.data()["name"],
+        correo: userInfo.docs.first.data()["email"],
+        password: userInfo.docs.first.data()["password"],
+        victorias: userInfo.docs.first.data()["wins"],
+        derrotas: userInfo.docs.first.data()["loses"],
+        fecha: userInfo.docs.first.data()["sign_date"].toString(),
+        conectado: userInfo.docs.first.data()["connected"],
+        deck: userDeck,
+        library: userLibrary,
+        gorro: userInfo.docs.first.data()["hat"],
+        gorros: userInfo.docs.first.data()["hats"].cast<String>(),
+        friends: userInfo.docs.first.data()["friends"].cast<String>(),
+      );
 
       _login = true;
       emit(GetUserSuccessState());
@@ -389,10 +415,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       CreateUserEvent event, Emitter emit) async {
     emit(LoadLoginState());
 
-    if (event.name != null && event.mail != null && event.password != null) {
+    if (event.name != "" && event.mail != "" && event.password != "") {
       try {
-        final credential =
-            await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: event.mail,
           password: event.password,
         );
@@ -424,7 +449,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             .doc(docRef.id)
             .get();
 
-        print(userInfo.data());
         List<Carta> userDeck = userDeck_Library(userInfo.data()!["deck"]);
         List<Carta> userLibrary = userDeck_Library(userInfo.data()!["library"]);
 
@@ -435,13 +459,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           password: userInfo.data()!["password"],
           victorias: userInfo.data()!["wins"],
           derrotas: userInfo.data()!["loses"],
-          fecha: userInfo.data()!["sign_date"],
+          fecha: userInfo.data()!["sign_date"].toString(),
           conectado: userInfo.data()!["connected"],
           deck: userDeck,
           library: userLibrary,
           gorro: userInfo.data()!["hat"],
-          gorros: userInfo.data()!["hats"],
-          friends: userInfo.data()!["friends"],
+          gorros: userInfo.data()!["hats"].cast<String>(),
+          friends: userInfo.data()!["friends"].cast<String>(),
         );
 
         _login = true;
@@ -455,6 +479,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         _login = false;
         emit(ErrorState());
       } catch (e) {
+        print(e);
         _login = false;
         emit(ErrorState());
       }
@@ -464,7 +489,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }
   }
 
-  List<Carta> userDeck_Library(List<Map<String, dynamic>> list) {
+  List<Carta> userDeck_Library(List<dynamic> list) {
     List<Carta> tempList = [];
     Carta temp;
 
