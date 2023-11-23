@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class DualCardDisplay extends StatelessWidget {
-  final List<String> CardImages;
+  final List<String>? CardImages;
   const DualCardDisplay({super.key, required this.CardImages});
 
   @override
@@ -18,7 +18,7 @@ class DualCardDisplay extends StatelessWidget {
                 height: 130,
                 width: 105,
                 child: Image.asset(
-                  '${CardImages[0]}',
+                  '${CardImages![0]}',
                   fit: BoxFit.fill,
                 ),
               ),
@@ -34,7 +34,7 @@ class DualCardDisplay extends StatelessWidget {
                 height: 130,
                 width: 105,
                 child: Image.asset(
-                  '${CardImages[1]}',
+                  '${CardImages![1]}',
                   fit: BoxFit.fill,
                 ),
               ),

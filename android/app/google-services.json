@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "512794359842",
+    "project_id": "pinwinos-tamaulipas",
+    "storage_bucket": "pinwinos-tamaulipas.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:512794359842:android:67954f7ea68253af37b27b",
+        "android_client_info": {
+          "package_name": "com.example.pinwinos"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDeQ_bKiEpj3bKc-7rJzYeuL8aYA19bTgU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

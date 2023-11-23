@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pinwinos/bloc/profile_bloc.dart';
 import 'package:pinwinos/dual_card_display.dart';
+import 'package:pinwinos/models/carta.dart';
 import 'package:pinwinos/models/pinwino.dart';
 
 class Profile extends StatefulWidget {
@@ -29,20 +30,7 @@ class _ProfileState extends State<Profile> {
   Widget _nose(Pinwino pinwin) {
     String ProfilePic = 'assets/images/profile.png';
 
-    List<String> Images = [
-      'assets/images/cards/c1.png',
-      'assets/images/cards/c2.png',
-      'assets/images/cards/c3.png',
-      'assets/images/cards/c4.png',
-      'assets/images/cards/c5.png',
-      'assets/images/cards/c6.png',
-      'assets/images/cards/c7.png',
-      'assets/images/cards/c8.png',
-      'assets/images/cards/c9.png',
-      'assets/images/cards/c10.png',
-      'assets/images/cards/c11.png',
-      'assets/images/cards/c12.png'
-    ];
+    List<Carta> deck = [];
 
     Color textColor = Colors.white;
 
@@ -145,6 +133,7 @@ class _ProfileState extends State<Profile> {
                               onTap: () {
                                 BlocProvider.of<ProfileBloc>(context)
                                     .setGorro(pinwin.gorros[index]);
+                                //TODO: Revisar cual era el widget para quitar este set state
                                 setState(() {});
                               },
                               child: Container(
@@ -177,7 +166,6 @@ class _ProfileState extends State<Profile> {
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
                     children: [
-                      //TODO: Cuando se carguen todas las cartes aqui va el deck
                       Text('Mazo',
                           style: TextStyle(
                             fontSize: 40,
@@ -189,12 +177,17 @@ class _ProfileState extends State<Profile> {
                         width: 300,
                         child: ListView.builder(
                           scrollDirection: Axis.vertical,
-                          itemCount: 6,
+                          itemCount: BlocProvider.of<ProfileBloc>(context)
+                              .getDeckLength,
                           itemBuilder: (BuildContext context, int index) {
                             return DualCardDisplay(
                               CardImages: [
-                                Images[index * 2],
-                                Images[(index * 2) + 1]
+                                BlocProvider.of<ProfileBloc>(context)
+                                    .getDeck![index * 2]
+                                    .imagen!,
+                                BlocProvider.of<ProfileBloc>(context)
+                                    .getDeck![index * 2 + 1]
+                                    .imagen!
                               ],
                             );
                           },

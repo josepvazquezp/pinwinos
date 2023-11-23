@@ -25,6 +25,10 @@ class LoginPage extends StatelessWidget {
             if (state is GetUserSuccessState) {
               Navigator.of(context).pop();
               _scaffoldSuccess(context);
+
+              if (BlocProvider.of<LoginBloc>(context).getSigIn) {
+                Navigator.of(context).pop();
+              }
             } else if (state is ErrorState) {
               _scaffoldError(context);
             }

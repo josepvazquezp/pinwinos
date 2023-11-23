@@ -1,3 +1,5 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,6 +11,7 @@ import 'package:pinwinos/bloc/scanner_bloc.dart';
 import 'package:pinwinos/bloc_deck_game/deck_game_bloc.dart';
 import 'package:pinwinos/bloc_game/game_bloc.dart';
 import 'package:pinwinos/bloc_login/login_bloc.dart';
+import 'package:pinwinos/firebase_options.dart';
 import 'package:pinwinos/home_page.dart';
 import 'package:pinwinos/models/carta.dart';
 import 'package:pinwinos/models/pinwino.dart';
@@ -119,12 +122,22 @@ Pinwino _pt = new Pinwino(
   ],
 );
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.landscapeLeft,
     DeviceOrientation.landscapeRight,
   ]);
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   runApp(MultiBlocProvider(
     providers: [
       BlocProvider(
