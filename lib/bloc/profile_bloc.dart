@@ -39,11 +39,13 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   }
 
   Future<FutureOr<void>> _prepare_profile_data_event(
-      ProfileEvent event, Emitter emit) async {
-    emit(ProfileWaitingUserState());
+      ProfileLoadUserEvent event, Emitter emit) async {
+    set_user(event.user);
   }
 
   Future<FutureOr<void>> _getDataEvent(ProfileEvent event, Emitter emit) async {
-    emit(ProfileDataGetState(pinwin: player!));
+    if (player != Null) {
+      emit(ProfileDataGetState(pinwin: player!));
+    }
   }
 }

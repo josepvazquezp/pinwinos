@@ -11,6 +11,13 @@ class PenwinView extends StatelessWidget {
     required this.Pinwin,
     required this.isFriend,
   });
+  Widget hat_place(String hat_route) {
+    if (hat_route == "") {
+      return Column();
+    } else {
+      return Image.asset('${hat_route}');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +44,7 @@ class PenwinView extends StatelessWidget {
                       Container(
                         height: 30,
                         width: 30,
-                        child: Image.asset('${Pinwin.gorro}'),
+                        child: hat_place(Pinwin.gorro!),
                       ),
                     ],
                   ),

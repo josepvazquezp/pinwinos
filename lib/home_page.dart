@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pinwinos/battle_scenario.dart';
 import 'package:pinwinos/bloc/friend_list_bloc.dart';
+import 'package:pinwinos/bloc/profile_bloc.dart';
 import 'package:pinwinos/bloc_login/login_bloc.dart';
 import 'package:pinwinos/deck_edition_page.dart';
 import 'package:pinwinos/friend_list.dart';
@@ -36,6 +37,11 @@ class HomePage extends StatelessWidget {
                       children: [
                         MaterialButton(
                           onPressed: () {
+                            BlocProvider.of<FriendListBloc>(context).add(
+                                FriendsLoadUserEvent(
+                                    user: BlocProvider.of<LoginBloc>(context)
+                                        .getPinwino));
+
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) {
@@ -276,10 +282,12 @@ class HomePage extends StatelessWidget {
       children: [
         MaterialButton(
           onPressed: () {
+            BlocProvider.of<ProfileBloc>(context).add(ProfileLoadUserEvent(
+                user: BlocProvider.of<LoginBloc>(context).getPinwino));
+
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) =>
-                    Profile(user_rec: BlocProvider.of<LoginBloc>(context).user),
+                builder: (context) => Profile(),
               ),
             );
           },

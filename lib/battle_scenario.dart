@@ -116,6 +116,14 @@ class BattleScenario extends StatelessWidget {
     String SnowIcon = 'assets/images/elements/snow_icon.webp';
     String Snowball = 'assets/images/elements/Snowball.webp';
 
+    Widget hat_place(String hat_route) {
+      if (hat_route == "") {
+        return Column();
+      } else {
+        return Image.asset('${hat_route}');
+      }
+    }
+
     Widget get_user_slots() {
       return Container(
         height: 100,
@@ -447,7 +455,7 @@ class BattleScenario extends StatelessWidget {
                         Container(
                           height: 50,
                           width: 50,
-                          child: Image.asset('${_Pinwino_jugador.gorro}'),
+                          child: hat_place(_Pinwino_jugador.gorro!),
                         ),
                       ],
                     ),
@@ -563,7 +571,7 @@ class BattleScenario extends StatelessWidget {
                         Container(
                           height: 50,
                           width: 50,
-                          child: Image.asset('${_Pinwino_jugador.gorro}'),
+                          child: hat_place(_Pinwino_jugador.gorro!),
                         ),
                       ],
                     ),

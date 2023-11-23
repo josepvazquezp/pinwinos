@@ -6,8 +6,7 @@ import 'package:pinwinos/models/carta.dart';
 import 'package:pinwinos/models/pinwino.dart';
 
 class Profile extends StatefulWidget {
-  final Pinwino user_rec;
-  const Profile({super.key, required this.user_rec});
+  const Profile({super.key});
 
   @override
   State<Profile> createState() => _ProfileState();
@@ -20,15 +19,6 @@ class _ProfileState extends State<Profile> {
       body: BlocBuilder<ProfileBloc, ProfileState>(
         builder: (context, state) {
           if (state is ProfileWaitingUserState) {
-            print("=========================================");
-            print("=========================================");
-            print("=========================================");
-            print("=========================================");
-            print("=========================================");
-            print("=========================================");
-            print("=========================================");
-            print("Cargando");
-            BlocProvider.of<ProfileBloc>(context).set_user(widget.user_rec);
           } else if (state is ProfileDataGetState) {
             return _nose(state.pinwin);
           }

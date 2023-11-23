@@ -7,7 +7,13 @@ sealed class ProfileEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class ProfileLoadUserEvent extends ProfileEvent {}
+class ProfileLoadUserEvent extends ProfileEvent {
+  final Pinwino user;
+
+  ProfileLoadUserEvent({required this.user});
+
+  List<Object> get props => [this.user];
+}
 
 class GetDataEvent extends ProfileEvent {}
 
