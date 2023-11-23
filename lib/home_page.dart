@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pinwinos/battle_scenario.dart';
 import 'package:pinwinos/bloc/friend_list_bloc.dart';
+import 'package:pinwinos/bloc_deck_edition/deck_edition_bloc.dart';
 import 'package:pinwinos/bloc_login/login_bloc.dart';
 import 'package:pinwinos/deck_edition_page.dart';
 import 'package:pinwinos/friend_list.dart';
@@ -36,17 +37,21 @@ class HomePage extends StatelessWidget {
                       children: [
                         MaterialButton(
                           onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return BlocProvider.value(
-                                    value: BlocProvider.of<FriendListBloc>(
-                                        context),
-                                    child: FriendList(),
-                                  );
-                                },
-                              ),
-                            );
+                            if (BlocProvider.of<LoginBloc>(context).getLogin) {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return BlocProvider.value(
+                                      value: BlocProvider.of<FriendListBloc>(
+                                          context),
+                                      child: FriendList(),
+                                    );
+                                  },
+                                ),
+                              );
+                            } else {
+                              _scaffoldError(context);
+                            }
                           },
                           child: Image.asset(
                             "assets/images/friends.png",
@@ -66,11 +71,22 @@ class HomePage extends StatelessWidget {
                       children: [
                         MaterialButton(
                           onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => DeckEditionPage(),
-                              ),
-                            );
+                            if (BlocProvider.of<LoginBloc>(context).getLogin) {
+                              BlocProvider.of<DeckEditionBloc>(context).add(
+                                GetDeckLibraryEvent(
+                                  user: BlocProvider.of<LoginBloc>(context)
+                                      .getPinwino,
+                                ),
+                              );
+
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => DeckEditionPage(),
+                                ),
+                              );
+                            } else {
+                              _scaffoldError(context);
+                            }
                           },
                           child: Image.asset(
                             "assets/images/deck.png",
@@ -143,11 +159,16 @@ class HomePage extends StatelessWidget {
                               color: Color.fromARGB(255, 36, 53, 70),
                               child: MaterialButton(
                                 onPressed: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => BattleScenario(),
-                                    ),
-                                  );
+                                  if (BlocProvider.of<LoginBloc>(context)
+                                      .getLogin) {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => BattleScenario(),
+                                      ),
+                                    );
+                                  } else {
+                                    _scaffoldError(context);
+                                  }
                                 },
                                 child: Text(
                                   "Pinwino VS CPU",
@@ -162,11 +183,16 @@ class HomePage extends StatelessWidget {
                               color: Color.fromARGB(255, 36, 53, 70),
                               child: MaterialButton(
                                 onPressed: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => RoomMenu(),
-                                    ),
-                                  );
+                                  if (BlocProvider.of<LoginBloc>(context)
+                                      .getLogin) {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => RoomMenu(),
+                                      ),
+                                    );
+                                  } else {
+                                    _scaffoldError(context);
+                                  }
                                 },
                                 child: Text(
                                   "Pinwino VS Pinwino",
@@ -188,11 +214,15 @@ class HomePage extends StatelessWidget {
                       children: [
                         IconButton(
                           onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => ScanMerch(),
-                              ),
-                            );
+                            if (BlocProvider.of<LoginBloc>(context).getLogin) {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => ScanMerch(),
+                                ),
+                              );
+                            } else {
+                              _scaffoldError(context);
+                            }
                           },
                           icon: Icon(Icons.qr_code_scanner),
                           color: Colors.white,
@@ -293,5 +323,19 @@ class HomePage extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  void _scaffoldError(BuildContext context) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.red,
+          content: Text(
+            "Error pinwinesco por: \n-> Es necesario iniciar sesión. (botón de profile Profile)\n-> No hay conexión de internet",
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      );
   }
 }

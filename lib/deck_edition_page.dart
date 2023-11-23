@@ -43,40 +43,64 @@ class DeckEditionPage extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(
-                    height: 50,
-                    width: 250,
-                    child: TextField(
-                      controller: findController,
-                      decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.white,
-                            width: 2,
-                          ),
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        label: Text(
-                          "Filtro de elemento",
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-                        prefixIcon: Icon(
-                          Icons.search_sharp,
-                          color: Colors.white,
-                        ),
-                      ),
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () {
+                  DropdownMenu<String>(
+                    initialSelection: "ninguno",
+                    controller: findController,
+                    requestFocusOnTap: true,
+                    onSelected: (elemento) {
                       BlocProvider.of<DeckEditionBloc>(context)
                           .add(FilterCardsEvent(filter: findController.text));
                     },
+                    inputDecorationTheme: InputDecorationTheme(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.white,
+                          width: 2,
+                        ),
+                      ),
+                    ),
+                    label: Text(
+                      "Filtro por elemento",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    trailingIcon:
+                        Icon(Icons.arrow_drop_down, color: Colors.white),
+                    textStyle: TextStyle(color: Colors.white),
+                    leadingIcon: Icon(Icons.search, color: Colors.white),
+                    dropdownMenuEntries: [
+                      DropdownMenuEntry<String>(
+                        value: "fuego",
+                        label: "fuego",
+                        style: MenuItemButton.styleFrom(
+                          foregroundColor: Colors.red,
+                        ),
+                      ),
+                      DropdownMenuEntry<String>(
+                        value: "agua",
+                        label: "agua",
+                        style: MenuItemButton.styleFrom(
+                          foregroundColor: Colors.indigo,
+                        ),
+                      ),
+                      DropdownMenuEntry<String>(
+                        value: "nieve",
+                        label: "nieve",
+                        style: MenuItemButton.styleFrom(
+                          foregroundColor: Colors.lightBlue,
+                        ),
+                      ),
+                      DropdownMenuEntry<String>(
+                        value: "ninguno",
+                        label: "ninguno",
+                      ),
+                    ],
+                  ),
+                  IconButton(
+                    onPressed: () {},
                     icon: Icon(
                       Icons.check_circle_outline_sharp,
                     ),

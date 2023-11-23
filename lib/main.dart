@@ -139,7 +139,7 @@ void main() async {
         create: (context) => FriendListBloc()..add(GetFriendsEvent()),
       ),
       BlocProvider(
-        create: (context) => DeckEditionBloc()..add(GetDeckLibraryEvent()),
+        create: (context) => DeckEditionBloc(),
       ),
       BlocProvider(
         create: (context) => LoginBloc(),
