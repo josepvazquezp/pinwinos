@@ -62,7 +62,7 @@ class ScannerBloc extends Bloc<ScannerEvent, ScannerState> {
       print(e.toString());
     }
 
-    if (docs_ref != null) {
+    if (docs_ref.data() != null) {
       print("=================================");
       print("Datos de consulta");
       print(docs_ref.data());

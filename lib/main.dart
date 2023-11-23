@@ -153,7 +153,7 @@ void main() async {
         create: (context) => RoomListBloc()..add(GetRoomListEvent()),
       ),
       BlocProvider<ProfileBloc>(
-        create: (context) => ProfileBloc()..add(GetDataEvent()),
+        create: (context) => ProfileBloc()..add(ProfileLoadUserEvent()),
       ),
       BlocProvider<ScannerBloc>(
         create: (context) => ScannerBloc()..add(UnlockGivenEvent()),

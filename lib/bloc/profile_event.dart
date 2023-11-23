@@ -7,6 +7,8 @@ sealed class ProfileEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class ProfileLoadUserEvent extends ProfileEvent {}
+
 class GetDataEvent extends ProfileEvent {}
 
 class HatChangedEvent extends ProfileEvent {}

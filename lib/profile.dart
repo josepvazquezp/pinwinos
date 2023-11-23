@@ -6,7 +6,8 @@ import 'package:pinwinos/models/carta.dart';
 import 'package:pinwinos/models/pinwino.dart';
 
 class Profile extends StatefulWidget {
-  const Profile({super.key});
+  final Pinwino user_rec;
+  const Profile({super.key, required this.user_rec});
 
   @override
   State<Profile> createState() => _ProfileState();
@@ -18,13 +19,32 @@ class _ProfileState extends State<Profile> {
     return Scaffold(
       body: BlocBuilder<ProfileBloc, ProfileState>(
         builder: (context, state) {
-          if (state is ProfileDataGetState) {
+          if (state is ProfileWaitingUserState) {
+            print("=========================================");
+            print("=========================================");
+            print("=========================================");
+            print("=========================================");
+            print("=========================================");
+            print("=========================================");
+            print("=========================================");
+            print("Cargando");
+            BlocProvider.of<ProfileBloc>(context).set_user(widget.user_rec);
+          } else if (state is ProfileDataGetState) {
             return _nose(state.pinwin);
           }
+
           return Column();
         },
       ),
     );
+  }
+
+  Widget hat_place(String hat_route) {
+    if (hat_route == "") {
+      return Column();
+    } else {
+      return Image.asset('${hat_route}');
+    }
   }
 
   Widget _nose(Pinwino pinwin) {
@@ -65,7 +85,7 @@ class _ProfileState extends State<Profile> {
                           Container(
                             height: 50,
                             width: 50,
-                            child: Image.asset('${pinwin.gorro}'),
+                            child: hat_place(pinwin.gorro!),
                           ),
                         ],
                       ),
@@ -105,12 +125,12 @@ class _ProfileState extends State<Profile> {
                       fontWeight: FontWeight.w900,
                       color: textColor,
                     )),
-                Text('Se unio el: ${pinwin.fecha}',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w900,
-                      color: textColor,
-                    )),
+                // Text('Se unio el: ${pinwin.fecha}',
+                //     style: TextStyle(
+                //       fontSize: 22,
+                //       fontWeight: FontWeight.w900,
+                //       color: textColor,
+                //     )),
                 Text('Gorros:',
                     style: TextStyle(
                       fontSize: 22,
