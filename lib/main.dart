@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -132,6 +133,11 @@ void main() async {
     DeviceOrientation.landscapeLeft,
     DeviceOrientation.landscapeRight,
   ]);
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   runApp(MultiBlocProvider(
     providers: [
       BlocProvider(

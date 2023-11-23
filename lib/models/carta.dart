@@ -11,16 +11,18 @@ class Carta extends Equatable {
   final String? poder_imagen;
   final String? id;
 
-  const Carta(
-      {this.imagen,
-      this.numero,
-      this.color,
-      this.elemento,
-      this.poder,
-      this.poder_imagen,
-      this.id});
+  const Carta({
+    this.id,
+    this.imagen,
+    this.numero,
+    this.color,
+    this.elemento,
+    this.poder,
+    this.poder_imagen,
+  });
 
   factory Carta.fromMap(Map<String, dynamic> data) => Carta(
+        id: data['Id'] as String?,
         imagen: data['Imagen'] as String?,
         numero: data['Numero'] as int?,
         color: data['Color'] as String?,
@@ -30,6 +32,7 @@ class Carta extends Equatable {
       );
 
   Map<String, dynamic> toMap() => {
+        'Id': id,
         'Imagen': imagen,
         'Numero': numero,
         'Color': color,
@@ -51,6 +54,7 @@ class Carta extends Equatable {
   String toJson() => json.encode(toMap());
 
   Carta copyWith({
+    String? id,
     String? imagen,
     int? numero,
     String? color,
@@ -58,6 +62,7 @@ class Carta extends Equatable {
     String? poder,
   }) {
     return Carta(
+      id: id ?? this.id,
       imagen: imagen ?? this.imagen,
       numero: numero ?? this.numero,
       color: color ?? this.color,
