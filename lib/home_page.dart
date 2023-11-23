@@ -190,7 +190,10 @@ class HomePage extends StatelessWidget {
                           onPressed: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (context) => ScanMerch(),
+                                builder: (context) => ScanMerch(
+                                    user_rec:
+                                        BlocProvider.of<LoginBloc>(context)
+                                            .user),
                               ),
                             );
                           },
