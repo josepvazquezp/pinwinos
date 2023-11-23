@@ -32,3 +32,7 @@ final class UpdateDeckLibrayDisplayState extends DeckEditionState {
 final class BadCardUpdateState extends DeckEditionState {}
 
 final class ErrorDeckLibraryRequestState extends DeckEditionState {}
+
+final class FirebaseUpdateSuccessState extends DeckEditionState {}
+
+final class LoadingState extends DeckEditionState {}

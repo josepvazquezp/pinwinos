@@ -44,3 +44,5 @@ class FilterCardsEvent extends DeckEditionEvent {
   @override
   List<Object> get props => [this.filter];
 }
+
+class FirebaseUpdatesEvent extends DeckEditionEvent {}

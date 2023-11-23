@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:pinwinos/models/carta.dart';
 import 'package:pinwinos/models/pinwino.dart';
@@ -41,6 +42,7 @@ class DeckEditionBloc extends Bloc<DeckEditionEvent, DeckEditionState> {
     on<AddCardLibraryEvent>(_addCardLibraryEvent);
     on<ChangeStateEvent>(_changeStateEvent);
     on<FilterCardsEvent>(_filterCardsEvent);
+    on<FirebaseUpdatesEvent>(_firebaseUpdatesEvent);
   }
 
   FutureOr<void> _getDeckLibraryEvent(GetDeckLibraryEvent event, Emitter emit) {
@@ -190,5 +192,28 @@ class DeckEditionBloc extends Bloc<DeckEditionEvent, DeckEditionState> {
           deck: type < 3 ? _filterDeck : getDeck,
           library: type < 3 ? _filterLibrary : getLibrary));
     }
+  }
+
+  FutureOr<void> _firebaseUpdatesEvent(
+      FirebaseUpdatesEvent event, Emitter emit) async {
+    emit(LoadingState());
+
+    List<String> newDeck = [];
+    List<String> newLibrary = [];
+
+    for (int i = 0; i < _library.length; i++) {
+      if (i < _deck.length) {
+        newDeck.add(_deck[i].id!);
+      }
+
+      newLibrary.add(_library[i].id!);
+    }
+
+    await FirebaseFirestore.instance
+        .collection('pinwinos')
+        .doc(_idUser)
+        .update({"deck": newDeck, "library": newLibrary});
+
+    emit(FirebaseUpdateSuccessState());
   }
 }

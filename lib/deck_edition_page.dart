@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pinwinos/bloc_deck_edition/deck_edition_bloc.dart';
+import 'package:pinwinos/bloc_login/login_bloc.dart';
 import 'package:pinwinos/item_card.dart';
 import 'package:pinwinos/models/carta.dart';
 
@@ -60,10 +61,10 @@ class DeckEditionPage extends StatelessWidget {
                       ),
                     ),
                     label: Text(
-                      "Filtro por elemento",
+                      "Filtro",
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 12,
+                        fontSize: 13,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -100,7 +101,10 @@ class DeckEditionPage extends StatelessWidget {
                     ],
                   ),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      BlocProvider.of<DeckEditionBloc>(context)
+                          .add(FirebaseUpdatesEvent());
+                    },
                     icon: Icon(
                       Icons.check_circle_outline_sharp,
                     ),
@@ -161,6 +165,18 @@ class DeckEditionPage extends StatelessWidget {
               listener: (context, state) {
                 if (state is BadCardUpdateState) {
                   _showDenyCardUpdateDialog(context);
+                } else if (state is LoadingState) {
+                  _showLoadingDialog(context);
+                } else if (state is FirebaseUpdateSuccessState) {
+                  BlocProvider.of<LoginBloc>(context).user.deck =
+                      BlocProvider.of<DeckEditionBloc>(context).getDeck;
+
+                  BlocProvider.of<LoginBloc>(context).user.library =
+                      BlocProvider.of<DeckEditionBloc>(context).getLibrary;
+
+                  _scaffoldSuccess(context);
+
+                  Navigator.of(context).pop();
                 }
               },
               builder: (context, state) {
@@ -234,5 +250,35 @@ class DeckEditionPage extends StatelessWidget {
     );
 
     BlocProvider.of<DeckEditionBloc>(context).add(ChangeStateEvent());
+  }
+
+  void _showLoadingDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Guardando Deck"),
+          content: Container(
+            height: 200,
+            child: CircularProgressIndicator(),
+          ),
+        );
+      },
+    );
+  }
+
+  void _scaffoldSuccess(BuildContext context) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.green,
+          content: Text(
+            "Se ha actualizado el deck corectamente",
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      );
   }
 }
