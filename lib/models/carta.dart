@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:equatable/equatable.dart';
 
 class Carta extends Equatable {
+  final String? id;
   final String? imagen;
   final int? numero;
   final String? color;
@@ -11,6 +12,7 @@ class Carta extends Equatable {
   final String? poder_imagen;
 
   const Carta({
+    this.id,
     this.imagen,
     this.numero,
     this.color,
@@ -20,6 +22,7 @@ class Carta extends Equatable {
   });
 
   factory Carta.fromMap(Map<String, dynamic> data) => Carta(
+        id: data['Id'] as String?,
         imagen: data['Imagen'] as String?,
         numero: data['Numero'] as int?,
         color: data['Color'] as String?,
@@ -29,6 +32,7 @@ class Carta extends Equatable {
       );
 
   Map<String, dynamic> toMap() => {
+        'Id': id,
         'Imagen': imagen,
         'Numero': numero,
         'Color': color,
@@ -50,6 +54,7 @@ class Carta extends Equatable {
   String toJson() => json.encode(toMap());
 
   Carta copyWith({
+    String? id,
     String? imagen,
     int? numero,
     String? color,
@@ -57,6 +62,7 @@ class Carta extends Equatable {
     String? poder,
   }) {
     return Carta(
+      id: id ?? this.id,
       imagen: imagen ?? this.imagen,
       numero: numero ?? this.numero,
       color: color ?? this.color,

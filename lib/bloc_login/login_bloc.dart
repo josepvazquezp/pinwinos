@@ -12,7 +12,7 @@ part 'login_state.dart';
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   bool _login = false;
   bool _sigin = false;
-  Pinwino _user = new Pinwino(gorros: [], friends: []);
+  Pinwino user = new Pinwino(gorros: [], friends: []);
 
   List<dynamic> _deck = [
     "KYBoJDS6UTyEjyZ2ETAN",
@@ -61,7 +61,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   bool get getLogin => _login;
   bool get getSigIn => _sigin;
-  Pinwino get getPinwino => _user;
+  Pinwino get getPinwino => user;
 
   LoginBloc() : super(LoginInitial()) {
     on<GetUserEvent>(_getUserLogin);
@@ -85,7 +85,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       List<Carta> userLibrary =
           await userDeck_Library(userInfo.docs.first.data()["library"]);
 
-      _user = new Pinwino(
+      user = new Pinwino(
         id: userInfo.docs.first.id,
         nombre: userInfo.docs.first.data()["name"],
         correo: userInfo.docs.first.data()["email"],
@@ -156,7 +156,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         List<Carta> userLibrary =
             await userDeck_Library(userInfo.data()!["library"]);
 
-        _user = new Pinwino(
+        user = new Pinwino(
           id: docRef.id,
           nombre: userInfo.data()!["name"],
           correo: userInfo.data()!["email"],
@@ -207,6 +207,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           .get();
 
       temp = new Carta(
+        id: list[i],
         imagen: getCard.data()["imagen"],
         numero: getCard.data()["numero"],
         color: getCard.data()["color"],
