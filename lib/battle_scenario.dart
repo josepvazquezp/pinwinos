@@ -116,6 +116,14 @@ class BattleScenario extends StatelessWidget {
     String SnowIcon = 'assets/images/elements/snow_icon.webp';
     String Snowball = 'assets/images/elements/Snowball.webp';
 
+    Widget hat_place(String hat_route) {
+      if (hat_route == "") {
+        return Column();
+      } else {
+        return Image.asset('${hat_route}');
+      }
+    }
+
     Widget get_user_slots() {
       return Container(
         height: 100,
@@ -382,15 +390,16 @@ class BattleScenario extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          BlocBuilder<GameBloc, GameState>(
-            builder: (context, state) {
+          BlocConsumer<GameBloc, GameState>(
+            listener: (context, state) {
               //TODO: Preguntar al profe como triggerear esto bien
               if (checknose) {
                 checknose = false;
               }
 
               if (state is GetUsersSuccessState) {
-                print("Animo");
+                // por cambiar
+                _Pinwino_jugador.gorro = state.p1Gorro;
                 use_card = BlocProvider.of<GameBloc>(context).getPlay;
               } else if (state is EndGameState) {
                 if (state.victory) {
@@ -401,177 +410,347 @@ class BattleScenario extends StatelessWidget {
                   Future.microtask(() => _lose_advise());
                 }
               }
+            },
+            builder: (context, state) {
+              if (state is GetUsersSuccessState) {
+                return Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage("assets/images/FightStage.jpg"),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  height: ScreenHeight * 0.60,
+                  width: ScreenWidth,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          //TODO: Elementos
+                          BlocBuilder<GameBloc, GameState>(
+                            builder: (context, state) {
+                              if (state is GetSlotsState) {
+                                print("Recibiendo Slots");
+                                _userSlots = state.userSlots;
+                                _enemySlots = state.enemySlots;
+                                //De esta manera se guardan siempre que haya cambios para que esten presentes
+                                //Aunque no sea el estado del Get Slot
+                                return get_user_slots();
+                              }
 
-              return Column();
+                              return get_user_slots();
+                            },
+                          ),
+                          //TODO: Tunear pinwino
+                          Stack(
+                            alignment: Alignment.topCenter,
+                            children: [
+                              Container(
+                                width: 120,
+                                height: 120,
+                                child: Image.asset('$ProfilePic'),
+                              ),
+                              Container(
+                                height: 50,
+                                width: 50,
+                                child: hat_place(_Pinwino_jugador.gorro!),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          BlocBuilder<GameBloc, GameState>(
+                            builder: (context, state) {
+                              if (state is SelectedCardState) {
+                                //TODO: no llega aqui
+                                print("Carta seleccionada");
+                                return Container(
+                                  child: BattleCard(
+                                    card: state.card,
+                                    index: 0,
+                                    usable: false,
+                                  ),
+                                );
+                              } else if (state is BattleCardsState) {
+                                return Container(
+                                  child: BattleCard(
+                                    card: state.userCard,
+                                    index: 0,
+                                    usable: false,
+                                  ),
+                                );
+                              }
+
+                              return Container(
+                                height: 130,
+                                width: 130,
+                              );
+                            },
+                          ),
+                        ],
+                      ), //Carta seleccionada 1
+                      Stack(
+                        children: [
+                          Container(
+                              alignment: Alignment.center,
+                              height: 60,
+                              width: 60,
+                              child: Image.asset(
+                                '$Snowball',
+                                fit: BoxFit.fill,
+                              )),
+                          Container(
+                            alignment: Alignment.center,
+                            height: 60,
+                            width: 60,
+                            child: Text(
+                              '9',
+                              style: TextStyle(
+                                fontSize: 48,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          BlocBuilder<GameBloc, GameState>(
+                            builder: (context, state) {
+                              if (state is BattleCardsState) {
+                                return Container(
+                                  child: BattleCard(
+                                    card: state.enemyCard,
+                                    index: 0,
+                                    usable: false,
+                                  ),
+                                );
+                              }
+
+                              return Container(
+                                height: 130,
+                                width: 130,
+                              );
+                            },
+                          ),
+                        ],
+                      ), //Carta seleccionada 2
+                      Column(
+                        //TODO: elementos enemigo
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          BlocBuilder<GameBloc, GameState>(
+                            builder: (context, state) {
+                              if (state is GetSlotsState) {
+                                print("Recibiendo Slots");
+                                _userSlots = state.userSlots;
+                                _enemySlots = state.enemySlots;
+                                //De esta manera se guardan siempre que haya cambios para que esten presentes
+                                //Aunque no sea el estado del Get Slot
+                                return get_enemy_slots();
+                              }
+
+                              return get_enemy_slots();
+                            },
+                          ),
+                          //TODO: Tunear pinwino
+                          Stack(
+                            alignment: Alignment.topCenter,
+                            children: [
+                              Container(
+                                width: 120,
+                                height: 120,
+                                child: Image.asset('$ProfilePic'),
+                              ),
+                              Container(
+                                height: 50,
+                                width: 50,
+                                child: hat_place(_Pinwino_jugador.gorro!),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              }
+
+              return Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage("assets/images/FightStage.jpg"),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                height: ScreenHeight * 0.60,
+                width: ScreenWidth,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        //TODO: Elementos
+                        BlocBuilder<GameBloc, GameState>(
+                          builder: (context, state) {
+                            if (state is GetSlotsState) {
+                              print("Recibiendo Slots");
+                              _userSlots = state.userSlots;
+                              _enemySlots = state.enemySlots;
+                              //De esta manera se guardan siempre que haya cambios para que esten presentes
+                              //Aunque no sea el estado del Get Slot
+                              return get_user_slots();
+                            }
+
+                            return get_user_slots();
+                          },
+                        ),
+                        //TODO: Tunear pinwino
+                        Stack(
+                          alignment: Alignment.topCenter,
+                          children: [
+                            Container(
+                              width: 120,
+                              height: 120,
+                              child: Image.asset('$ProfilePic'),
+                            ),
+                            Container(
+                              height: 50,
+                              width: 50,
+                              child: hat_place(_Pinwino_jugador.gorro!),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        BlocBuilder<GameBloc, GameState>(
+                          builder: (context, state) {
+                            if (state is SelectedCardState) {
+                              //TODO: no llega aqui
+                              print("Carta seleccionada");
+                              return Container(
+                                child: BattleCard(
+                                  card: state.card,
+                                  index: 0,
+                                  usable: false,
+                                ),
+                              );
+                            } else if (state is BattleCardsState) {
+                              return Container(
+                                child: BattleCard(
+                                  card: state.userCard,
+                                  index: 0,
+                                  usable: false,
+                                ),
+                              );
+                            }
+
+                            return Container(
+                              height: 130,
+                              width: 130,
+                            );
+                          },
+                        ),
+                      ],
+                    ), //Carta seleccionada 1
+                    Stack(
+                      children: [
+                        Container(
+                            alignment: Alignment.center,
+                            height: 60,
+                            width: 60,
+                            child: Image.asset(
+                              '$Snowball',
+                              fit: BoxFit.fill,
+                            )),
+                        Container(
+                          alignment: Alignment.center,
+                          height: 60,
+                          width: 60,
+                          child: Text(
+                            '9',
+                            style: TextStyle(
+                              fontSize: 48,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        BlocBuilder<GameBloc, GameState>(
+                          builder: (context, state) {
+                            if (state is BattleCardsState) {
+                              return Container(
+                                child: BattleCard(
+                                  card: state.enemyCard,
+                                  index: 0,
+                                  usable: false,
+                                ),
+                              );
+                            }
+
+                            return Container(
+                              height: 130,
+                              width: 130,
+                            );
+                          },
+                        ),
+                      ],
+                    ), //Carta seleccionada 2
+                    Column(
+                      //TODO: elementos enemigo
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        BlocBuilder<GameBloc, GameState>(
+                          builder: (context, state) {
+                            if (state is GetSlotsState) {
+                              print("Recibiendo Slots");
+                              _userSlots = state.userSlots;
+                              _enemySlots = state.enemySlots;
+                              //De esta manera se guardan siempre que haya cambios para que esten presentes
+                              //Aunque no sea el estado del Get Slot
+                              return get_enemy_slots();
+                            }
+
+                            return get_enemy_slots();
+                          },
+                        ),
+                        //TODO: Tunear pinwino
+                        Stack(
+                          alignment: Alignment.topCenter,
+                          children: [
+                            Container(
+                              width: 120,
+                              height: 120,
+                              child: Image.asset('$ProfilePic'),
+                            ),
+                            Container(
+                              height: 50,
+                              width: 50,
+                              child: hat_place(_Pinwino_jugador.gorro!),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ); //Aqui van los pinwinos
             },
           ),
-          Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage("assets/images/FightStage.jpg"),
-                fit: BoxFit.cover,
-              ),
-            ),
-            height: ScreenHeight * 0.60,
-            width: ScreenWidth,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    //TODO: Elementos
-                    BlocBuilder<GameBloc, GameState>(
-                      builder: (context, state) {
-                        if (state is GetSlotsState) {
-                          print("Recibiendo Slots");
-                          _userSlots = state.userSlots;
-                          _enemySlots = state.enemySlots;
-                          //De esta manera se guardan siempre que haya cambios para que esten presentes
-                          //Aunque no sea el estado del Get Slot
-                          return get_user_slots();
-                        }
-
-                        return get_user_slots();
-                      },
-                    ),
-                    //TODO: Tunear pinwino
-                    Stack(
-                      alignment: Alignment.topCenter,
-                      children: [
-                        Container(
-                          width: 120,
-                          height: 120,
-                          child: Image.asset('$ProfilePic'),
-                        ),
-                        Container(
-                          height: 50,
-                          width: 50,
-                          child: Image.asset('${_Pinwino_jugador.gorro}'),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    BlocBuilder<GameBloc, GameState>(
-                      builder: (context, state) {
-                        if (state is SelectedCardState) {
-                          //TODO: no llega aqui
-                          print("Carta seleccionada");
-                          return Container(
-                            child: BattleCard(
-                              card: state.card,
-                              index: 0,
-                              usable: false,
-                            ),
-                          );
-                        } else if (state is BattleCardsState) {
-                          return Container(
-                            child: BattleCard(
-                              card: state.userCard,
-                              index: 0,
-                              usable: false,
-                            ),
-                          );
-                        }
-
-                        return Container(
-                          height: 130,
-                          width: 130,
-                        );
-                      },
-                    ),
-                  ],
-                ), //Carta seleccionada 1
-                Stack(
-                  children: [
-                    Container(
-                        alignment: Alignment.center,
-                        height: 60,
-                        width: 60,
-                        child: Image.asset(
-                          '$Snowball',
-                          fit: BoxFit.fill,
-                        )),
-                    Container(
-                      alignment: Alignment.center,
-                      height: 60,
-                      width: 60,
-                      child: Text(
-                        '9',
-                        style: TextStyle(
-                          fontSize: 48,
-                          fontWeight: FontWeight.w900,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    BlocBuilder<GameBloc, GameState>(
-                      builder: (context, state) {
-                        if (state is BattleCardsState) {
-                          return Container(
-                            child: BattleCard(
-                              card: state.enemyCard,
-                              index: 0,
-                              usable: false,
-                            ),
-                          );
-                        }
-
-                        return Container(
-                          height: 130,
-                          width: 130,
-                        );
-                      },
-                    ),
-                  ],
-                ), //Carta seleccionada 2
-                Column(
-                  //TODO: elementos enemigo
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    BlocBuilder<GameBloc, GameState>(
-                      builder: (context, state) {
-                        if (state is GetSlotsState) {
-                          print("Recibiendo Slots");
-                          _userSlots = state.userSlots;
-                          _enemySlots = state.enemySlots;
-                          //De esta manera se guardan siempre que haya cambios para que esten presentes
-                          //Aunque no sea el estado del Get Slot
-                          return get_enemy_slots();
-                        }
-
-                        return get_enemy_slots();
-                      },
-                    ),
-                    //TODO: Tunear pinwino
-                    Stack(
-                      alignment: Alignment.topCenter,
-                      children: [
-                        Container(
-                          width: 120,
-                          height: 120,
-                          child: Image.asset('$ProfilePic'),
-                        ),
-                        Container(
-                          height: 50,
-                          width: 50,
-                          child: Image.asset('${_Pinwino_jugador.gorro}'),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ), //Aqui van los pinwinos
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
@@ -620,7 +799,7 @@ class BattleScenario extends StatelessWidget {
                       );
                     },
                   ),
-                )
+                ),
               ],
             ),
           ), //Aqui van las cartas

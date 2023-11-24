@@ -9,6 +9,8 @@ sealed class ProfileState extends Equatable {
 
 final class ProfileInitial extends ProfileState {}
 
+final class ProfileWaitingUserState extends ProfileState {}
+
 final class ProfileDataGetState extends ProfileState {
   final Pinwino pinwin;
 

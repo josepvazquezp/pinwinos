@@ -12,8 +12,8 @@ class Pinwino extends Equatable {
   final int? derrotas;
   final String? fecha;
   final bool? conectado;
-  final List<Carta>? deck;
-  final List<Carta>? library;
+  List<Carta>? deck;
+  List<Carta>? library;
   String? gorro;
   final List<String> gorros;
   final List<String> friends;

@@ -141,10 +141,10 @@ void main() async {
   runApp(MultiBlocProvider(
     providers: [
       BlocProvider(
-        create: (context) => FriendListBloc()..add(GetFriendsEvent()),
+        create: (context) => FriendListBloc(),
       ),
       BlocProvider(
-        create: (context) => DeckEditionBloc()..add(GetDeckLibraryEvent()),
+        create: (context) => DeckEditionBloc(),
       ),
       BlocProvider(
         create: (context) => LoginBloc(),
@@ -153,13 +153,13 @@ void main() async {
         create: (context) => RoomListBloc()..add(GetRoomListEvent()),
       ),
       BlocProvider<ProfileBloc>(
-        create: (context) => ProfileBloc()..add(GetDataEvent()),
+        create: (context) => ProfileBloc(),
       ),
       BlocProvider<ScannerBloc>(
         create: (context) => ScannerBloc()..add(UnlockGivenEvent()),
       ),
       BlocProvider(
-        create: (context) => GameBloc()..add(GetUserBattleEvent(p1: _pt)),
+        create: (context) => GameBloc(),
       ),
       BlocProvider<DeckGameBloc>(
         create: (context) => DeckGameBloc(),

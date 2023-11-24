@@ -183,6 +183,9 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   FutureOr<void> _getData(GetUserBattleEvent event, Emitter emit) {
     _p1 = event.p1;
 
+    print("********************************************************");
+    print(_p1!.gorro);
+
     if (event.p2 != null) {
       _p2 = event.p2;
       _ia = false;

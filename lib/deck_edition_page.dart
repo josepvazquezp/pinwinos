@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pinwinos/bloc_deck_edition/deck_edition_bloc.dart';
+import 'package:pinwinos/bloc_login/login_bloc.dart';
 import 'package:pinwinos/item_card.dart';
 import 'package:pinwinos/models/carta.dart';
 
@@ -43,39 +44,66 @@ class DeckEditionPage extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(
-                    height: 50,
-                    width: 250,
-                    child: TextField(
-                      controller: findController,
-                      decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.white,
-                            width: 2,
-                          ),
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        label: Text(
-                          "Filtro de elemento",
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-                        prefixIcon: Icon(
-                          Icons.search_sharp,
+                  DropdownMenu<String>(
+                    initialSelection: "ninguno",
+                    controller: findController,
+                    requestFocusOnTap: true,
+                    onSelected: (elemento) {
+                      BlocProvider.of<DeckEditionBloc>(context)
+                          .add(FilterCardsEvent(filter: findController.text));
+                    },
+                    inputDecorationTheme: InputDecorationTheme(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
                           color: Colors.white,
+                          width: 2,
                         ),
-                      ),
-                      style: TextStyle(
-                        color: Colors.white,
                       ),
                     ),
+                    label: Text(
+                      "Filtro",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    trailingIcon:
+                        Icon(Icons.arrow_drop_down, color: Colors.white),
+                    textStyle: TextStyle(color: Colors.white),
+                    leadingIcon: Icon(Icons.search, color: Colors.white),
+                    dropdownMenuEntries: [
+                      DropdownMenuEntry<String>(
+                        value: "fuego",
+                        label: "fuego",
+                        style: MenuItemButton.styleFrom(
+                          foregroundColor: Colors.red,
+                        ),
+                      ),
+                      DropdownMenuEntry<String>(
+                        value: "agua",
+                        label: "agua",
+                        style: MenuItemButton.styleFrom(
+                          foregroundColor: Colors.indigo,
+                        ),
+                      ),
+                      DropdownMenuEntry<String>(
+                        value: "nieve",
+                        label: "nieve",
+                        style: MenuItemButton.styleFrom(
+                          foregroundColor: Colors.lightBlue,
+                        ),
+                      ),
+                      DropdownMenuEntry<String>(
+                        value: "ninguno",
+                        label: "ninguno",
+                      ),
+                    ],
                   ),
                   IconButton(
                     onPressed: () {
                       BlocProvider.of<DeckEditionBloc>(context)
-                          .add(FilterCardsEvent(filter: findController.text));
+                          .add(FirebaseUpdatesEvent());
                     },
                     icon: Icon(
                       Icons.check_circle_outline_sharp,
@@ -105,14 +133,14 @@ class DeckEditionPage extends StatelessWidget {
                             fontSize: 25,
                           ),
                         ),
-                        IconButton(
-                          onPressed: () {},
-                          icon: Icon(
-                            Icons.share_sharp,
-                          ),
-                          color: Color.fromARGB(255, 1, 10, 58),
-                          iconSize: 35,
-                        ),
+                        // IconButton(
+                        //   onPressed: () {},
+                        //   icon: Icon(
+                        //     Icons.share_sharp,
+                        //   ),
+                        //   color: Color.fromARGB(255, 1, 10, 58),
+                        //   iconSize: 35,
+                        // ),
                       ],
                     ),
                   ),
@@ -137,6 +165,18 @@ class DeckEditionPage extends StatelessWidget {
               listener: (context, state) {
                 if (state is BadCardUpdateState) {
                   _showDenyCardUpdateDialog(context);
+                } else if (state is LoadingState) {
+                  _showLoadingDialog(context);
+                } else if (state is FirebaseUpdateSuccessState) {
+                  BlocProvider.of<LoginBloc>(context).user.deck =
+                      BlocProvider.of<DeckEditionBloc>(context).getDeck;
+
+                  BlocProvider.of<LoginBloc>(context).user.library =
+                      BlocProvider.of<DeckEditionBloc>(context).getLibrary;
+
+                  _scaffoldSuccess(context);
+
+                  Navigator.of(context).pop();
                 }
               },
               builder: (context, state) {
@@ -210,5 +250,35 @@ class DeckEditionPage extends StatelessWidget {
     );
 
     BlocProvider.of<DeckEditionBloc>(context).add(ChangeStateEvent());
+  }
+
+  void _showLoadingDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Guardando Deck"),
+          content: Container(
+            height: 200,
+            child: CircularProgressIndicator(),
+          ),
+        );
+      },
+    );
+  }
+
+  void _scaffoldSuccess(BuildContext context) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.green,
+          content: Text(
+            "Se ha actualizado el deck corectamente",
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      );
   }
 }

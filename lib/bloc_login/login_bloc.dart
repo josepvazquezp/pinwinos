@@ -59,6 +59,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     "47I7anY3lHX3bJhb21t5",
   ];
 
+  List<String> _hats = [
+    "assets/images/hats/wizard_hat.webp",
+    "assets/images/hats/cowboy_hat.webp",
+    "assets/images/hats/cap.webp",
+    "assets/images/hats/kirby_hat.png",
+    "assets/images/hats/mario_hat.png",
+    "assets/images/hats/sailor_hat.webp",
+    "assets/images/hats/top_hat.png",
+  ];
+
   bool get getLogin => _login;
   bool get getSigIn => _sigin;
   Pinwino get getPinwino => user;
@@ -66,6 +76,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc() : super(LoginInitial()) {
     on<GetUserEvent>(_getUserLogin);
     on<CreateUserEvent>(_createUserRegister);
+    on<LogoutEvent>(_logoutEvent);
   }
 
   FutureOr<void> _getUserLogin(GetUserEvent event, Emitter emit) async {
@@ -80,6 +91,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           .where("email", isEqualTo: "${event.mail}")
           .get();
 
+      await FirebaseFirestore.instance
+          .collection('pinwinos')
+          .doc(userInfo.docs.first.id)
+          .update({"connected": true});
+
       List<Carta> userDeck =
           await userDeck_Library(userInfo.docs.first.data()["deck"]);
       List<Carta> userLibrary =
@@ -93,7 +109,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         victorias: userInfo.docs.first.data()["wins"],
         derrotas: userInfo.docs.first.data()["loses"],
         fecha: userInfo.docs.first.data()["sign_date"].toString(),
-        conectado: userInfo.docs.first.data()["connected"],
+        conectado: true,
         deck: userDeck,
         library: userLibrary,
         gorro: userInfo.docs.first.data()["hat"],
@@ -134,7 +150,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           "connected": true,
           "friends": [],
           "hat": "",
-          "hats": [],
+          "hats": _hats,
           "loses": 0,
           "wins": 0,
           "sign_date": DateTime.now(),
@@ -220,5 +236,15 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }
 
     return tempList;
+  }
+
+  FutureOr<void> _logoutEvent(LogoutEvent event, Emitter emit) async {
+    await FirebaseFirestore.instance
+        .collection('pinwinos')
+        .doc(user.id)
+        .update({"connected": false});
+
+    _login = false;
+    emit(LogoutState());
   }
 }

@@ -7,7 +7,14 @@ sealed class DeckEditionEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class GetDeckLibraryEvent extends DeckEditionEvent {}
+class GetDeckLibraryEvent extends DeckEditionEvent {
+  final Pinwino user;
+
+  GetDeckLibraryEvent({required this.user});
+
+  @override
+  List<Object> get props => [this.user];
+}
 
 class AddCardDeckEvent extends DeckEditionEvent {
   final int index;
@@ -37,3 +44,5 @@ class FilterCardsEvent extends DeckEditionEvent {
   @override
   List<Object> get props => [this.filter];
 }
+
+class FirebaseUpdatesEvent extends DeckEditionEvent {}
