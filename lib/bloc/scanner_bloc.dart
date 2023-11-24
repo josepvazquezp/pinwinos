@@ -79,10 +79,12 @@ class ScannerBloc extends Bloc<ScannerEvent, ScannerState> {
       try {
         if (user!.library!.contains(selected_card)) {
           emit(GetCodeDataState(
-              item:
-                  "${selected_card.color} ${selected_card.numero} ${selected_card.elemento}",
-              item_image: selected_card.imagen!,
-              unlocked: 'Ya tenias:'));
+            user_p: user!,
+            item:
+                "${selected_card.color} ${selected_card.numero} ${selected_card.elemento}",
+            item_image: selected_card.imagen!,
+            unlocked: 'Ya tenias:',
+          ));
         } else {
           //users_library.add(code_data);
 
@@ -93,6 +95,7 @@ class ScannerBloc extends Bloc<ScannerEvent, ScannerState> {
                 .update({"library": user!.library!});
 
             emit(GetCodeDataState(
+                user_p: user!,
                 item:
                     "${selected_card.color} ${selected_card.numero} ${selected_card.elemento}",
                 item_image: selected_card.imagen!,
