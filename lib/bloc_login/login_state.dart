@@ -14,3 +14,5 @@ final class LoadLoginState extends LoginState {}
 final class GetUserSuccessState extends LoginState {}
 
 final class ErrorState extends LoginState {}
+
+final class LogoutState extends LoginState {}

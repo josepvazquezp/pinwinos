@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:pinwinos/models/pinwino.dart';
 
@@ -7,105 +8,94 @@ part 'friend_list_event.dart';
 part 'friend_list_state.dart';
 
 class FriendListBloc extends Bloc<FriendListEvent, FriendListState> {
-  final Pinwino player = new Pinwino(
-    id: "123 456 789",
-    nombre: "Pancho Barraza",
-    correo: "caguama@gmail.com",
-    password: "jokeis123",
-    victorias: 0,
-    derrotas: 0,
-    fecha: "28 de Octubre de 2023",
-    conectado: true,
-    deck: [],
-    library: [],
-    gorro: "assets\images\hats\cowboy_hat.webp",
-    gorros: [
-      "assets/images/hats/wizard_hat.webp",
-      "assets/images/hats/cowboy_hat.webp",
-    ],
-    friends: [
-      "111 222 333",
-      "333 222 111",
-    ],
-  );
-
-  List<Pinwino> OtherOnes = [
-    new Pinwino(
-      id: "111 222 333",
-      nombre: "Don Churrumais",
-      correo: "",
-      password: "",
-      victorias: 0,
-      derrotas: 0,
-      fecha: "28 de Octubre de 2023",
-      conectado: true,
-      deck: [],
-      library: [],
-      gorro: "assets/images/hats/cowboy_hat.webp",
-      gorros: [
-        "assets/images/hats/wizard_hat.webp",
-        "assets/images/hats/cowboy_hat.webp",
-      ],
-      friends: [
-        "123 456 789",
-      ],
-    ),
-    new Pinwino(
-      id: "333 222 111",
-      nombre: "Wellinton Quiw",
-      correo: "",
-      password: "",
-      victorias: 0,
-      derrotas: 0,
-      fecha: "28 de Octubre de 2023",
-      conectado: true,
-      deck: [],
-      library: [],
-      gorro: "assets/images/hats/wizard_hat.webp",
-      gorros: [
-        "assets/images/hats/wizard_hat.webp",
-        "assets/images/hats/cowboy_hat.webp",
-      ],
-      friends: [
-        "123 456 789",
-      ],
-    ),
-    new Pinwino(
-      id: "999 888 111",
-      nombre: "Xx_rompe_puertas_xX",
-      correo: "",
-      password: "",
-      victorias: 0,
-      derrotas: 0,
-      fecha: "28 de Octubre de 2023",
-      conectado: true,
-      deck: [],
-      library: [],
-      gorro: "assets/images/hats/wizard_hat.webp",
-      gorros: [
-        "assets/images/hats/wizard_hat.webp",
-        "assets/images/hats/cowboy_hat.webp",
-      ],
-      friends: [
-        "123 456 789",
-      ],
-    ),
-  ];
+  Pinwino? player;
 
   FriendListBloc() : super(FriendListInitial()) {
     on<GetFriendsEvent>(_getFriendsEvent);
+    on<AddingFriendsEvent>(_add_friends);
+    on<FriendsLoadUserEvent>(_friends_load_user_data);
+
+    on<FriendDoesntExistsEvent>(_friend_doesnt_exists);
+    on<FriendAlreadyEvent>(_friend_already);
+    on<FriendAddedEvent>(_friend_added);
   }
 
-  FutureOr<void> _getFriendsEvent(FriendListEvent event, Emitter emit) {
-    //TODO: Todo esto se debe cambiar por el WHERE cuando se tenga la base de datos
-    List<Pinwino> TemporalList = [];
+  FutureOr<void> _friends_load_user_data(
+      FriendsLoadUserEvent event, Emitter emit) {
+    player = event.user;
+    print("AMIGOS DEL USUARIO");
+    print(player!.friends);
+    add(GetFriendsEvent());
+  }
 
-    for (int i = 0; i < player.friends.length; i++) {
-      if (player.friends[i] == OtherOnes[i].id) {
-        TemporalList.add(OtherOnes[i]);
-      }
+  FutureOr<void> _friend_doesnt_exists(
+      FriendDoesntExistsEvent event, Emitter emit) async {
+    emit(FriendDoesntExistsState());
+    await Future.delayed(Duration(seconds: 3));
+    add(GetFriendsEvent());
+  }
+
+  FutureOr<void> _friend_already(FriendAlreadyEvent event, Emitter emit) async {
+    emit(FriendAlreadyState());
+    await Future.delayed(Duration(seconds: 3));
+    add(GetFriendsEvent());
+  }
+
+  FutureOr<void> _friend_added(FriendAddedEvent event, Emitter emit) async {
+    emit(FriendAddedState());
+    await Future.delayed(Duration(seconds: 3));
+    add(GetFriendsEvent());
+  }
+
+  FutureOr<void> _add_friends(AddingFriendsEvent event, Emitter emit) async {
+    emit(UpgradingFriendsState());
+    print("ID RECIBIDO");
+    print(event.id);
+    add_friend(event.id);
+  }
+
+  FutureOr<void> _getFriendsEvent(FriendListEvent event, Emitter emit) async {
+    if (player!.friends.isEmpty) {
+      print("Sin amigos");
+      emit(NoFriendsState());
+    } else {
+      print("Tiene amigos");
+      emit(FriendListDisplayState(FriendList: player!.friends));
     }
+  }
 
-    emit(FriendListDisplayState(FriendList: TemporalList));
+  void add_friend(String id) async {
+    print("ID A BUSCAR");
+    print(id);
+
+    var res =
+        await FirebaseFirestore.instance.collection('pinwinos').doc(id).get();
+
+    if (res.data() != null) {
+      if (player!.friends.contains(id)) {
+        //Ya esta agregado
+        print("El pinwino ya es amigo");
+        add(FriendAlreadyEvent());
+      } else {
+        //No esta agregado
+        print("El pinwino aun no es amigo");
+        player!.friends.add(id);
+        print(player!.friends);
+
+        await FirebaseFirestore.instance
+            .collection("pinwinos")
+            .doc(player!.id)
+            .update({"friends": player!.friends});
+
+        await FirebaseFirestore.instance.collection("pinwinos").doc(id).set({
+          "friends": FieldValue.arrayUnion([player!.id])
+        }, SetOptions(merge: true));
+
+        add(FriendAddedEvent());
+      }
+    } else {
+      print("No existe ese Pinwino");
+      add(FriendDoesntExistsEvent());
+    }
   }
 }

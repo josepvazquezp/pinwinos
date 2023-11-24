@@ -3,13 +3,13 @@ import 'dart:convert';
 import 'package:equatable/equatable.dart';
 
 class Carta extends Equatable {
-  final String? id;
   final String? imagen;
   final int? numero;
   final String? color;
   final String? elemento;
   final String? poder;
   final String? poder_imagen;
+  final String? id;
 
   const Carta({
     this.id,

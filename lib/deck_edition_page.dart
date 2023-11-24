@@ -133,14 +133,14 @@ class DeckEditionPage extends StatelessWidget {
                             fontSize: 25,
                           ),
                         ),
-                        IconButton(
-                          onPressed: () {},
-                          icon: Icon(
-                            Icons.share_sharp,
-                          ),
-                          color: Color.fromARGB(255, 1, 10, 58),
-                          iconSize: 35,
-                        ),
+                        // IconButton(
+                        //   onPressed: () {},
+                        //   icon: Icon(
+                        //     Icons.share_sharp,
+                        //   ),
+                        //   color: Color.fromARGB(255, 1, 10, 58),
+                        //   iconSize: 35,
+                        // ),
                       ],
                     ),
                   ),

@@ -1,52 +1,51 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:pinwinos/models/carta.dart';
 import 'package:pinwinos/models/pinwino.dart';
 
 part 'profile_event.dart';
 part 'profile_state.dart';
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
-  final Pinwino player = new Pinwino(
-    id: "123 456 789",
-    nombre: "Pancho Barraza",
-    correo: "caguama@gmail.com",
-    password: "jokeis123",
-    victorias: 0,
-    derrotas: 0,
-    fecha: "28 de Octubre de 2023",
-    conectado: true,
-    deck: [],
-    library: [],
-    gorro: "assets/images/hats/cowboy_hat.webp",
-    gorros: [
-      "assets/images/hats/wizard_hat.webp",
-      "assets/images/hats/cowboy_hat.webp",
-      "assets/images/hats/cap.webp",
-      "assets/images/hats/kirby_hat.png",
-      "assets/images/hats/mario_hat.png",
-      "assets/images/hats/sailor_hat.webp",
-      "assets/images/hats/top_hat.png",
-    ],
-    friends: [
-      "111 222 333",
-      "333 222 111",
-    ],
-  );
+  Pinwino? player;
 
-  String? get getGorro => player.gorro;
+  String? get getGorro => player!.gorro;
+  List<Carta>? get getDeck => player!.deck;
+  int get getDeckLength => (getDeck!.length ~/ 2).toInt();
 
-  void setGorro(String? neogorro) {
-    player.gorro = neogorro;
+  void set_user(Pinwino ruser) {
+    player = ruser;
+    print("PLAYER RECIBIDO");
+    print(player);
+    add(GetDataEvent());
+  }
+
+  Future<void> setGorro(String? neogorro) async {
+    player!.gorro = neogorro;
+    await FirebaseFirestore.instance
+        .collection('pinwinos')
+        .doc(player!.id)
+        .update({"hat": neogorro});
+
     add(HatChangedEvent());
   }
 
   ProfileBloc() : super(ProfileInitial()) {
+    on<ProfileLoadUserEvent>(_prepare_profile_data_event);
     on<GetDataEvent>(_getDataEvent);
     on<HatChangedEvent>(_getDataEvent);
   }
 
-  FutureOr<void> _getDataEvent(ProfileEvent event, Emitter emit) {
-    emit(ProfileDataGetState(pinwin: player));
+  Future<FutureOr<void>> _prepare_profile_data_event(
+      ProfileLoadUserEvent event, Emitter emit) async {
+    set_user(event.user);
+  }
+
+  Future<FutureOr<void>> _getDataEvent(ProfileEvent event, Emitter emit) async {
+    if (player != Null) {
+      emit(ProfileDataGetState(pinwin: player!));
+    }
   }
 }

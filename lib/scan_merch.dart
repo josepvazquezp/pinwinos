@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pinwinos/bloc/scanner_bloc.dart';
+import 'package:pinwinos/models/pinwino.dart';
 
 class ScanMerch extends StatefulWidget {
-  const ScanMerch({super.key});
+  final Pinwino user_rec;
+  const ScanMerch({super.key, required this.user_rec});
 
   @override
   State<ScanMerch> createState() => _ScanMerchState();
@@ -55,6 +57,21 @@ class _ScanMerchState extends State<ScanMerch> {
         });
   }
 
+  void _showUnexistantDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Center(
+            child: AlertDialog(
+              title: Text(
+                'Alerta',
+              ),
+              content: Text("El ID escaneado no corresponde a ninguna carta"),
+            ),
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     Color textColor = Colors.white;
@@ -95,6 +112,8 @@ class _ScanMerchState extends State<ScanMerch> {
                       color: Colors.white,
                       onPressed: () async {
                         String res = await scanQR();
+                        print("LECTURA COMPLETA");
+                        print(res);
                         BlocProvider.of<ScannerBloc>(context).setCodeData(res);
                       },
                       icon: Icon(
@@ -111,6 +130,12 @@ class _ScanMerchState extends State<ScanMerch> {
                 } else if (state is ErrorDataState) {
                   Future.microtask(() => _showCancelErrorDialog());
                   BlocProvider.of<ScannerBloc>(context).add(UnlockGivenEvent());
+                } else if (state is UnexistantDataState) {
+                  Future.microtask(() => _showUnexistantDialog());
+                  BlocProvider.of<ScannerBloc>(context).add(UnlockGivenEvent());
+                } else if (state is WaitingScanState) {
+                  BlocProvider.of<ScannerBloc>(context)
+                      .set_user(widget.user_rec);
                 }
 
                 return Text('');
