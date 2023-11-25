@@ -145,9 +145,8 @@ class _FriendListState extends State<FriendList> {
                                 );
 
                                 await Share.share(
-                                    "${BlocProvider.of<FriendListBloc>(context).player!.id}",
-                                    subject:
-                                        "Mi codigo para Pinwinos en Tamaulipas!!");
+                                  "Aqui tienes mi ID de Pinwinos en Tamaulipas:\n${BlocProvider.of<FriendListBloc>(context).player!.id}",
+                                );
                               },
                               child: Image.asset(
                                 "assets/images/friends.png",

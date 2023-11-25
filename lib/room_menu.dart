@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pinwinos/battle_scenario.dart';
 import 'package:pinwinos/bloc/room_list_bloc.dart';
+import 'package:pinwinos/bloc_game/game_bloc.dart';
 import 'package:pinwinos/models/pinwino.dart';
 import 'package:pinwinos/penwin_view.dart';
 
@@ -108,14 +110,15 @@ class _RoomMenuState extends State<RoomMenu> {
                               .verify_room("dXtJHHn6mgwUPZqcLkdl")) {
                             print("Snapshot");
                             print(snapshot.data!.data());
-                            return Text(
-                              "YA HAY PARTIDA CABRONES",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 32,
-                                fontWeight: FontWeight.w800,
-                              ),
-                            );
+
+                            BlocProvider.of<GameBloc>(context).add(
+                                GetUserBattleEvent(
+                                    p1: BlocProvider.of<RoomListBloc>(context)
+                                        .player!));
+
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              _navigateToBattleScenario(context);
+                            });
                           } else {
                             return Text(
                               "Batalla en progreso",
@@ -158,6 +161,14 @@ class _RoomMenuState extends State<RoomMenu> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  void _navigateToBattleScenario(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => BattleScenario(),
       ),
     );
   }

@@ -184,6 +184,8 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     _p1 = event.p1;
 
     print("********************************************************");
+    print("JUGADOR LOCAL RECIBIDO");
+    print(_p1);
     print(_p1!.gorro);
 
     if (event.p2 != null) {
