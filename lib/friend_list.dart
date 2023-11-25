@@ -6,7 +6,7 @@ import 'package:pinwinos/bloc/friend_list_bloc.dart';
 import 'package:pinwinos/bloc_login/login_bloc.dart';
 import 'package:pinwinos/models/pinwino.dart';
 import 'package:pinwinos/penwin_view.dart';
-//import 'package:share_plus/share_plus.dart';
+import 'package:share_plus/share_plus.dart';
 
 class FriendList extends StatefulWidget {
   FriendList({super.key});
@@ -144,10 +144,10 @@ class _FriendListState extends State<FriendList> {
                                   },
                                 );
 
-                                // await Share.share(
-                                //     "${BlocProvider.of<FriendListBloc>(context).player!.id}",
-                                //     subject:
-                                //         "Mi codigo para Pinwinos en Tamaulipas!!");
+                                await Share.share(
+                                    "${BlocProvider.of<FriendListBloc>(context).player!.id}",
+                                    subject:
+                                        "Mi codigo para Pinwinos en Tamaulipas!!");
                               },
                               child: Image.asset(
                                 "assets/images/friends.png",
