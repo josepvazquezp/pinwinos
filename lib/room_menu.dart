@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +18,8 @@ class RoomMenu extends StatefulWidget {
 }
 
 class _RoomMenuState extends State<RoomMenu> {
+  late StreamSubscription<DocumentSnapshot> _streamSubscription;
+
   void _showWaitDialog() {
     showDialog(
         context: context,
@@ -112,9 +116,17 @@ class _RoomMenuState extends State<RoomMenu> {
                             print(snapshot.data!.data());
 
                             BlocProvider.of<GameBloc>(context).add(
-                                GetUserBattleEvent(
-                                    p1: BlocProvider.of<RoomListBloc>(context)
-                                        .player!));
+                              GetUserBattleEvent(
+                                p1: BlocProvider.of<RoomListBloc>(context)
+                                    .player!,
+                                p2: (BlocProvider.of<RoomListBloc>(context)
+                                        .player!
+                                        .is_sender!)
+                                    ? snapshot.data!.data()!["pinwino_2"]
+                                    : snapshot.data!.data()!["pinwino_1"],
+                                room_id: snapshot.data!.id,
+                              ),
+                            );
 
                             WidgetsBinding.instance.addPostFrameCallback((_) {
                               _navigateToBattleScenario(context);
@@ -166,6 +178,8 @@ class _RoomMenuState extends State<RoomMenu> {
   }
 
   void _navigateToBattleScenario(BuildContext context) {
+    Navigator.of(context).pop();
+    Navigator.of(context).pop();
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => BattleScenario(),

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pinwinos/battle_card.dart';
@@ -75,6 +76,7 @@ class BattleScenario extends StatelessWidget {
           return MaterialButton(
             onPressed: () {
               print("Index Out ${index}");
+              print("Usable: ${use_card}");
               // _tempo(hand[index].numero, hand[index].imagen);
               if (use_card) {
                 print("Index In ${index}");
@@ -390,17 +392,48 @@ class BattleScenario extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
+          StreamBuilder(
+            stream: FirebaseFirestore.instance
+                .collection("rooms")
+                .doc("dXtJHHn6mgwUPZqcLkdl")
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                //return CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else {
+                print("DATOS RECIBIDOS EN EL JUEGO");
+                print(snapshot.data!.data());
+                BlocProvider.of<GameBloc>(context).receive_cards([
+                  snapshot.data!.data()!["p1_card"],
+                  snapshot.data!.data()!["p2_card"]
+                ]);
+
+                //Esto solo se puede si el stream builder soporta async y no se puede
+                // if (snapshot.data!.data()!["p1_card"] != "" &&
+                //     snapshot.data!.data()!["p2_card"] != "") {
+                //   BlocProvider.of<GameBloc>(context).add(CardsReadyEvent());
+                // }
+              }
+              return Column();
+            },
+          ),
           BlocConsumer<GameBloc, GameState>(
             listener: (context, state) {
-              //TODO: Preguntar al profe como triggerear esto bien
               if (checknose) {
                 checknose = false;
               }
 
               if (state is GetUsersSuccessState) {
+                //TODO: Nunca entra a este estado
+
                 // por cambiar
                 _Pinwino_jugador.gorro = state.p1Gorro;
                 use_card = BlocProvider.of<GameBloc>(context).getPlay;
+                print(
+                    "Usable del Bloc: ${BlocProvider.of<GameBloc>(context).getPlay}");
+                print("Usable local ${use_card}");
               } else if (state is EndGameState) {
                 if (state.victory) {
                   //Gana el Player 1 : User
@@ -409,10 +442,13 @@ class BattleScenario extends StatelessWidget {
                 } else {
                   Future.microtask(() => _lose_advise());
                 }
+              } else if (!(state is EndGameState)) {
+                print("HOLIWIS");
               }
             },
             builder: (context, state) {
               if (state is GetUsersSuccessState) {
+                use_card = BlocProvider.of<GameBloc>(context).getPlay;
                 return Container(
                   decoration: BoxDecoration(
                     image: DecorationImage(
@@ -467,7 +503,6 @@ class BattleScenario extends StatelessWidget {
                           BlocBuilder<GameBloc, GameState>(
                             builder: (context, state) {
                               if (state is SelectedCardState) {
-                                //TODO: no llega aqui
                                 print("Carta seleccionada");
                                 return Container(
                                   child: BattleCard(
@@ -636,7 +671,6 @@ class BattleScenario extends StatelessWidget {
                         BlocBuilder<GameBloc, GameState>(
                           builder: (context, state) {
                             if (state is SelectedCardState) {
-                              //TODO: no llega aqui
                               print("Carta seleccionada");
                               return Container(
                                 child: BattleCard(
@@ -767,9 +801,6 @@ class BattleScenario extends StatelessWidget {
                   height: ScreenHeight * 0.35,
                   width: ScreenWidth,
                   child: BlocBuilder<GameBloc, GameState>(
-                    //TODO: Preguntar si esta es la manera correcta de acceder al estado\
-                    //TODO: Ver porque a veces entra y aveces no
-
                     builder: (context, state) {
                       if (BlocProvider.of<GameBloc>(context)
                           .get_userGameBloc

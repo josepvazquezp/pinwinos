@@ -29,8 +29,10 @@ class RoomListBloc extends Bloc<RoomListEvent, RoomListState> {
 
     if (room["pinwino_1"] == "") {
       room["pinwino_1"] = player!.id;
+      player!.is_sender = true;
     } else {
       room["pinwino_2"] = player!.id;
+      player!.is_sender = false;
       room["available"] = false;
     }
     my_room_id = room_id;

@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:pinwinos/bloc_deck_game/deck_game_bloc.dart';
 import 'package:pinwinos/models/carta.dart';
 import 'package:pinwinos/models/pinwino.dart';
@@ -17,6 +19,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
   Pinwino? _p1;
   Pinwino? _p2;
+  String? room_id;
 
   Map<String, List<String>> _enemySlots = {
     "fire": [],
@@ -170,17 +173,19 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   DeckGameBloc userGameBloc = DeckGameBloc();
   DeckGameBloc? _iaGameBloc;
   Carta? _enemyCard;
+  Carta? _playerCard;
 
   DeckGameBloc get get_userGameBloc => userGameBloc;
 
   GameBloc() : super(GameInitial()) {
     on<GetUserBattleEvent>(_getData);
     on<PlayCardEvent>(_battlePhase);
+    on<CardsReadyEvent>(_cards_ready);
     on<RandomSelectionEvent>(_randomSelection);
     // TODO: TIMER https://api.flutter.dev/flutter/dart-async/Timer-class.html
   }
 
-  FutureOr<void> _getData(GetUserBattleEvent event, Emitter emit) {
+  FutureOr<void> _getData(GetUserBattleEvent event, Emitter emit) async {
     _p1 = event.p1;
 
     print("********************************************************");
@@ -189,13 +194,32 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     print(_p1!.gorro);
 
     if (event.p2 != null) {
-      _p2 = event.p2;
+      var docs = await FirebaseFirestore.instance
+          .collection("pinwinos")
+          .doc(event.p2)
+          .get();
+
+      _p2 = Pinwino(
+        nombre: docs.data()!["name"],
+        gorro: docs.data()!["hat"],
+        gorros: [],
+        friends: [],
+      );
+      room_id = event.room_id;
       _ia = false;
+
+      print("============================================");
+      print("${_p1!.nombre} contra ${_p2!.nombre} en el room ${room_id}");
+
+      String temp =
+          (_p1!.is_sender!) ? "Eres el jugador 1" : "Eres el jugador 2";
+      print(temp);
     } else {
       _p2 = _iaPinwino;
     }
 
     emit(GetUsersSuccessState(p1Gorro: _p1!.gorro!, p2Gorro: _p2!.gorro!));
+    print("USABLE AL MOMENTO DE EMITIR ${_play}");
 
     print("==================================");
     print("DECK");
@@ -218,6 +242,57 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     print("==================================");
   }
 
+  Future<void> get_enemy_card(List<String> cards) async {
+    var docs;
+    if (_p1!.is_sender! && cards[1] != "") {
+      docs = await FirebaseFirestore.instance
+          .collection("cards")
+          .doc("${cards[1]}")
+          .get();
+
+      print("Carta del enemigo");
+      print(docs.data());
+      _enemyCard = Carta(
+        color: docs.data()["color"],
+        elemento: docs.data()["elemento"],
+        imagen: docs.data()["imagen"],
+        numero: docs.data()["numero"],
+        poder: docs.data()["poder"],
+        poder_imagen: docs.data()["poder_imagen"],
+      );
+
+      if (_playerCard != null) {
+        add(CardsReadyEvent());
+      }
+    } else if (cards[0] != "") {
+      docs = await FirebaseFirestore.instance
+          .collection("cards")
+          .doc("${cards[0]}")
+          .get();
+
+      print("Carta del enemigo");
+
+      print(docs.data());
+      _enemyCard = Carta(
+        color: docs.data()["color"],
+        elemento: docs.data()["elemento"],
+        imagen: docs.data()["imagen"],
+        numero: docs.data()["numero"],
+        poder: docs.data()["poder"],
+        poder_imagen: docs.data()["poder_imagen"],
+      );
+      if (_playerCard != null) {
+        add(CardsReadyEvent());
+      }
+    }
+  }
+
+  void receive_cards(List<String> cards) async {
+    print("Cartas Recibidas");
+    print(cards);
+    await get_enemy_card(cards);
+  }
+
   FutureOr<void> _battlePhase(PlayCardEvent event, Emitter emit) async {
     if (!_play) {
     } else {
@@ -226,93 +301,132 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       print("==================================");
       print("SELECTED CARD");
       print(event.card);
+      _playerCard = event.card;
+
+      try {
+        if (room_id != null && _p1!.is_sender!) {
+          await FirebaseFirestore.instance
+              .collection("rooms")
+              .doc(room_id)
+              .update({"p1_card": _playerCard!.id});
+        } else if (room_id != null) {
+          await FirebaseFirestore.instance
+              .collection("rooms")
+              .doc(room_id)
+              .update({"p2_card": _playerCard!.id});
+        }
+        if (_enemyCard != null) {
+          add(CardsReadyEvent());
+        }
+      } catch (e) {
+        print("ERROR AL SUBIR LA CARTA DEL USUARIO LOCAL");
+        print(e);
+      }
+
       print("==================================");
       emit(SelectedCardState(card: event.card));
 
       //IA poderosisima
       if (_ia) {
         _enemyCard = iaPossibilities(_iaGameBloc!.getActualHand);
-      } else {
-        // TODO: hasta http de hosteo la que ponga el otro men
+        print("Paso la IA");
+        add(CardsReadyEvent());
       }
-
-      print("Paso la IA");
-
-      emit(BattleCardsState(userCard: event.card, enemyCard: _enemyCard!));
-
-      print("Paso el Battle Cards");
-
-      _winRound = _checkRoundWinner(event.card, _enemyCard!);
-
-      print("Paso el win round");
-
-      if (_winRound == 1) {
-        _roundPower = event.card.poder!;
-
-        _userSlots[event.card.elemento]!.add(event.card.color!);
-      } else if (_winRound == 2) {
-        _roundPower = _enemyCard!.poder!;
-
-        _enemySlots[_enemyCard!.elemento]!.add(_enemyCard!.color!);
-      } else {
-        _roundPower = "";
-      }
-
-      print("Paso el if para los slots");
-
-      // eliminación de slots si gano ese poder
-      if (_roundPower != "" && _roundPower[0] == "-" && _roundPower[1] != "2") {
-        emit(PowerRoundState(power: _roundPower));
-        removeSlot();
-        _roundPower = "";
-      }
-
-      print("Paso el poder");
-
-      print("USER SLOTS");
-      print("==================================");
-      print(_userSlots);
-      print("==================================");
-
-      print("ENEMY SLOTS");
-      print("==================================");
-      print(_enemySlots);
-      print("==================================");
-
-      await Future.delayed(Duration(seconds: 2));
-
-      emit(GetSlotsState(userSlots: _userSlots, enemySlots: _enemySlots));
-
-      print("Paso el emit");
-
-      // EVALUACIÓN DE SLOTS PARA VER SI YA GANO ALGUIEN
-      if (_winRound != 0) {
-        _gameWinner = _checkGameWinner();
-
-        if (_gameWinner != 0) {
-          emit(EndGameState(victory: _gameWinner == 1 ? true : false));
-        }
-      }
-
-      print("Paso el game winner");
-
-      if (_roundPower != "") {
-        emit(PowerRoundState(power: _roundPower));
-      }
-
-      print("Paso el power state");
-
-      // DRAWPHASE
-      userGameBloc.add(GetHandEvent(card: event.card));
-
-      if (_ia) {
-        _iaGameBloc!.add(GetHandEvent(card: _enemyCard!));
-      }
-
-      print("Paso el draw phase final");
-
-      _play = true;
     }
+  }
+
+  FutureOr<void> _cards_ready(CardsReadyEvent event, Emitter emit) async {
+    emit(BattleCardsState(userCard: _playerCard!, enemyCard: _enemyCard!));
+
+    await FirebaseFirestore.instance
+        .collection("rooms")
+        .doc(room_id)
+        .update({"p1_card": "", "p2_card": ""});
+
+    print("Paso el Battle Cards");
+
+    _winRound = _checkRoundWinner(_playerCard!, _enemyCard!);
+
+    print("Paso el win round");
+
+    if (_winRound == 1) {
+      _roundPower = _playerCard!.poder!;
+
+      _userSlots[_playerCard!.elemento]!.add(_playerCard!.color!);
+    } else if (_winRound == 2) {
+      _roundPower = _enemyCard!.poder!;
+
+      _enemySlots[_enemyCard!.elemento]!.add(_enemyCard!.color!);
+    } else {
+      _roundPower = "";
+    }
+
+    print("Paso el if para los slots");
+
+    // eliminación de slots si gano ese poder
+    if (_roundPower != "" && _roundPower[0] == "-" && _roundPower[1] != "2") {
+      emit(PowerRoundState(power: _roundPower));
+      removeSlot();
+      _roundPower = "";
+    }
+
+    print("Paso el poder");
+
+    print("USER SLOTS");
+    print("==================================");
+    print(_userSlots);
+    print("==================================");
+
+    print("ENEMY SLOTS");
+    print("==================================");
+    print(_enemySlots);
+    print("==================================");
+
+    await Future.delayed(Duration(seconds: 2));
+
+    emit(GetSlotsState(userSlots: _userSlots, enemySlots: _enemySlots));
+
+    print("Paso el emit");
+
+    // EVALUACIÓN DE SLOTS PARA VER SI YA GANO ALGUIEN
+    if (_winRound != 0) {
+      _gameWinner = _checkGameWinner();
+
+      if (_gameWinner != 0) {
+        await FirebaseFirestore.instance
+            .collection("rooms")
+            .doc(room_id)
+            .update({
+          "pinwino_1": "",
+          "pinwino_2": "",
+          "p1_card": "",
+          "p2_card": ""
+        });
+        emit(EndGameState(victory: _gameWinner == 1 ? true : false));
+      }
+    }
+
+    print("Paso el game winner");
+
+    if (_roundPower != "") {
+      emit(PowerRoundState(power: _roundPower));
+    }
+
+    print("Paso el power state");
+
+    // DRAWPHASE
+    userGameBloc.add(GetHandEvent(card: _playerCard!));
+
+    if (_ia) {
+      _iaGameBloc!.add(GetHandEvent(card: _enemyCard!));
+    }
+
+    _enemyCard = null;
+    _playerCard = null;
+
+    print("Paso el draw phase final");
+
+    _play = true;
   }
 
   Carta iaPossibilities(List<Carta> hand) {
