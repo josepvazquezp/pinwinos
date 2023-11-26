@@ -409,6 +409,20 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           });
         }
 
+        if (!_ia) {
+          if (_gameWinner == 1) {
+            await FirebaseFirestore.instance
+                .collection("pinwinos")
+                .doc(_p1!.id)
+                .update({"wins": _p1!.victorias! + 1});
+          } else {
+            await FirebaseFirestore.instance
+                .collection("pinwinos")
+                .doc(_p1!.id)
+                .update({"loses": _p1!.derrotas! + 1});
+          }
+        }
+
         emit(EndGameState(victory: _gameWinner == 1 ? true : false));
       }
     }
