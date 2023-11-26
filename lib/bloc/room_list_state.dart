@@ -18,3 +18,18 @@ final class GetRoomListState extends RoomListState {
   @override
   List<Object> get props => [RoomPinwinos, RoomFriends];
 }
+
+final class ReadyToBattleState extends RoomListState {
+  final String pinwino_1;
+  final String pinwino_2;
+  final String room_id;
+
+  ReadyToBattleState(
+      {required this.pinwino_1,
+      required this.pinwino_2,
+      required this.room_id});
+
+  @override
+  // TODO: implement props
+  List<Object> get props => [pinwino_1, pinwino_2, room_id];
+}

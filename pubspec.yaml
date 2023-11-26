@@ -40,6 +40,8 @@ dependencies:
   firebase_ui_firestore: ^1.5.14
   firebase_auth: ^4.14.0
   firebase_ui_auth: ^1.9.1
+  share_plus: ^6.3.4
+  flutter_launcher_icons: ^0.13.1
   # share_plus: ^7.2.1
 
 
@@ -52,6 +54,12 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/icon_app.png"
+  min_sdk_android: 21
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -163,6 +171,12 @@ flutter:
     - assets/images/hats/kirby_hat.png
     - assets/images/hats/sailor_hat.webp
     - assets/images/hats/mario_hat.png
+    - assets/images/loading_dance.webp
+    - assets/images/loading_update_deck.webp
+    - assets/images/icon_app.png
+    - assets/images/loose_dialog.webp
+    - assets/images/victory_dialog.webp
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

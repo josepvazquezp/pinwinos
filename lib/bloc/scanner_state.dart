@@ -21,10 +21,15 @@ final class GetCodeDataState extends ScannerState {
   final String unlocked;
   final String item;
   final String item_image;
+  final Pinwino user_p;
 
-  GetCodeDataState(
-      {required this.unlocked, required this.item, required this.item_image});
+  GetCodeDataState({
+    required this.unlocked,
+    required this.item,
+    required this.item_image,
+    required this.user_p,
+  });
 
   @override
-  List<Object> get props => [unlocked, item, item_image];
+  List<Object> get props => [unlocked, item, item_image, user_p];
 }

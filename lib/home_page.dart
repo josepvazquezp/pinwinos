@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pinwinos/battle_scenario.dart';
 import 'package:pinwinos/bloc/friend_list_bloc.dart';
+import 'package:pinwinos/bloc/room_list_bloc.dart';
 import 'package:pinwinos/bloc_deck_edition/deck_edition_bloc.dart';
 import 'package:pinwinos/bloc/profile_bloc.dart';
 import 'package:pinwinos/bloc_game/game_bloc.dart';
@@ -169,10 +170,12 @@ class HomePage extends StatelessWidget {
                                   if (BlocProvider.of<LoginBloc>(context)
                                       .getLogin) {
                                     BlocProvider.of<GameBloc>(context).add(
-                                        GetUserBattleEvent(
-                                            p1: BlocProvider.of<LoginBloc>(
-                                                    context)
-                                                .getPinwino));
+                                      GetUserBattleEvent(
+                                          p1: BlocProvider.of<LoginBloc>(
+                                                  context)
+                                              .getPinwino,
+                                          room_id: ""),
+                                    );
 
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
@@ -198,6 +201,12 @@ class HomePage extends StatelessWidget {
                                 onPressed: () {
                                   if (BlocProvider.of<LoginBloc>(context)
                                       .getLogin) {
+                                    BlocProvider.of<RoomListBloc>(context).add(
+                                        LoadUserForRoomEvent(
+                                            user: BlocProvider.of<LoginBloc>(
+                                                    context)
+                                                .getPinwino));
+
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
                                         builder: (context) => RoomMenu(),
@@ -285,6 +294,10 @@ class HomePage extends StatelessWidget {
               listener: (context, state) {
                 if (state is LogoutState) {
                   _scaffoldLogout(context);
+                } else if (state is LoadLoginState) {
+                  _showLoadingDialog(context);
+                } else if (state is GetUserSuccessState) {
+                  Navigator.of(context).pop();
                 }
               },
               child: Container(),
@@ -417,5 +430,18 @@ class HomePage extends StatelessWidget {
           ),
         ),
       );
+  }
+
+  void _showLoadingDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Cargando configuraciones pinwinezcas"),
+          content: Image.asset("assets/images/loading_dance.webp"),
+        );
+      },
+    );
   }
 }

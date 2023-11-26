@@ -9,12 +9,14 @@ sealed class GameEvent extends Equatable {
 
 class GetUserBattleEvent extends GameEvent {
   final Pinwino p1;
-  final Pinwino? p2;
+  final String? p2;
+  final String? room_id;
 
-  GetUserBattleEvent({required this.p1, this.p2});
+  GetUserBattleEvent({required this.p1, this.p2, this.room_id});
 
   @override
-  List<Object> get props => this.p2 == null ? [this.p1] : [this.p1, this.p2!];
+  List<Object> get props =>
+      this.p2 == null ? [this.p1] : [this.p1, this.p2!, this.room_id!];
 }
 
 class PlayCardEvent extends GameEvent {
@@ -25,5 +27,7 @@ class PlayCardEvent extends GameEvent {
   @override
   List<Object> get props => [this.card];
 }
+
+class CardsReadyEvent extends GameEvent {}
 
 class RandomSelectionEvent extends GameEvent {}

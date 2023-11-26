@@ -3,9 +3,10 @@ import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pinwinos/bloc/friend_list_bloc.dart';
+import 'package:pinwinos/bloc_login/login_bloc.dart';
 import 'package:pinwinos/models/pinwino.dart';
 import 'package:pinwinos/penwin_view.dart';
-//import 'package:share_plus/share_plus.dart';
+import 'package:share_plus/share_plus.dart';
 
 class FriendList extends StatefulWidget {
   FriendList({super.key});
@@ -48,6 +49,7 @@ class _FriendListState extends State<FriendList> {
                   BlocBuilder<FriendListBloc, FriendListState>(
                       builder: (context, state) {
                     if (state is FriendListDisplayState) {
+                      BlocProvider.of<LoginBloc>(context).user = state.user;
                       return Container(
                         height: MediaQuery.of(context).size.height * 0.6,
                         width: MediaQuery.of(context).size.width * 0.5,
@@ -57,7 +59,7 @@ class _FriendListState extends State<FriendList> {
                           query: FirebaseFirestore.instance
                               .collection('pinwinos')
                               .where(FieldPath.documentId,
-                                  whereIn: state.FriendList),
+                                  whereIn: state.user.friends),
                           itemBuilder: (BuildContext context,
                               QueryDocumentSnapshot<Map<String, dynamic>>
                                   document) {
@@ -142,10 +144,9 @@ class _FriendListState extends State<FriendList> {
                                   },
                                 );
 
-                                // await Share.share(
-                                //     "${BlocProvider.of<FriendListBloc>(context).player!.id}",
-                                //     subject:
-                                //         "Mi codigo para Pinwinos en Tamaulipas!!");
+                                await Share.share(
+                                  "Aqui tienes mi ID de Pinwinos en Tamaulipas:\n${BlocProvider.of<FriendListBloc>(context).player!.id}",
+                                );
                               },
                               child: Image.asset(
                                 "assets/images/friends.png",

@@ -17,22 +17,23 @@ class Pinwino extends Equatable {
   String? gorro;
   final List<String> gorros;
   final List<String> friends;
+  bool? is_sender;
 
-  Pinwino({
-    this.id,
-    this.nombre,
-    this.correo,
-    this.password,
-    this.victorias,
-    this.derrotas,
-    this.fecha,
-    this.conectado,
-    this.deck,
-    this.library,
-    this.gorro,
-    required this.gorros,
-    required this.friends,
-  });
+  Pinwino(
+      {this.id,
+      this.nombre,
+      this.correo,
+      this.password,
+      this.victorias,
+      this.derrotas,
+      this.fecha,
+      this.conectado,
+      this.deck,
+      this.library,
+      this.gorro,
+      required this.gorros,
+      required this.friends,
+      this.is_sender});
 
   factory Pinwino.fromMap(Map<String, dynamic> data) => Pinwino(
       id: data['Id'] as String?,

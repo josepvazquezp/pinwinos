@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pinwinos/bloc/scanner_bloc.dart';
+import 'package:pinwinos/bloc_login/login_bloc.dart';
 import 'package:pinwinos/models/pinwino.dart';
 
 class ScanMerch extends StatefulWidget {
@@ -124,6 +125,7 @@ class _ScanMerchState extends State<ScanMerch> {
               ),
               BlocBuilder<ScannerBloc, ScannerState>(builder: (context, state) {
                 if (state is GetCodeDataState) {
+                  BlocProvider.of<LoginBloc>(context).user = state.user_p;
                   Future.microtask(() => _showUnlockDialog(
                       state.unlocked, state.item, state.item_image));
                   BlocProvider.of<ScannerBloc>(context).add(UnlockGivenEvent());
