@@ -28,7 +28,7 @@ class _ProfileState extends State<Profile> {
                   return _nose(state.pinwin);
                 }
 
-                return Column();
+                return Container();
               },
             ),
           ),
@@ -39,7 +39,7 @@ class _ProfileState extends State<Profile> {
 
   Widget hat_place(String hat_route) {
     if (hat_route == "") {
-      return Column();
+      return Container();
     } else {
       return Image.asset('${hat_route}');
     }
@@ -53,7 +53,9 @@ class _ProfileState extends State<Profile> {
     Color textColor = Colors.white;
 
     return Container(
-      constraints: BoxConstraints.expand(),
+      // constraints: BoxConstraints.expand(),
+      height: 410,
+      width: 850,
       decoration: BoxDecoration(
         image: DecorationImage(
           image: AssetImage("assets/images/Profile.webp"),
@@ -179,50 +181,95 @@ class _ProfileState extends State<Profile> {
                   ],
                 ),
               ),
-              Column(
-                children: [
-                  Container(
-                    height: 400,
-                    color: const Color.fromARGB(115, 33, 149, 243),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          Text('Mazo',
-                              style: TextStyle(
-                                fontSize: 40,
-                                fontWeight: FontWeight.w900,
-                                color: textColor,
-                              )),
-                          Container(
-                            height: 300,
-                            width: 300,
-                            child: ListView.builder(
-                              scrollDirection: Axis.vertical,
-                              itemCount: BlocProvider.of<ProfileBloc>(context)
-                                  .getDeckLength,
-                              itemBuilder: (BuildContext context, int index) {
-                                return DualCardDisplay(
-                                  CardImages: [
-                                    BlocProvider.of<ProfileBloc>(context)
-                                        .getDeck![index * 2]
-                                        .imagen!,
-                                    BlocProvider.of<ProfileBloc>(context)
-                                        .getDeck![index * 2 + 1]
-                                        .imagen!
-                                  ],
-                                );
-                              },
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
+              Container(
+                height: 400,
+                width: 300,
+                color: const Color.fromARGB(115, 33, 149, 243),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ListView(
+                    children: [
+                      Text('Mazo',
+                          style: TextStyle(
+                            fontSize: 40,
+                            fontWeight: FontWeight.w900,
+                            color: textColor,
+                          )),
+                      Container(
+                        height: 300,
+                        width: 300,
+                        child: ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          itemCount: BlocProvider.of<ProfileBloc>(context)
+                                          .getDeck!
+                                          .length %
+                                      2 ==
+                                  0
+                              ? BlocProvider.of<ProfileBloc>(context)
+                                  .getDeckLength
+                              : BlocProvider.of<ProfileBloc>(context)
+                                      .getDeckLength +
+                                  1,
+                          itemBuilder: (BuildContext context, int index) {
+                            if (index ==
+                                BlocProvider.of<ProfileBloc>(context)
+                                    .getDeckLength) {
+                              return _singleCardDisplay(
+                                  BlocProvider.of<ProfileBloc>(context)
+                                      .getDeck![index * 2]);
+                            } else {
+                              return DualCardDisplay(
+                                CardImages: [
+                                  BlocProvider.of<ProfileBloc>(context)
+                                      .getDeck![index * 2]
+                                      .imagen!,
+                                  BlocProvider.of<ProfileBloc>(context)
+                                      .getDeck![index * 2 + 1]
+                                      .imagen!
+                                ],
+                              );
+                            }
+                          },
+                        ),
+                      )
+                    ],
                   ),
-                ],
+                ),
               ), //Aqui va el deck
             ],
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _singleCardDisplay(Carta card) {
+    return Padding(
+      padding: EdgeInsets.all(16.0),
+      child: Stack(
+        children: [
+          Container(
+            height: 130,
+            child: Image.asset(
+              card.imagen!,
+            ),
+          ),
+          if (card.poder != "")
+            Positioned(
+              right: 145,
+              child: Column(
+                children: [
+                  SizedBox(height: 10),
+                  Container(
+                    height: 20,
+                    color: Color.fromARGB(48, 66, 66, 66),
+                    child: Image.asset(
+                      card.poder_imagen!,
+                    ),
+                  ),
+                ],
+              ),
+            ),
         ],
       ),
     );

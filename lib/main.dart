@@ -16,9 +16,6 @@ import 'package:pinwinos/home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.landscapeLeft,
