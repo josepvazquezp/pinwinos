@@ -1,6 +1,12 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pinwinos/battle_scenario.dart';
 import 'package:pinwinos/bloc/room_list_bloc.dart';
+import 'package:pinwinos/bloc_game/game_bloc.dart';
 import 'package:pinwinos/models/pinwino.dart';
 import 'package:pinwinos/penwin_view.dart';
 
@@ -12,17 +18,40 @@ class RoomMenu extends StatefulWidget {
 }
 
 class _RoomMenuState extends State<RoomMenu> {
-  void _showWaitDialog(String? nombre) {
+  late StreamSubscription<DocumentSnapshot> _streamSubscription;
+
+  void _showWaitDialog() {
     showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-              title: Text('Conectando a la Sala'),
+              title: Text('Conectando a la Sala...'),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Por favor espere a ${nombre}...',
+                    'Esperando oponente...',
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  CircularProgressIndicator()
+                ],
+              ));
+        });
+  }
+
+  void _showBattleDialog(String room_id) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+              title: Text('Lista Sala ${room_id}'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Creando campo de juego...',
                   ),
                   SizedBox(
                     height: 8,
@@ -63,10 +92,66 @@ class _RoomMenuState extends State<RoomMenu> {
               BlocBuilder<RoomListBloc, RoomListState>(
                   builder: (context, state) {
                 if (state is GetRoomListState) {
-                  return _loadPinwins(state.RoomPinwinos, state.RoomFriends);
-                }
+                  return StreamBuilder(
+                    stream: FirebaseFirestore.instance
+                        .collection("rooms")
+                        .doc("dXtJHHn6mgwUPZqcLkdl")
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        if (!snapshot.data!.data()!["available"]) {
+                          print(snapshot.data!.data()!["available"]);
+                          print(
+                              "=====================================================");
+                          print("SE HA CONCRETADO UNA BATALLA");
+                          print(
+                              "=====================================================");
+                          if (BlocProvider.of<RoomListBloc>(context)
+                              .verify_room("dXtJHHn6mgwUPZqcLkdl")) {
+                            print("Snapshot");
+                            print(snapshot.data!.data());
 
-                return _error();
+                            BlocProvider.of<GameBloc>(context).add(
+                              GetUserBattleEvent(
+                                p1: BlocProvider.of<RoomListBloc>(context)
+                                    .player!,
+                                p2: (BlocProvider.of<RoomListBloc>(context)
+                                        .player!
+                                        .is_sender!)
+                                    ? snapshot.data!.data()!["pinwino_2"]
+                                    : snapshot.data!.data()!["pinwino_1"],
+                                room_id: snapshot.data!.id,
+                              ),
+                            );
+
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              _navigateToBattleScenario(context);
+                            });
+                          } else {
+                            return Text(
+                              "Batalla en progreso",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 32,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            );
+                          }
+                        } else {
+                          return room_display(
+                              snapshot.data!.data()!, snapshot.data!.id);
+                        }
+                      }
+                      return Column();
+                    },
+                  );
+                } else {
+                  return Container();
+                }
               }),
               Padding(
                 padding: const EdgeInsets.only(top: 10),
@@ -92,24 +177,59 @@ class _RoomMenuState extends State<RoomMenu> {
     );
   }
 
-  Widget _loadPinwins(List<Pinwino> PinwinList, List<bool> IsFriendList) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.6,
-      width: MediaQuery.of(context).size.width * 0.5,
-      child: ListView.builder(
-        scrollDirection: Axis.vertical,
-        itemCount: PinwinList.length,
-        itemBuilder: (BuildContext context, int index) {
-          return GestureDetector(
-              onTap: () {
-                //TODO: Codigo de despliegue de la sala; de mientras un dialogo
-                _showWaitDialog(PinwinList[index].nombre);
-              },
-              child: PenwinView(
-                Pinwin: PinwinList[index],
-                isFriend: IsFriendList[index],
-              ));
+  void _navigateToBattleScenario(BuildContext context) {
+    Navigator.of(context).pop();
+    Navigator.of(context).pop();
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => BattleScenario(),
+      ),
+    );
+  }
+
+  Widget room_display(Map<dynamic, dynamic> document, String id_s) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: GestureDetector(
+        onTap: () {
+          if (document["available"]) {
+            BlocProvider.of<RoomListBloc>(context).add_to_room(document, id_s);
+            _showWaitDialog();
+          } else {
+            print("===================================");
+            print("ALERTA");
+            print("===================================");
+            print("Este room ya esta ocupado");
+          }
         },
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Container(
+              width: 420,
+              height: 100,
+              color: Colors.white,
+            ),
+            Container(
+              width: 400,
+              height: 80,
+              color: Colors.black,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    "Room ID: ${id_s}\nRoom Number: ${document["number"]}\nAvailable: ${document["available"]}",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

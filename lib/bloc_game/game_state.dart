@@ -12,22 +12,25 @@ final class GameInitial extends GameState {}
 final class GetUsersSuccessState extends GameState {
   final String p1Gorro;
   final String p2Gorro;
+  final String room_id;
 
-  GetUsersSuccessState({required this.p1Gorro, required this.p2Gorro});
+  GetUsersSuccessState(
+      {required this.p1Gorro, required this.p2Gorro, required this.room_id});
 
   @override
-  List<Object> get props => [this.p1Gorro, this.p2Gorro];
+  List<Object> get props => [this.p1Gorro, this.p2Gorro, this.room_id];
 }
 
 final class ErrorGetDataState extends GameState {}
 
 final class SelectedCardState extends GameState {
   final Carta card;
+  final String room_id;
 
-  SelectedCardState({required this.card});
+  SelectedCardState({required this.card, required this.room_id});
 
   @override
-  List<Object> get props => [this.card];
+  List<Object> get props => [this.card, this.room_id];
 }
 
 final class BattleCardsState extends GameState {

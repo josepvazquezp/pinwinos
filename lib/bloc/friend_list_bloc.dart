@@ -60,7 +60,7 @@ class FriendListBloc extends Bloc<FriendListEvent, FriendListState> {
       emit(NoFriendsState());
     } else {
       print("Tiene amigos");
-      emit(FriendListDisplayState(FriendList: player!.friends));
+      emit(FriendListDisplayState(user: player!));
     }
   }
 

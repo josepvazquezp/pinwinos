@@ -10,12 +10,12 @@ sealed class FriendListState extends Equatable {
 final class FriendListInitial extends FriendListState {}
 
 final class FriendListDisplayState extends FriendListState {
-  final List<String> FriendList;
+  final Pinwino user;
 
-  FriendListDisplayState({required this.FriendList});
+  FriendListDisplayState({required this.user});
 
   @override
-  List<Object> get props => [FriendList];
+  List<Object> get props => [user];
 }
 
 final class UpgradingFriendsState extends FriendListState {}
