@@ -16,22 +16,54 @@ class BattleScenario extends StatelessWidget {
 
     void _victory_advise() {
       showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text('HAS GANADO'),
-            );
-          });
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('HAS GANADO'),
+            content: Image.asset("assets/images/victory_dialog.webp"),
+            actions: [
+              MaterialButton(
+                color: Colors.black,
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  "Cerrar",
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
+            ],
+          );
+        },
+      );
     }
 
     void _lose_advise() {
       showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text('HAS PERDIDO'),
-            );
-          });
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('HAS PERDIDO'),
+            content: Image.asset("assets/images/loose_dialog.webp"),
+            actions: [
+              MaterialButton(
+                color: Colors.black,
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  "Cerrar",
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
+            ],
+          );
+        },
+      );
     }
 
     Color get_color(String string_color) {
