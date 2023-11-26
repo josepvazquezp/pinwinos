@@ -19,7 +19,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
   Pinwino? _p1;
   Pinwino? _p2;
-  String? room_id;
+  String? room_id = "";
 
   Map<String, List<String>> _enemySlots = {
     "fire": [],
@@ -218,7 +218,8 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       _p2 = _iaPinwino;
     }
 
-    emit(GetUsersSuccessState(p1Gorro: _p1!.gorro!, p2Gorro: _p2!.gorro!));
+    emit(GetUsersSuccessState(
+        p1Gorro: _p1!.gorro!, p2Gorro: _p2!.gorro!, room_id: room_id!));
     print("USABLE AL MOMENTO DE EMITIR ${_play}");
 
     print("==================================");
@@ -324,7 +325,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       }
 
       print("==================================");
-      emit(SelectedCardState(card: event.card));
+      emit(SelectedCardState(card: event.card, room_id: room_id!));
 
       //IA poderosisima
       if (_ia) {
@@ -397,6 +398,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
             .collection("rooms")
             .doc(room_id)
             .update({
+          "available": true,
           "pinwino_1": "",
           "pinwino_2": "",
           "p1_card": "",

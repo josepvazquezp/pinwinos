@@ -170,10 +170,12 @@ class HomePage extends StatelessWidget {
                                   if (BlocProvider.of<LoginBloc>(context)
                                       .getLogin) {
                                     BlocProvider.of<GameBloc>(context).add(
-                                        GetUserBattleEvent(
-                                            p1: BlocProvider.of<LoginBloc>(
-                                                    context)
-                                                .getPinwino));
+                                      GetUserBattleEvent(
+                                          p1: BlocProvider.of<LoginBloc>(
+                                                  context)
+                                              .getPinwino,
+                                          room_id: ""),
+                                    );
 
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
