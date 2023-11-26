@@ -285,6 +285,10 @@ class HomePage extends StatelessWidget {
               listener: (context, state) {
                 if (state is LogoutState) {
                   _scaffoldLogout(context);
+                } else if (state is LoadLoginState) {
+                  _showLoadingDialog(context);
+                } else if (state is GetUserSuccessState) {
+                  Navigator.of(context).pop();
                 }
               },
               child: Container(),
@@ -417,5 +421,18 @@ class HomePage extends StatelessWidget {
           ),
         ),
       );
+  }
+
+  void _showLoadingDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Cargando configuraciones pinwinezcas"),
+          content: Image.asset("assets/images/loading_dance.webp"),
+        );
+      },
+    );
   }
 }

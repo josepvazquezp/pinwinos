@@ -124,7 +124,6 @@ Pinwino _pt = new Pinwino(
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -147,7 +146,7 @@ void main() async {
         create: (context) => DeckEditionBloc(),
       ),
       BlocProvider(
-        create: (context) => LoginBloc(),
+        create: (context) => LoginBloc()..add(CheckAuthEvent()),
       ),
       BlocProvider<RoomListBloc>(
         create: (context) => RoomListBloc()..add(GetRoomListEvent()),

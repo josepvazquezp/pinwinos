@@ -17,18 +17,22 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        child: BlocBuilder<ProfileBloc, ProfileState>(
-          builder: (context, state) {
-            if (state is ProfileWaitingUserState) {
-            } else if (state is ProfileDataGetState) {
-              BlocProvider.of<LoginBloc>(context).user = state.pinwin;
-              return _nose(state.pinwin);
-            }
+      body: Column(
+        children: [
+          Container(
+            child: BlocBuilder<ProfileBloc, ProfileState>(
+              builder: (context, state) {
+                if (state is ProfileWaitingUserState) {
+                } else if (state is ProfileDataGetState) {
+                  BlocProvider.of<LoginBloc>(context).user = state.pinwin;
+                  return _nose(state.pinwin);
+                }
 
-            return Column();
-          },
-        ),
+                return Column();
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

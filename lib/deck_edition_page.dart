@@ -259,10 +259,7 @@ class DeckEditionPage extends StatelessWidget {
       builder: (context) {
         return AlertDialog(
           title: Text("Guardando Deck"),
-          content: Container(
-            height: 200,
-            child: CircularProgressIndicator(),
-          ),
+          content: Image.asset("assets/images/loading_update_deck.webp"),
         );
       },
     );

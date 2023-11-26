@@ -69,6 +69,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     "assets/images/hats/top_hat.png",
   ];
 
+  FirebaseAuth _auth = FirebaseAuth.instance;
+
   bool get getLogin => _login;
   bool get getSigIn => _sigin;
   Pinwino get getPinwino => user;
@@ -77,48 +79,26 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<GetUserEvent>(_getUserLogin);
     on<CreateUserEvent>(_createUserRegister);
     on<LogoutEvent>(_logoutEvent);
+    on<CheckAuthEvent>(_authVerfication);
+  }
+
+  FutureOr<void> _authVerfication(CheckAuthEvent event, Emitter emit) async {
+    if (isAlreadyAuthenticated()) {
+      emit(LoadLoginState());
+      await _getUser(_auth.currentUser!.email!, emit);
+    } else {
+      emit(LoginInitial());
+    }
   }
 
   FutureOr<void> _getUserLogin(GetUserEvent event, Emitter emit) async {
     emit(LoadLoginState());
 
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await _auth.signInWithEmailAndPassword(
           email: event.mail, password: event.password);
 
-      var userInfo = await FirebaseFirestore.instance
-          .collection('pinwinos')
-          .where("email", isEqualTo: "${event.mail}")
-          .get();
-
-      await FirebaseFirestore.instance
-          .collection('pinwinos')
-          .doc(userInfo.docs.first.id)
-          .update({"connected": true});
-
-      List<Carta> userDeck =
-          await userDeck_Library(userInfo.docs.first.data()["deck"]);
-      List<Carta> userLibrary =
-          await userDeck_Library(userInfo.docs.first.data()["library"]);
-
-      user = new Pinwino(
-        id: userInfo.docs.first.id,
-        nombre: userInfo.docs.first.data()["name"],
-        correo: userInfo.docs.first.data()["email"],
-        password: userInfo.docs.first.data()["password"],
-        victorias: userInfo.docs.first.data()["wins"],
-        derrotas: userInfo.docs.first.data()["loses"],
-        fecha: userInfo.docs.first.data()["sign_date"].toString(),
-        conectado: true,
-        deck: userDeck,
-        library: userLibrary,
-        gorro: userInfo.docs.first.data()["hat"],
-        gorros: userInfo.docs.first.data()["hats"].cast<String>(),
-        friends: userInfo.docs.first.data()["friends"].cast<String>(),
-      );
-
-      _login = true;
-      emit(GetUserSuccessState());
+      await _getUser(event.mail, emit);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         print('No user found for that email.');
@@ -131,13 +111,49 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }
   }
 
+  Future<void> _getUser(String mail, Emitter<dynamic> emit) async {
+    var userInfo = await FirebaseFirestore.instance
+        .collection('pinwinos')
+        .where("email", isEqualTo: "${mail}")
+        .get();
+
+    await FirebaseFirestore.instance
+        .collection('pinwinos')
+        .doc(userInfo.docs.first.id)
+        .update({"connected": true});
+
+    List<Carta> userDeck =
+        await userDeck_Library(userInfo.docs.first.data()["deck"]);
+    List<Carta> userLibrary =
+        await userDeck_Library(userInfo.docs.first.data()["library"]);
+
+    user = new Pinwino(
+      id: userInfo.docs.first.id,
+      nombre: userInfo.docs.first.data()["name"],
+      correo: userInfo.docs.first.data()["email"],
+      password: userInfo.docs.first.data()["password"],
+      victorias: userInfo.docs.first.data()["wins"],
+      derrotas: userInfo.docs.first.data()["loses"],
+      fecha: userInfo.docs.first.data()["sign_date"].toString(),
+      conectado: true,
+      deck: userDeck,
+      library: userLibrary,
+      gorro: userInfo.docs.first.data()["hat"],
+      gorros: userInfo.docs.first.data()["hats"].cast<String>(),
+      friends: userInfo.docs.first.data()["friends"].cast<String>(),
+    );
+
+    _login = true;
+    emit(GetUserSuccessState());
+  }
+
   FutureOr<void> _createUserRegister(
       CreateUserEvent event, Emitter emit) async {
     emit(LoadLoginState());
 
     if (event.name != "" && event.mail != "" && event.password != "") {
       try {
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        await _auth.createUserWithEmailAndPassword(
           email: event.mail,
           password: event.password,
         );
@@ -244,7 +260,19 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         .doc(user.id)
         .update({"connected": false});
 
+    signOutFirebaseUser();
+
     _login = false;
     emit(LogoutState());
+  }
+
+  bool isAlreadyAuthenticated() {
+    // check if the user is authenticated
+    return _auth.currentUser != null;
+  }
+
+  Future<void> signOutFirebaseUser() async {
+    // Firebase user signout
+    await _auth.signOut();
   }
 }
