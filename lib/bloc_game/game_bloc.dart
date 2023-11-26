@@ -339,10 +339,12 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   FutureOr<void> _cards_ready(CardsReadyEvent event, Emitter emit) async {
     emit(BattleCardsState(userCard: _playerCard!, enemyCard: _enemyCard!));
 
-    await FirebaseFirestore.instance
-        .collection("rooms")
-        .doc(room_id)
-        .update({"p1_card": "", "p2_card": ""});
+    if (room_id != "") {
+      await FirebaseFirestore.instance
+          .collection("rooms")
+          .doc(room_id)
+          .update({"p1_card": "", "p2_card": ""});
+    }
 
     print("Paso el Battle Cards");
 
@@ -394,16 +396,19 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       _gameWinner = _checkGameWinner();
 
       if (_gameWinner != 0) {
-        await FirebaseFirestore.instance
-            .collection("rooms")
-            .doc(room_id)
-            .update({
-          "available": true,
-          "pinwino_1": "",
-          "pinwino_2": "",
-          "p1_card": "",
-          "p2_card": ""
-        });
+        if (room_id != "") {
+          await FirebaseFirestore.instance
+              .collection("rooms")
+              .doc(room_id)
+              .update({
+            "available": true,
+            "pinwino_1": "",
+            "pinwino_2": "",
+            "p1_card": "",
+            "p2_card": ""
+          });
+        }
+
         emit(EndGameState(victory: _gameWinner == 1 ? true : false));
       }
     }
