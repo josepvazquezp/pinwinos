@@ -188,10 +188,10 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   FutureOr<void> _getData(GetUserBattleEvent event, Emitter emit) async {
     _p1 = event.p1;
 
-    print("********************************************************");
-    print("JUGADOR LOCAL RECIBIDO");
-    print(_p1);
-    print(_p1!.gorro);
+    // print("********************************************************");
+    // print("JUGADOR LOCAL RECIBIDO");
+    // print(_p1);
+    // print(_p1!.gorro);
 
     if (event.p2 != null) {
       var docs = await FirebaseFirestore.instance
@@ -208,25 +208,19 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       room_id = event.room_id;
       _ia = false;
 
-      print("============================================");
-      print("${_p1!.nombre} contra ${_p2!.nombre} en el room ${room_id}");
+      // print("============================================");
+      // print("${_p1!.nombre} contra ${_p2!.nombre} en el room ${room_id}");
 
-      String temp =
-          (_p1!.is_sender!) ? "Eres el jugador 1" : "Eres el jugador 2";
-      print(temp);
+      // String temp =
+      //     (_p1!.is_sender!) ? "Eres el jugador 1" : "Eres el jugador 2";
+      // print(temp);
     } else {
       _p2 = _iaPinwino;
     }
 
     emit(GetUsersSuccessState(
         p1Gorro: _p1!.gorro!, p2Gorro: _p2!.gorro!, room_id: room_id!));
-    print("USABLE AL MOMENTO DE EMITIR ${_play}");
 
-    print("==================================");
-    print("DECK");
-    print(_p1!.deck);
-    print(_p1!.deck!.length);
-    print("==================================");
     //Triggerear del deck_gamebloc para hacer todo chido con el user
     userGameBloc.add(GetDeckEvent(deck: _p1!.deck!));
     if (_ia) {
@@ -234,13 +228,13 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       _iaGameBloc!.add(GetDeckEvent(deck: _p2!.deck!));
     }
 
-    print("==================================");
-    print("HAND");
-    for (int i = 0; i < userGameBloc.getActualHand.length; i++) {
-      print(userGameBloc.getActualHand[i]);
-    }
-    print(userGameBloc.getActualHand.length);
-    print("==================================");
+    // print("==================================");
+    // print("HAND");
+    // for (int i = 0; i < userGameBloc.getActualHand.length; i++) {
+    //   print(userGameBloc.getActualHand[i]);
+    // }
+    // print(userGameBloc.getActualHand.length);
+    // print("==================================");
   }
 
   Future<void> get_enemy_card(List<String> cards) async {
@@ -251,8 +245,8 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           .doc("${cards[1]}")
           .get();
 
-      print("Carta del enemigo");
-      print(docs.data());
+      // print("Carta del enemigo");
+      // print(docs.data());
       _enemyCard = Carta(
         color: docs.data()["color"],
         elemento: docs.data()["elemento"],
@@ -271,9 +265,9 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           .doc("${cards[0]}")
           .get();
 
-      print("Carta del enemigo");
+      // print("Carta del enemigo");
 
-      print(docs.data());
+      // print(docs.data());
       _enemyCard = Carta(
         color: docs.data()["color"],
         elemento: docs.data()["elemento"],
@@ -289,8 +283,6 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   }
 
   void receive_cards(List<String> cards) async {
-    print("Cartas Recibidas");
-    print(cards);
     await get_enemy_card(cards);
   }
 
@@ -298,10 +290,6 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     if (!_play) {
     } else {
       _play = false;
-
-      print("==================================");
-      print("SELECTED CARD");
-      print(event.card);
       _playerCard = event.card;
 
       try {
@@ -324,13 +312,12 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         print(e);
       }
 
-      print("==================================");
       emit(SelectedCardState(card: event.card, room_id: room_id!));
 
       //IA poderosisima
       if (_ia) {
         _enemyCard = iaPossibilities(_iaGameBloc!.getActualHand);
-        print("Paso la IA");
+
         add(CardsReadyEvent());
       }
     }
@@ -346,11 +333,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           .update({"p1_card": "", "p2_card": ""});
     }
 
-    print("Paso el Battle Cards");
-
     _winRound = _checkRoundWinner(_playerCard!, _enemyCard!);
-
-    print("Paso el win round");
 
     if (_winRound == 1) {
       _roundPower = _playerCard!.poder!;
@@ -364,8 +347,6 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       _roundPower = "";
     }
 
-    print("Paso el if para los slots");
-
     // eliminación de slots si gano ese poder
     if (_roundPower != "" && _roundPower[0] == "-" && _roundPower[1] != "2") {
       emit(PowerRoundState(power: _roundPower));
@@ -373,23 +354,9 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       _roundPower = "";
     }
 
-    print("Paso el poder");
-
-    print("USER SLOTS");
-    print("==================================");
-    print(_userSlots);
-    print("==================================");
-
-    print("ENEMY SLOTS");
-    print("==================================");
-    print(_enemySlots);
-    print("==================================");
-
     await Future.delayed(Duration(seconds: 2));
 
     emit(GetSlotsState(userSlots: _userSlots, enemySlots: _enemySlots));
-
-    print("Paso el emit");
 
     // EVALUACIÓN DE SLOTS PARA VER SI YA GANO ALGUIEN
     if (_winRound != 0) {
@@ -423,17 +390,25 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           }
         }
 
+        _userSlots = {
+          "fire": [],
+          "water": [],
+          "snow": [],
+        };
+
+        _enemySlots = {
+          "fire": [],
+          "water": [],
+          "snow": [],
+        };
+
         emit(EndGameState(victory: _gameWinner == 1 ? true : false));
       }
     }
 
-    print("Paso el game winner");
-
     if (_roundPower != "") {
       emit(PowerRoundState(power: _roundPower));
     }
-
-    print("Paso el power state");
 
     // DRAWPHASE
     userGameBloc.add(GetHandEvent(card: _playerCard!));
@@ -444,8 +419,6 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
     _enemyCard = null;
     _playerCard = null;
-
-    print("Paso el draw phase final");
 
     _play = true;
   }
