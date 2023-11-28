@@ -423,7 +423,6 @@ class BattleScenario extends StatelessWidget {
                 BlocBuilder<GameBloc, GameState>(
                   builder: (context, state) {
                     if (state is GetSlotsState) {
-                      print("Recibiendo Slots");
                       _userSlots = state.userSlots;
                       _enemySlots = state.enemySlots;
                       //De esta manera se guardan siempre que haya cambios para que esten presentes
@@ -457,7 +456,6 @@ class BattleScenario extends StatelessWidget {
                 BlocBuilder<GameBloc, GameState>(
                   builder: (context, state) {
                     if (state is SelectedCardState) {
-                      print("Carta seleccionada");
                       return Container(
                         child: BattleCard(
                           card: state.card,
@@ -497,12 +495,26 @@ class BattleScenario extends StatelessWidget {
                   alignment: Alignment.center,
                   height: 60,
                   width: 60,
-                  child: Text(
-                    '9',
-                    style: TextStyle(
-                      fontSize: 48,
-                      fontWeight: FontWeight.w900,
-                    ),
+                  child: BlocBuilder<GameBloc, GameState>(
+                    builder: (context, state) {
+                      if (state is CurrentTimeState) {
+                        return Text(
+                          '${BlocProvider.of<GameBloc>(context).getCurrentTime}',
+                          style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        );
+                      }
+
+                      return Text(
+                        '${BlocProvider.of<GameBloc>(context).getCurrentTime}',
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      );
+                    },
                   ),
                 )
               ],

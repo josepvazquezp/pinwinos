@@ -175,13 +175,18 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   Carta? _enemyCard;
   Carta? _playerCard;
 
+  int _currentTime = 20;
+  bool _updateTime = false;
+
   DeckGameBloc get get_userGameBloc => userGameBloc;
+  int get getCurrentTime => _currentTime;
 
   GameBloc() : super(GameInitial()) {
     on<GetUserBattleEvent>(_getData);
     on<PlayCardEvent>(_battlePhase);
     on<CardsReadyEvent>(_cards_ready);
     on<RandomSelectionEvent>(_randomSelection);
+    on<TimerUpdateEvent>(_timerUpdateEvent);
     // TODO: TIMER https://api.flutter.dev/flutter/dart-async/Timer-class.html
   }
 
@@ -228,13 +233,32 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       _iaGameBloc!.add(GetDeckEvent(deck: _p2!.deck!));
     }
 
-    // print("==================================");
-    // print("HAND");
-    // for (int i = 0; i < userGameBloc.getActualHand.length; i++) {
-    //   print(userGameBloc.getActualHand[i]);
-    // }
-    // print(userGameBloc.getActualHand.length);
-    // print("==================================");
+    battleTimer();
+  }
+
+  void battleTimer() {
+    _currentTime = 20;
+    Timer.periodic(const Duration(seconds: 1), (timer) {
+      // print(_currentTime);
+      _currentTime--;
+      if (getCurrentTime == 0 || !_play) {
+        print('Cancel timer');
+        timer.cancel();
+        add(RandomSelectionEvent());
+      } else {
+        add(TimerUpdateEvent());
+      }
+    });
+  }
+
+  Future<void> _timerUpdateEvent(TimerUpdateEvent event, Emitter emit) async {
+    if (_updateTime) {
+      emit(UpdateCurrentTimeState());
+    } else {
+      emit(CurrentTimeState());
+    }
+
+    _updateTime = !_updateTime;
   }
 
   Future<void> get_enemy_card(List<String> cards) async {
@@ -421,6 +445,8 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     _playerCard = null;
 
     _play = true;
+
+    if (_gameWinner == 0) battleTimer();
   }
 
   Carta iaPossibilities(List<Carta> hand) {

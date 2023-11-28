@@ -70,3 +70,7 @@ final class EndGameState extends GameState {
   @override
   List<Object> get props => [this.victory];
 }
+
+final class CurrentTimeState extends GameState {}
+
+final class UpdateCurrentTimeState extends GameState {}
