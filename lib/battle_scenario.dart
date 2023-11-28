@@ -505,7 +505,7 @@ class BattleScenario extends StatelessWidget {
                   },
                 ),
               ],
-            ), //Carta seleccionada 1
+            ),
 
             BlocBuilder<GameBloc, GameState>(builder: (context, state) {
               if (state is PowerRoundState) {
@@ -513,57 +513,86 @@ class BattleScenario extends StatelessWidget {
                   current_power["power"] = "${state.power}";
 
                   current_power["power_image"] = "${state.power_image}";
-                } else {
-                  current_power["power"] = "";
-                  current_power["power_image"] = "";
-                }
 
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Column(
-                      children: [
-                        Text(
-                          "PODER",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w900,
-                              fontSize: 20),
-                        ),
-                        Container(
-                            height: 50,
-                            width: 50,
-                            child:
-                                Image.asset("${current_power["power_image"]}")),
-                      ],
-                    ),
-                    Stack(
-                      children: [
-                        Container(
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Column(
+                        children: [
+                          Text(
+                            "PODER",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w900,
+                                fontSize: 20),
+                          ),
+                          Container(
+                              height: 50,
+                              width: 50,
+                              child: Image.asset(
+                                  "${current_power["power_image"]}")),
+                        ],
+                      ),
+                      Stack(
+                        children: [
+                          Container(
+                              alignment: Alignment.center,
+                              height: 60,
+                              width: 60,
+                              child: Image.asset(
+                                '$Snowball',
+                                fit: BoxFit.fill,
+                              )),
+                          Container(
                             alignment: Alignment.center,
                             height: 60,
                             width: 60,
-                            child: Image.asset(
-                              '$Snowball',
-                              fit: BoxFit.fill,
-                            )),
-                        Container(
-                          alignment: Alignment.center,
-                          height: 60,
-                          width: 60,
-                          child: Text(
-                            '9',
-                            style: TextStyle(
-                              fontSize: 48,
-                              fontWeight: FontWeight.w900,
+                            child: Text(
+                              '9',
+                              style: TextStyle(
+                                fontSize: 48,
+                                fontWeight: FontWeight.w900,
+                              ),
                             ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ],
-                );
+                          )
+                        ],
+                      ),
+                    ],
+                  );
+                } else {
+                  current_power["power"] = "";
+                  current_power["power_image"] = "";
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Stack(
+                        children: [
+                          Container(
+                              alignment: Alignment.center,
+                              height: 60,
+                              width: 60,
+                              child: Image.asset(
+                                '$Snowball',
+                                fit: BoxFit.fill,
+                              )),
+                          Container(
+                            alignment: Alignment.center,
+                            height: 60,
+                            width: 60,
+                            child: Text(
+                              '9',
+                              style: TextStyle(
+                                fontSize: 48,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ],
+                  );
+                }
               }
               return Stack(
                 children: [
