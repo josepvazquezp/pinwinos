@@ -134,6 +134,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   );
 
   String _roundPower = "";
+  String _roundPowerImage = "";
 
   bool _ia = true;
 
@@ -337,21 +338,25 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
     if (_winRound == 1) {
       _roundPower = _playerCard!.poder!;
+      _roundPowerImage = _playerCard!.poder_imagen!;
 
       _userSlots[_playerCard!.elemento]!.add(_playerCard!.color!);
     } else if (_winRound == 2) {
       _roundPower = _enemyCard!.poder!;
+      _roundPowerImage = _enemyCard!.poder_imagen!;
 
       _enemySlots[_enemyCard!.elemento]!.add(_enemyCard!.color!);
     } else {
       _roundPower = "";
+      _roundPowerImage = "";
     }
 
     // eliminación de slots si gano ese poder
     if (_roundPower != "" && _roundPower[0] == "-" && _roundPower[1] != "2") {
-      emit(PowerRoundState(power: _roundPower));
+      emit(PowerRoundState(power: _roundPower, power_image: _roundPowerImage));
       removeSlot();
       _roundPower = "";
+      _roundPowerImage = "";
     }
 
     await Future.delayed(Duration(seconds: 2));
@@ -407,7 +412,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     }
 
     if (_roundPower != "") {
-      emit(PowerRoundState(power: _roundPower));
+      emit(PowerRoundState(power: _roundPower, power_image: _roundPowerImage));
     }
 
     // DRAWPHASE
