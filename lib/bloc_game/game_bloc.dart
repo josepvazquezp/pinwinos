@@ -59,6 +59,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         color: "yellow",
         elemento: "fire",
         poder: "",
+        poder_imagen: "",
       ),
       new Carta(
         imagen: "assets/images/cards/c4.png",
