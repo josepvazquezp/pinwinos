@@ -63,4 +63,9 @@ class DeckGameBloc extends Bloc<DeckGameEvent, DeckGameState> {
       emit(UpdateGetHandState(hand: _actualHand));
     }
   }
+
+  void resetHand() {
+    _pointer = -1;
+    _actualHand = [];
+  }
 }

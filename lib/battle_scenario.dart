@@ -13,6 +13,10 @@ class BattleScenario extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool use_card = false;
+    Map<dynamic, dynamic> current_power = {
+      "power": "",
+      "power_image": "",
+    };
 
     void _victory_advise() {
       showDialog(
@@ -96,9 +100,28 @@ class BattleScenario extends StatelessWidget {
               print("Usable: ${use_card}");
               // _tempo(hand[index].numero, hand[index].imagen);
               if (use_card) {
-                print("Index In ${index}");
-                BlocProvider.of<GameBloc>(context)
-                    .add(PlayCardEvent(card: hand[index]));
+                if ((current_power["power"] == "block_water" &&
+                        hand[index].elemento == "water") ||
+                    (current_power["power"] == "block_snow" &&
+                        hand[index].elemento == "snow") ||
+                    (current_power["power"] == "block_fire" &&
+                        hand[index].elemento == "fire")) {
+                  ScaffoldMessenger.of(context)
+                    ..hideCurrentSnackBar()
+                    ..showSnackBar(
+                      SnackBar(
+                        backgroundColor: Colors.red,
+                        content: Text(
+                          "ESTE ELEMENTO ESTA BLOQUEADO",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    );
+                } else {
+                  print("Index In ${index}");
+                  BlocProvider.of<GameBloc>(context)
+                      .add(PlayCardEvent(card: hand[index]));
+                }
               }
             },
             child: Container(
@@ -329,6 +352,114 @@ class BattleScenario extends StatelessWidget {
       );
     }
 
+    Widget _activePowerView(BuildContext context) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Column(
+            children: [
+              Text(
+                "PODER",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w900,
+                    fontSize: 20),
+              ),
+              Container(
+                  height: 50,
+                  width: 50,
+                  child: Image.asset("${current_power["power_image"]}")),
+            ],
+          ),
+          Stack(
+            children: [
+              Container(
+                  alignment: Alignment.center,
+                  height: 60,
+                  width: 60,
+                  child: Image.asset(
+                    '$Snowball',
+                    fit: BoxFit.fill,
+                  )),
+              Container(
+                alignment: Alignment.center,
+                height: 60,
+                width: 60,
+                child: BlocBuilder<GameBloc, GameState>(
+                  builder: (context, state) {
+                    if (state is CurrentTimeState) {
+                      return Text(
+                        '${BlocProvider.of<GameBloc>(context).getCurrentTime}',
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      );
+                    }
+
+                    return Text(
+                      '${BlocProvider.of<GameBloc>(context).getCurrentTime}',
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
+    }
+
+    Widget _noPowerView(BuildContext context) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Stack(
+            children: [
+              Container(
+                  alignment: Alignment.center,
+                  height: 60,
+                  width: 60,
+                  child: Image.asset(
+                    '$Snowball',
+                    fit: BoxFit.fill,
+                  )),
+              Container(
+                alignment: Alignment.center,
+                height: 60,
+                width: 60,
+                child: BlocBuilder<GameBloc, GameState>(
+                  builder: (context, state) {
+                    if (state is CurrentTimeState) {
+                      return Text(
+                        '${BlocProvider.of<GameBloc>(context).getCurrentTime}',
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      );
+                    }
+
+                    return Text(
+                      '${BlocProvider.of<GameBloc>(context).getCurrentTime}',
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
+    }
+
     Widget get_enemy_slots() {
       return Container(
         height: 100,
@@ -480,45 +611,21 @@ class BattleScenario extends StatelessWidget {
                   },
                 ),
               ],
-            ), //Carta seleccionada 1
-            Stack(
-              children: [
-                Container(
-                    alignment: Alignment.center,
-                    height: 60,
-                    width: 60,
-                    child: Image.asset(
-                      '$Snowball',
-                      fit: BoxFit.fill,
-                    )),
-                Container(
-                  alignment: Alignment.center,
-                  height: 60,
-                  width: 60,
-                  child: BlocBuilder<GameBloc, GameState>(
-                    builder: (context, state) {
-                      if (state is CurrentTimeState) {
-                        return Text(
-                          '${BlocProvider.of<GameBloc>(context).getCurrentTime}',
-                          style: TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.w900,
-                          ),
-                        );
-                      }
-
-                      return Text(
-                        '${BlocProvider.of<GameBloc>(context).getCurrentTime}',
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.w900,
-                        ),
-                      );
-                    },
-                  ),
-                )
-              ],
             ),
+
+            BlocListener<GameBloc, GameState>(
+              listener: (context, state) {
+                if (state is PowerRoundState) {
+                  current_power["power"] = "${state.power}";
+                  current_power["power_image"] = "${state.power_image}";
+                }
+              },
+              child: current_power["power"] == "" &&
+                      current_power["power_image"] == ""
+                  ? _noPowerView(context)
+                  : _activePowerView(context),
+            ),
+
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
