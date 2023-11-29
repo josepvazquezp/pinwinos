@@ -180,6 +180,8 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
   int _currentTime = 20;
   bool _updateTime = false;
+  bool _trashEnemy = false;
+  bool _trashUser = false;
 
   DeckGameBloc get get_userGameBloc => userGameBloc;
   int get getCurrentTime => _currentTime;
@@ -190,16 +192,10 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     on<CardsReadyEvent>(_cards_ready);
     on<RandomSelectionEvent>(_randomSelection);
     on<TimerUpdateEvent>(_timerUpdateEvent);
-    // TODO: TIMER https://api.flutter.dev/flutter/dart-async/Timer-class.html
   }
 
   FutureOr<void> _getData(GetUserBattleEvent event, Emitter emit) async {
     _p1 = event.p1;
-
-    // print("********************************************************");
-    // print("JUGADOR LOCAL RECIBIDO");
-    // print(_p1);
-    // print(_p1!.gorro);
 
     if (event.p2 != null) {
       var docs = await FirebaseFirestore.instance
@@ -636,7 +632,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     int index = 0;
 
     for (int i = 0; i < hand.length; i++) {
-      if (possibilities[i]! > temp) {
+      if (_checkBlocksAndPossibility(hand[i]) && possibilities[i]! > temp) {
         index = i;
         temp = possibilities[i]!;
       }
@@ -649,6 +645,19 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     hand.shuffle();
 
     return hand[0];
+  }
+
+  bool _checkBlocksAndPossibility(Carta card) {
+    if ((_roundPower != "block_fire" &&
+            _roundPower != "block_water" &&
+            _roundPower != "block_snow") ||
+        (_roundPower == "block_fire" && card.elemento != "fire" ||
+            _roundPower == "block_water" && card.elemento != "water" ||
+            _roundPower == "block_snow" && card.elemento != "snow")) {
+      return true;
+    }
+
+    return false;
   }
 
   void removeSlot() {
@@ -722,6 +731,20 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   }
 
   int _checkRoundWinner(Carta userCard, Carta enemyCard) {
+    if (_checkBlocksAndPossibility(enemyCard)) {
+      _trashEnemy = false;
+    } else {
+      _trashEnemy = true;
+    }
+
+    if (_trashUser == true && _trashEnemy == true) {
+      return 0;
+    } else if (_trashUser == true && _trashEnemy == false) {
+      return 2;
+    } else if (_trashUser == false && _trashEnemy == true) {
+      return 1;
+    }
+
     String userElement;
     String enemyElement;
 
@@ -853,6 +876,12 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   FutureOr<void> _randomSelection(RandomSelectionEvent event, Emitter emit) {
     List<Carta> hand = userGameBloc.getActualHand;
     hand.shuffle();
+
+    if (_checkBlocksAndPossibility(hand[0])) {
+      _trashUser = false;
+    } else {
+      _trashUser = true;
+    }
 
     add(PlayCardEvent(card: hand[0]));
   }

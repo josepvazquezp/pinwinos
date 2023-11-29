@@ -642,8 +642,8 @@ class BattleScenario extends StatelessWidget {
                     }
 
                     return Container(
-                      height: 130,
-                      width: 130,
+                      height: 125,
+                      width: 125,
                     );
                   },
                 ),
