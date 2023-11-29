@@ -45,11 +45,12 @@ final class BattleCardsState extends GameState {
 
 final class PowerRoundState extends GameState {
   final String power;
+  final String power_image;
 
-  PowerRoundState({required this.power});
+  PowerRoundState({required this.power, required this.power_image});
 
   @override
-  List<Object> get props => [this.power];
+  List<Object> get props => [this.power, this.power_image];
 }
 
 final class GetSlotsState extends GameState {
@@ -70,3 +71,7 @@ final class EndGameState extends GameState {
   @override
   List<Object> get props => [this.victory];
 }
+
+final class CurrentTimeState extends GameState {}
+
+final class UpdateCurrentTimeState extends GameState {}

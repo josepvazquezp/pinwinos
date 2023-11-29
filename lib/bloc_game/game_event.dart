@@ -31,3 +31,5 @@ class PlayCardEvent extends GameEvent {
 class CardsReadyEvent extends GameEvent {}
 
 class RandomSelectionEvent extends GameEvent {}
+
+class TimerUpdateEvent extends GameEvent {}

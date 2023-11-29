@@ -59,6 +59,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         color: "yellow",
         elemento: "fire",
         poder: "",
+        poder_imagen: "",
       ),
       new Carta(
         imagen: "assets/images/cards/c4.png",
@@ -74,6 +75,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         color: "red",
         elemento: "snow",
         poder: "",
+        poder_imagen: "",
       ),
       new Carta(
         imagen: "assets/images/cards/c6.png",
@@ -134,6 +136,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   );
 
   String _roundPower = "";
+  String _roundPowerImage = "";
 
   bool _ia = true;
 
@@ -175,23 +178,24 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   Carta? _enemyCard;
   Carta? _playerCard;
 
+  int _currentTime = 20;
+  bool _updateTime = false;
+  bool _trashEnemy = false;
+  bool _trashUser = false;
+
   DeckGameBloc get get_userGameBloc => userGameBloc;
+  int get getCurrentTime => _currentTime;
 
   GameBloc() : super(GameInitial()) {
     on<GetUserBattleEvent>(_getData);
     on<PlayCardEvent>(_battlePhase);
     on<CardsReadyEvent>(_cards_ready);
     on<RandomSelectionEvent>(_randomSelection);
-    // TODO: TIMER https://api.flutter.dev/flutter/dart-async/Timer-class.html
+    on<TimerUpdateEvent>(_timerUpdateEvent);
   }
 
   FutureOr<void> _getData(GetUserBattleEvent event, Emitter emit) async {
     _p1 = event.p1;
-
-    // print("********************************************************");
-    // print("JUGADOR LOCAL RECIBIDO");
-    // print(_p1);
-    // print(_p1!.gorro);
 
     if (event.p2 != null) {
       var docs = await FirebaseFirestore.instance
@@ -217,6 +221,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     } else {
       _p2 = _iaPinwino;
     }
+    userGameBloc.resetHand();
 
     emit(GetUsersSuccessState(
         p1Gorro: _p1!.gorro!, p2Gorro: _p2!.gorro!, room_id: room_id!));
@@ -228,13 +233,32 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       _iaGameBloc!.add(GetDeckEvent(deck: _p2!.deck!));
     }
 
-    // print("==================================");
-    // print("HAND");
-    // for (int i = 0; i < userGameBloc.getActualHand.length; i++) {
-    //   print(userGameBloc.getActualHand[i]);
-    // }
-    // print(userGameBloc.getActualHand.length);
-    // print("==================================");
+    battleTimer();
+  }
+
+  void battleTimer() {
+    _currentTime = 20;
+    Timer.periodic(const Duration(seconds: 1), (timer) {
+      // print(_currentTime);
+      _currentTime--;
+      if (getCurrentTime == 0 || !_play) {
+        print('Cancel timer');
+        timer.cancel();
+        add(RandomSelectionEvent());
+      } else {
+        add(TimerUpdateEvent());
+      }
+    });
+  }
+
+  Future<void> _timerUpdateEvent(TimerUpdateEvent event, Emitter emit) async {
+    if (_updateTime) {
+      emit(UpdateCurrentTimeState());
+    } else {
+      emit(CurrentTimeState());
+    }
+
+    _updateTime = !_updateTime;
   }
 
   Future<void> get_enemy_card(List<String> cards) async {
@@ -293,12 +317,12 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       _playerCard = event.card;
 
       try {
-        if (room_id != null && _p1!.is_sender!) {
+        if (room_id != "" && _p1!.is_sender!) {
           await FirebaseFirestore.instance
               .collection("rooms")
               .doc(room_id)
               .update({"p1_card": _playerCard!.id});
-        } else if (room_id != null) {
+        } else if (room_id != "") {
           await FirebaseFirestore.instance
               .collection("rooms")
               .doc(room_id)
@@ -337,24 +361,29 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
     if (_winRound == 1) {
       _roundPower = _playerCard!.poder!;
+      _roundPowerImage = _playerCard!.poder_imagen!;
 
       _userSlots[_playerCard!.elemento]!.add(_playerCard!.color!);
     } else if (_winRound == 2) {
       _roundPower = _enemyCard!.poder!;
+      _roundPowerImage = _enemyCard!.poder_imagen!;
 
       _enemySlots[_enemyCard!.elemento]!.add(_enemyCard!.color!);
     } else {
       _roundPower = "";
-    }
-
-    // eliminación de slots si gano ese poder
-    if (_roundPower != "" && _roundPower[0] == "-" && _roundPower[1] != "2") {
-      emit(PowerRoundState(power: _roundPower));
-      removeSlot();
-      _roundPower = "";
+      _roundPowerImage = "";
     }
 
     await Future.delayed(Duration(seconds: 2));
+
+    emit(PowerRoundState(power: _roundPower, power_image: _roundPowerImage));
+
+    // eliminación de slots si gano ese poder
+    if (_roundPower != "" && _roundPower[0] == "-" && _roundPower[1] != "2") {
+      removeSlot();
+      _roundPower = "";
+      _roundPowerImage = "";
+    }
 
     emit(GetSlotsState(userSlots: _userSlots, enemySlots: _enemySlots));
 
@@ -402,12 +431,17 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           "snow": [],
         };
 
+        userGameBloc.resetHand();
+
+        print("==================================");
+        print(userGameBloc.getActualHand);
+
         emit(EndGameState(victory: _gameWinner == 1 ? true : false));
       }
     }
 
     if (_roundPower != "") {
-      emit(PowerRoundState(power: _roundPower));
+      emit(PowerRoundState(power: _roundPower, power_image: _roundPowerImage));
     }
 
     // DRAWPHASE
@@ -421,6 +455,8 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     _playerCard = null;
 
     _play = true;
+
+    if (_gameWinner == 0) battleTimer();
   }
 
   Carta iaPossibilities(List<Carta> hand) {
@@ -480,15 +516,15 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       bool snow = false;
 
       for (int i = 0;
-          i < userUniqueSlots["fire"]!.length || (!fire && !water && !snow);
+          i < userUniqueSlots["fire"]!.length && (!fire && !water && !snow);
           i++) {
-        for (int j = 0; j < userUniqueSlots["water"]!.length || !fire; j++) {
+        for (int j = 0; j < userUniqueSlots["water"]!.length && !fire; j++) {
           if (userUniqueSlots["fire"]![i] != userUniqueSlots["water"]![j]) {
             fire = true;
           }
 
           for (int k = 0;
-              k < userUniqueSlots["snow"]!.length || (!water && !snow);
+              k < userUniqueSlots["snow"]!.length && (!water && !snow);
               k++) {
             if (userUniqueSlots["fire"]![i] != userUniqueSlots["snow"]![k]) {
               snow = true;
@@ -523,11 +559,11 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     }
 
     if (_enemySlots["water"]!.length > 0) {
-      iaUniqueSlots["water"] = _enemySlots["fire"]!.toSet().toList();
+      iaUniqueSlots["water"] = _enemySlots["water"]!.toSet().toList();
     }
 
     if (_enemySlots["snow"]!.length > 0) {
-      iaUniqueSlots["snow"] = _enemySlots["fire"]!.toSet().toList();
+      iaUniqueSlots["snow"] = _enemySlots["snow"]!.toSet().toList();
     }
 
     // chequeo de posible victoria IA por 2 mismo elemento
@@ -554,15 +590,15 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       bool snow = false;
 
       for (int i = 0;
-          i < iaUniqueSlots["fire"]!.length || (!fire && !water && !snow);
+          i < iaUniqueSlots["fire"]!.length && (!fire && !water && !snow);
           i++) {
-        for (int j = 0; j < iaUniqueSlots["water"]!.length || !snow; j++) {
+        for (int j = 0; j < iaUniqueSlots["water"]!.length && !snow; j++) {
           if (iaUniqueSlots["fire"]![i] != iaUniqueSlots["water"]![j]) {
             snow = true;
           }
 
           for (int k = 0;
-              k < iaUniqueSlots["snow"]!.length || (!fire && !water);
+              k < iaUniqueSlots["snow"]!.length && (!fire && !water);
               k++) {
             if (iaUniqueSlots["fire"]![i] != iaUniqueSlots["snow"]![k]) {
               water = true;
@@ -596,7 +632,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     int index = 0;
 
     for (int i = 0; i < hand.length; i++) {
-      if (possibilities[i]! > temp) {
+      if (_checkBlocksAndPossibility(hand[i]) && possibilities[i]! > temp) {
         index = i;
         temp = possibilities[i]!;
       }
@@ -609,6 +645,19 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     hand.shuffle();
 
     return hand[0];
+  }
+
+  bool _checkBlocksAndPossibility(Carta card) {
+    if ((_roundPower != "block_fire" &&
+            _roundPower != "block_water" &&
+            _roundPower != "block_snow") ||
+        (_roundPower == "block_fire" && card.elemento != "fire" ||
+            _roundPower == "block_water" && card.elemento != "water" ||
+            _roundPower == "block_snow" && card.elemento != "snow")) {
+      return true;
+    }
+
+    return false;
   }
 
   void removeSlot() {
@@ -682,6 +731,20 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   }
 
   int _checkRoundWinner(Carta userCard, Carta enemyCard) {
+    if (_checkBlocksAndPossibility(enemyCard)) {
+      _trashEnemy = false;
+    } else {
+      _trashEnemy = true;
+    }
+
+    if (_trashUser == true && _trashEnemy == true) {
+      return 0;
+    } else if (_trashUser == true && _trashEnemy == false) {
+      return 2;
+    } else if (_trashUser == false && _trashEnemy == true) {
+      return 1;
+    }
+
     String userElement;
     String enemyElement;
 
@@ -813,6 +876,12 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   FutureOr<void> _randomSelection(RandomSelectionEvent event, Emitter emit) {
     List<Carta> hand = userGameBloc.getActualHand;
     hand.shuffle();
+
+    if (_checkBlocksAndPossibility(hand[0])) {
+      _trashUser = false;
+    } else {
+      _trashUser = true;
+    }
 
     add(PlayCardEvent(card: hand[0]));
   }
