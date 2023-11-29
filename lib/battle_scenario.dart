@@ -812,8 +812,8 @@ class BattleScenario extends StatelessWidget {
                       if (BlocProvider.of<GameBloc>(context)
                           .get_userGameBloc
                           .state is GetHandState) {
-                        print(
-                            "Estado ${BlocProvider.of<GameBloc>(context).get_userGameBloc.state}");
+                        // print(
+                        //     "Estado ${BlocProvider.of<GameBloc>(context).get_userGameBloc.state}");
                         return hand_display(
                           BlocProvider.of<GameBloc>(context)
                               .get_userGameBloc
@@ -823,8 +823,8 @@ class BattleScenario extends StatelessWidget {
                       if (BlocProvider.of<GameBloc>(context)
                           .get_userGameBloc
                           .state is UpdateGetHandState) {
-                        print(
-                            "Estado ${BlocProvider.of<GameBloc>(context).get_userGameBloc.state}");
+                        // print(
+                        //     "Estado ${BlocProvider.of<GameBloc>(context).get_userGameBloc.state}");
                         return hand_display(
                           BlocProvider.of<GameBloc>(context)
                               .get_userGameBloc

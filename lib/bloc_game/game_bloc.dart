@@ -520,15 +520,15 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       bool snow = false;
 
       for (int i = 0;
-          i < userUniqueSlots["fire"]!.length || (!fire && !water && !snow);
+          i < userUniqueSlots["fire"]!.length && (!fire && !water && !snow);
           i++) {
-        for (int j = 0; j < userUniqueSlots["water"]!.length || !fire; j++) {
+        for (int j = 0; j < userUniqueSlots["water"]!.length && !fire; j++) {
           if (userUniqueSlots["fire"]![i] != userUniqueSlots["water"]![j]) {
             fire = true;
           }
 
           for (int k = 0;
-              k < userUniqueSlots["snow"]!.length || (!water && !snow);
+              k < userUniqueSlots["snow"]!.length && (!water && !snow);
               k++) {
             if (userUniqueSlots["fire"]![i] != userUniqueSlots["snow"]![k]) {
               snow = true;
@@ -563,11 +563,11 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     }
 
     if (_enemySlots["water"]!.length > 0) {
-      iaUniqueSlots["water"] = _enemySlots["fire"]!.toSet().toList();
+      iaUniqueSlots["water"] = _enemySlots["water"]!.toSet().toList();
     }
 
     if (_enemySlots["snow"]!.length > 0) {
-      iaUniqueSlots["snow"] = _enemySlots["fire"]!.toSet().toList();
+      iaUniqueSlots["snow"] = _enemySlots["snow"]!.toSet().toList();
     }
 
     // chequeo de posible victoria IA por 2 mismo elemento
@@ -594,15 +594,15 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       bool snow = false;
 
       for (int i = 0;
-          i < iaUniqueSlots["fire"]!.length || (!fire && !water && !snow);
+          i < iaUniqueSlots["fire"]!.length && (!fire && !water && !snow);
           i++) {
-        for (int j = 0; j < iaUniqueSlots["water"]!.length || !snow; j++) {
+        for (int j = 0; j < iaUniqueSlots["water"]!.length && !snow; j++) {
           if (iaUniqueSlots["fire"]![i] != iaUniqueSlots["water"]![j]) {
             snow = true;
           }
 
           for (int k = 0;
-              k < iaUniqueSlots["snow"]!.length || (!fire && !water);
+              k < iaUniqueSlots["snow"]!.length && (!fire && !water);
               k++) {
             if (iaUniqueSlots["fire"]![i] != iaUniqueSlots["snow"]![k]) {
               water = true;
