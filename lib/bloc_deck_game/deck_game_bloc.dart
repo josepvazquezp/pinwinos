@@ -57,6 +57,16 @@ class DeckGameBloc extends Bloc<DeckGameEvent, DeckGameState> {
 
     if (_update) {
       _update = !_update;
+      //TODO: es aqui
+      print(
+          "////////////////////////////////////////////////////////////////////");
+      print(
+          "////////////////////////////////////////////////////////////////////");
+      print("Numero de Cartas para Iniciar: ${_actualHand.length}");
+      print(
+          "////////////////////////////////////////////////////////////////////");
+      print(
+          "////////////////////////////////////////////////////////////////////");
       emit(GetHandState(hand: _actualHand));
     } else {
       _update = !_update;

@@ -59,6 +59,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         color: "yellow",
         elemento: "fire",
         poder: "",
+        poder_imagen: "",
       ),
       new Carta(
         imagen: "assets/images/cards/c4.png",
@@ -224,6 +225,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     } else {
       _p2 = _iaPinwino;
     }
+    userGameBloc.resetHand();
 
     emit(GetUsersSuccessState(
         p1Gorro: _p1!.gorro!, p2Gorro: _p2!.gorro!, room_id: room_id!));
