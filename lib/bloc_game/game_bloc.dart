@@ -179,11 +179,12 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   Carta? _playerCard;
 
   int _currentTime = 20;
-  bool _updateTime = false;
+
   bool _trashEnemy = false;
   bool _trashUser = false;
 
-  StreamController<int> _timerStreamController = StreamController<int>();
+  StreamController<int> _timerStreamController =
+      StreamController<int>.broadcast();
 
   DeckGameBloc get get_userGameBloc => userGameBloc;
   int get getCurrentTime => _currentTime;
@@ -254,7 +255,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
   Future<void> get_enemy_card(List<String> cards) async {
     var docs;
-    if (_p1!.is_sender! && cards[1] != "") {
+    if (_enemyCard == null && _p1!.is_sender! && cards[1] != "") {
       docs = await FirebaseFirestore.instance
           .collection("cards")
           .doc("${cards[1]}")
@@ -274,7 +275,9 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       if (_playerCard != null) {
         add(CardsReadyEvent());
       }
-    } else if (cards[0] != "") {
+    } else if (_enemyCard == null &&
+        _p1!.is_sender! == false &&
+        cards[0] != "") {
       docs = await FirebaseFirestore.instance
           .collection("cards")
           .doc("${cards[0]}")
@@ -306,6 +309,8 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     } else {
       _play = false;
       _playerCard = event.card;
+
+      print(_playerCard);
 
       try {
         if (room_id != "" && _p1!.is_sender!) {
@@ -340,13 +345,6 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
   FutureOr<void> _cards_ready(CardsReadyEvent event, Emitter emit) async {
     emit(BattleCardsState(userCard: _playerCard!, enemyCard: _enemyCard!));
-
-    if (room_id != "") {
-      await FirebaseFirestore.instance
-          .collection("rooms")
-          .doc(room_id)
-          .update({"p1_card": "", "p2_card": ""});
-    }
 
     _winRound = _checkRoundWinner(_playerCard!, _enemyCard!);
 
@@ -446,6 +444,13 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     _playerCard = null;
 
     _play = true;
+
+    if (room_id != "") {
+      await FirebaseFirestore.instance
+          .collection("rooms")
+          .doc(room_id)
+          .update({"p1_card": "", "p2_card": ""});
+    }
 
     if (_gameWinner == 0) battleTimer();
   }
