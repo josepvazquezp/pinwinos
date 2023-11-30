@@ -386,16 +386,13 @@ class BattleScenario extends StatelessWidget {
                 alignment: Alignment.center,
                 height: 60,
                 width: 60,
-                child: BlocBuilder<GameBloc, GameState>(
-                  builder: (context, state) {
-                    if (state is CurrentTimeState) {
-                      return Text(
-                        '${BlocProvider.of<GameBloc>(context).getCurrentTime}',
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.w900,
-                        ),
-                      );
+                child: StreamBuilder(
+                  stream: BlocProvider.of<GameBloc>(context).getTimerStream,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      //return CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
                     }
 
                     return Text(
@@ -432,16 +429,13 @@ class BattleScenario extends StatelessWidget {
                 alignment: Alignment.center,
                 height: 60,
                 width: 60,
-                child: BlocBuilder<GameBloc, GameState>(
-                  builder: (context, state) {
-                    if (state is CurrentTimeState) {
-                      return Text(
-                        '${BlocProvider.of<GameBloc>(context).getCurrentTime}',
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.w900,
-                        ),
-                      );
+                child: StreamBuilder(
+                  stream: BlocProvider.of<GameBloc>(context).getTimerStream,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      //return CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
                     }
 
                     return Text(
@@ -789,6 +783,7 @@ class BattleScenario extends StatelessWidget {
                   return load_view();
                 }
               }
+
               return load_view();
             },
           ),
