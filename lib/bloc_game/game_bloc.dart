@@ -183,15 +183,17 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   bool _trashEnemy = false;
   bool _trashUser = false;
 
+  StreamController<int> _timerStreamController = StreamController<int>();
+
   DeckGameBloc get get_userGameBloc => userGameBloc;
   int get getCurrentTime => _currentTime;
+  Stream<int> get getTimerStream => _timerStreamController.stream;
 
   GameBloc() : super(GameInitial()) {
     on<GetUserBattleEvent>(_getData);
     on<PlayCardEvent>(_battlePhase);
     on<CardsReadyEvent>(_cards_ready);
     on<RandomSelectionEvent>(_randomSelection);
-    on<TimerUpdateEvent>(_timerUpdateEvent);
   }
 
   FutureOr<void> _getData(GetUserBattleEvent event, Emitter emit) async {
@@ -239,26 +241,15 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   void battleTimer() {
     _currentTime = 20;
     Timer.periodic(const Duration(seconds: 1), (timer) {
-      // print(_currentTime);
       _currentTime--;
       if (getCurrentTime == 0 || !_play) {
         print('Cancel timer');
         timer.cancel();
         add(RandomSelectionEvent());
       } else {
-        add(TimerUpdateEvent());
+        _timerStreamController.add(_currentTime);
       }
     });
-  }
-
-  Future<void> _timerUpdateEvent(TimerUpdateEvent event, Emitter emit) async {
-    if (_updateTime) {
-      emit(UpdateCurrentTimeState());
-    } else {
-      emit(CurrentTimeState());
-    }
-
-    _updateTime = !_updateTime;
   }
 
   Future<void> get_enemy_card(List<String> cards) async {
