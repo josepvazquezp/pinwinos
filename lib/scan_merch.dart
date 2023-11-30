@@ -1,7 +1,77 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pinwinos/bloc/scanner_bloc.dart';
+import 'package:pinwinos/bloc_login/login_bloc.dart';
+import 'package:pinwinos/models/pinwino.dart';
 
-class ScanMerch extends StatelessWidget {
-  const ScanMerch({super.key});
+class ScanMerch extends StatefulWidget {
+  final Pinwino user_rec;
+  const ScanMerch({super.key, required this.user_rec});
+
+  @override
+  State<ScanMerch> createState() => _ScanMerchState();
+}
+
+class _ScanMerchState extends State<ScanMerch> {
+  void _showUnlockDialog(String titler, String item, String item_image) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Center(
+            child: AlertDialog(
+                title: Text(
+                  '${titler}',
+                ),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      height: 120,
+                      width: 120,
+                      child: Image.asset('${item_image}'),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      '${item}',
+                    ),
+                  ],
+                )),
+          );
+        });
+  }
+
+  void _showCancelErrorDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Center(
+            child: AlertDialog(
+              title: Text(
+                'Alerta',
+              ),
+              content: Text("No se pudo completar el escaneo"),
+            ),
+          );
+        });
+  }
+
+  void _showUnexistantDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Center(
+            child: AlertDialog(
+              title: Text(
+                'Alerta',
+              ),
+              content: Text("El ID escaneado no corresponde a ninguna carta"),
+            ),
+          );
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +111,11 @@ class ScanMerch extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: IconButton(
                       color: Colors.white,
-                      onPressed: () {
-                        print('Funcionando');
+                      onPressed: () async {
+                        String res = await scanQR();
+                        print("LECTURA COMPLETA");
+                        print(res);
+                        BlocProvider.of<ScannerBloc>(context).setCodeData(res);
                       },
                       icon: Icon(
                         Icons.camera_alt,
@@ -50,6 +123,25 @@ class ScanMerch extends StatelessWidget {
                       )),
                 ),
               ),
+              BlocBuilder<ScannerBloc, ScannerState>(builder: (context, state) {
+                if (state is GetCodeDataState) {
+                  BlocProvider.of<LoginBloc>(context).user = state.user_p;
+                  Future.microtask(() => _showUnlockDialog(
+                      state.unlocked, state.item, state.item_image));
+                  BlocProvider.of<ScannerBloc>(context).add(UnlockGivenEvent());
+                } else if (state is ErrorDataState) {
+                  Future.microtask(() => _showCancelErrorDialog());
+                  BlocProvider.of<ScannerBloc>(context).add(UnlockGivenEvent());
+                } else if (state is UnexistantDataState) {
+                  Future.microtask(() => _showUnexistantDialog());
+                  BlocProvider.of<ScannerBloc>(context).add(UnlockGivenEvent());
+                } else if (state is WaitingScanState) {
+                  BlocProvider.of<ScannerBloc>(context)
+                      .set_user(widget.user_rec);
+                }
+
+                return Text('');
+              }),
               Material(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(22)),
@@ -69,5 +161,18 @@ class ScanMerch extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<String> scanQR() async {
+    String scan_res;
+
+    scan_res = await FlutterBarcodeScanner.scanBarcode(
+      '#ff6666',
+      'Cancel',
+      true,
+      ScanMode.QR,
+    );
+
+    return scan_res;
   }
 }
