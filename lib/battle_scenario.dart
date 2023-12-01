@@ -298,8 +298,17 @@ class BattleScenario extends StatelessWidget {
                             color: get_color(_userSlots['fire']![index])),
                         width: 50,
                         height: 50,
-                        child: Image.asset(
-                          '$FireIcon',
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              height: 35,
+                              width: 35,
+                              child: Image.asset(
+                                '$FireIcon',
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     );
@@ -319,8 +328,17 @@ class BattleScenario extends StatelessWidget {
                             color: get_color(_userSlots['snow']![index])),
                         width: 50,
                         height: 50,
-                        child: Image.asset(
-                          '$SnowIcon',
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              height: 35,
+                              width: 35,
+                              child: Image.asset(
+                                '$SnowIcon',
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     );
@@ -340,8 +358,17 @@ class BattleScenario extends StatelessWidget {
                             color: get_color(_userSlots['water']![index])),
                         width: 50,
                         height: 50,
-                        child: Image.asset(
-                          '$WaterIcon',
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              height: 35,
+                              width: 35,
+                              child: Image.asset(
+                                '$WaterIcon',
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     );
@@ -475,8 +502,17 @@ class BattleScenario extends StatelessWidget {
                             color: get_color(_enemySlots['fire']![index])),
                         width: 50,
                         height: 50,
-                        child: Image.asset(
-                          '$FireIcon',
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              height: 35,
+                              width: 35,
+                              child: Image.asset(
+                                '$FireIcon',
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     );
@@ -496,8 +532,17 @@ class BattleScenario extends StatelessWidget {
                             color: get_color(_enemySlots['snow']![index])),
                         width: 50,
                         height: 50,
-                        child: Image.asset(
-                          '$SnowIcon',
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              height: 35,
+                              width: 35,
+                              child: Image.asset(
+                                '$SnowIcon',
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     );
@@ -517,8 +562,17 @@ class BattleScenario extends StatelessWidget {
                             color: get_color(_enemySlots['water']![index])),
                         width: 50,
                         height: 50,
-                        child: Image.asset(
-                          '$WaterIcon',
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              height: 35,
+                              width: 35,
+                              child: Image.asset(
+                                '$WaterIcon',
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     );
