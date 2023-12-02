@@ -34,4 +34,5 @@ implementación.
 
 ![image](https://github.com/josepvazquezp/pinwinos/assets/74749686/8b12a952-3a7c-403c-81e3-6b1946b35cd2)
 
-![alt text](assets/readme_images/battle.jpeg)
+![image](https://github.com/josepvazquezp/pinwinos/assets/74749686/59063983-96ce-4b88-854f-fcea22cf40e3)
+
